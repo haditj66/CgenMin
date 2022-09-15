@@ -5,7 +5,7 @@ This is a collection of various dev tools. Code generation, QRCore tools, comman
  ![output image](OutputImage.png)
 
  
-# Instructions
+# Install Instructions
 
 - Step 1: 
   - for linux: in your home directory create a directory named `QR_Sync`
