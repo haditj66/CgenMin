@@ -33,4 +33,9 @@ To verify installation, open a new terminal and enter cgen. You should get the h
 - Step 3:  
   - copy the contents in PutInDotbashrc.txt located in CgenMin directory. And APPEND (not replace) it into the .bashrc file located in your home directory.
  
+ ---
+- Step 4: 
+ You might need to change something in PutInDotbashrc.txt . Around line 9 where it says 
+ source /opt/ros/foxy/setup.bash
+ make sure this is the ROS2 command for sourcing your specific ROS2 installation.
  
