@@ -19,5 +19,7 @@ This is a collection of various dev tools. Code generation, QRCore tools, comman
 -  Step 3: ForWindows
   - got to your environment directory and add the a variable named cgen to C:/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0 
 HADI TODO:  You'll need to change the exe ouput to cgen
+
+To verify installation, open a new terminal and enter cgen. You should get the help output with available commands.
  
  
