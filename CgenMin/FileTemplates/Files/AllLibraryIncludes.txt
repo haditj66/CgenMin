@@ -1,0 +1,15 @@
+﻿//#pragma once 
+#if USING_GlobalBuildConfig_H
+#include "c:\users\hadi\onedrive\documents\visualstudioprojects\projects\cSharp\codegenerator\codegenerator\configtest\globalbuildconfig.h"
+#endif 
+
+##LOOP_USE##  
+#if USING_<#CGENPROJ_NAME#>
+#include "<#PATH_OF_PROJ#>"
+#endif 
+##END##
+
+##LOOP_INFO##  
+//_<#CGENPROJ_NAME#> 
+##END##
+

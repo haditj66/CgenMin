@@ -1,0 +1,267 @@
+##Macro1 hello
+##Macro2 this is code
+##Macro3 somenamespacee::someclass
+##Macro4
+##Macro5
+##Macro6
+##Macro7
+##Macro8
+##Macro9
+##Macro10
+##LoopIncrement1 10
+##LoopIncrement2 10
+##LoopIncrement3 20
+##LoopIncrement4 20
+##LoopIncrement5 20
+##LoopIncrement6
+##LoopIncrement7
+##LoopIncrement8
+##LoopIncrement9
+##LoopIncrement10
+
+##ToFile AEObjectTest.h
+
+#pragma once
+
+#include "AEUtils.h"
+//#include "FreeRTOS.h"
+#include "AEConfig.h"
+
+
+
+
+//macro for being able to check if a macro is empty --------------------------------------
+#define DO_EXPAND(VAL)  VAL ## 1
+#define EXPAND(VAL)     DO_EXPAND(VAL)
+
+//macro for static pointers ------------------------------------------------------------
+#define S_CONC(A, B) S_CONC_(A, B)
+#define S_CONC_(A, B) A * B ; 
+#define SS_CONC(A, B) SS_CONC_(A, B)
+#define SS_CONC_(A, B) static A * B ; 
+
+#define H_CONC(A) H_CONC_(A)
+#define H_CONC_(A) A.h
+
+//macro for static pointers ------------------------------------------------------------
+#define A_CONC(A, B) A_CONC(A, B)
+#define A_CONC_(A, B) A B 
+
+#define Q(x) #x
+#define QUOTE(x) Q(x)
+
+
+
+class AEObservorSensor;
+TEMPLATEFORNoDefaults_AEClock
+class AEClock;
+
+ 
+//for clocks ----------------
+##LOOP_1##  
+#define GlobalPtrToClock_<#i#>  
+##END##
+##LOOP_2##  
+#if defined(ClockName<#i#>) && (EXPAND(ClockName<#i#>) == 0) 
+extern ClockType<#i#> * ClockName<#i#>; 
+GlobalPtrToClock_<#i#> SS_CONC_(ClockType<#i#>, ClockName<#i#>)
+#endif 
+##END##
+ 
+//for sensors -------------------------
+##LOOP_3##  
+#define GlobalPtrToSensor_<#i#>  
+##END##
+##LOOP_4##  
+#if defined(SensorName<#i#>) && (EXPAND(SensorName<#i#>) == 0) 
+extern AEObservorSensor * SensorName<#i#>;
+GlobalPtrToSensor_<#i#> static AEObservorSensor * SensorName<#i#>;
+#endif
+##END##
+
+
+
+//for AOs ----------------------------------------------
+##LOOP_5##  
+#define GlobalPtrToAO<#i#>_1 //define it here first so that the default value is empty
+#define GlobalPtrToAO<#i#>_2
+#define GlobalPtrToAO<#i#>_3
+#define GlobalPtrToAO<#i#>_4
+#define GlobalPtrToAO<#i#>_5 
+
+#if (defined(AOInclude<#i#>) && (EXPAND(AOInclude<#i#>) == 0)) 
+
+#include QUOTE(H_CONC(AOInclude<#i#>))
+#if  (defined(NameSpaceToAO<#i#>) && (EXPAND(NameSpaceToAO<#i#>) == 0))
+#define NamespaceToSet<#i#> A_CONC_(NameSpaceToAO<#i#>, ::)
+#else
+#define NamespaceToSet<#i#>
+#endif
+
+
+#if defined(InstanceNameOfAO<#i#>_1) && (EXPAND(InstanceNameOfAO<#i#>_1) == 0)
+#define GlobalPtrToAO<#i#>_1 S_CONC_(A_CONC_(NamespaceToSet<#i#>,TypeOfAO<#i#>_1), InstanceNameOfAO<#i#>_1) //TypeOfAO<#i#>_1 * TypeOfAO<#i#>_1::InstanceNameOfAO<#i#>_1;
+extern A_CONC_(NamespaceToSet<#i#>, TypeOfAO<#i#>_1)  * InstanceNameOfAO<#i#>_1;
+#endif
+#if defined(InstanceNameOfAO<#i#>_2) && (EXPAND(InstanceNameOfAO<#i#>_2) == 0)
+#define GlobalPtrToAO<#i#>_2 S_CONC_(A_CONC_(NamespaceToSet<#i#>,TypeOfAO<#i#>_2), InstanceNameOfAO<#i#>_2) //TypeOfAO<#i#>_2 * TypeOfAO<#i#>_2::InstanceNameOfAO<#i#>_2;
+extern A_CONC_(NamespaceToSet<#i#>, TypeOfAO<#i#>_2)  * InstanceNameOfAO<#i#>_2;
+#endif
+#if defined(InstanceNameOfAO<#i#>_3) && (EXPAND(InstanceNameOfAO<#i#>_3) == 0)
+#define GlobalPtrToAO<#i#>_3 S_CONC_(A_CONC_(NamespaceToSet<#i#>,TypeOfAO<#i#>_3), InstanceNameOfAO<#i#>_3) //TypeOfAO<#i#>_3 * TypeOfAO<#i#>_3::InstanceNameOfAO<#i#>_3;
+extern A_CONC_(NamespaceToSet<#i#>, TypeOfAO<#i#>_3)  * InstanceNameOfAO<#i#>_3;
+#endif
+#if defined(InstanceNameOfAO<#i#>_4) && (EXPAND(InstanceNameOfAO<#i#>_4) == 0)
+#define GlobalPtrToAO<#i#>_4 S_CONC_(A_CONC_(NamespaceToSet<#i#>,TypeOfAO<#i#>_4), InstanceNameOfAO<#i#>_4) //TypeOfAO<#i#>_4 * TypeOfAO<#i#>_4::InstanceNameOfAO<#i#>_4;
+extern A_CONC_(NamespaceToSet<#i#>, TypeOfAO<#i#>_4)  * InstanceNameOfAO<#i#>_4;
+#endif
+#if defined(InstanceNameOfAO<#i#>_5) && (EXPAND(InstanceNameOfAO<#i#>_5) == 0)
+#define GlobalPtrToAO<#i#>_5 S_CONC_(A_CONC_(NamespaceToSet<#i#>,TypeOfAO<#i#>_5), InstanceNameOfAO<#i#>_5) //TypeOfAO<#i#>_5 * TypeOfAO<#i#>_5::InstanceNameOfAO<#i#>_5;
+extern A_CONC_(NamespaceToSet<#i#>, TypeOfAO<#i#>_5)  * InstanceNameOfAO<#i#>_5;
+#endif
+
+#endif
+
+##END##
+
+
+
+#define DECLARE_ALL_AO_PTR \
+GlobalPtrToAO1_1 \
+GlobalPtrToAO1_2 \
+GlobalPtrToAO1_3 \
+GlobalPtrToAO1_4 \
+GlobalPtrToAO1_5 \
+GlobalPtrToAO2_1 \
+GlobalPtrToAO2_2 \
+GlobalPtrToAO2_3 \
+GlobalPtrToAO2_4 \
+GlobalPtrToAO2_5 \
+GlobalPtrToAO3_1 \
+GlobalPtrToAO3_2 \
+GlobalPtrToAO3_3 \
+GlobalPtrToAO3_4 \
+GlobalPtrToAO3_5 \
+GlobalPtrToAO4_1 \
+GlobalPtrToAO4_2 \
+GlobalPtrToAO4_3 \
+GlobalPtrToAO4_4 \
+GlobalPtrToAO4_5 \
+GlobalPtrToAO5_1 \
+GlobalPtrToAO5_2 \
+GlobalPtrToAO5_3 \
+GlobalPtrToAO5_4 \
+GlobalPtrToAO5_5 \
+GlobalPtrToAO6_1 \
+GlobalPtrToAO6_2 \
+GlobalPtrToAO6_3 \
+GlobalPtrToAO6_4 \
+GlobalPtrToAO6_5 \
+GlobalPtrToAO7_1 \
+GlobalPtrToAO7_2 \
+GlobalPtrToAO7_3 \
+GlobalPtrToAO7_4 \
+GlobalPtrToAO7_5 \
+GlobalPtrToAO8_1 \
+GlobalPtrToAO8_2 \
+GlobalPtrToAO8_3 \
+GlobalPtrToAO8_4 \
+GlobalPtrToAO8_5 \
+GlobalPtrToAO9_1 \
+GlobalPtrToAO9_2 \
+GlobalPtrToAO9_3 \
+GlobalPtrToAO9_4 \
+GlobalPtrToAO9_5 \
+GlobalPtrToAO10_1 \
+GlobalPtrToAO10_2 \
+GlobalPtrToAO10_3 \
+GlobalPtrToAO10_4 \
+GlobalPtrToAO10_5 \
+GlobalPtrToAO11_1 \
+GlobalPtrToAO11_2 \
+GlobalPtrToAO11_3 \
+GlobalPtrToAO11_4 \
+GlobalPtrToAO11_5 \
+GlobalPtrToAO12_1 \
+GlobalPtrToAO12_2 \
+GlobalPtrToAO12_3 \
+GlobalPtrToAO12_4 \
+GlobalPtrToAO12_5 \
+GlobalPtrToAO13_1 \
+GlobalPtrToAO13_2 \
+GlobalPtrToAO13_3 \
+GlobalPtrToAO13_4 \
+GlobalPtrToAO13_5 \
+GlobalPtrToAO14_1 \
+GlobalPtrToAO14_2 \
+GlobalPtrToAO14_3 \
+GlobalPtrToAO14_4 \
+GlobalPtrToAO14_5 \
+GlobalPtrToAO15_1 \
+GlobalPtrToAO15_2 \
+GlobalPtrToAO15_3 \
+GlobalPtrToAO15_4 \
+GlobalPtrToAO15_5 \
+GlobalPtrToAO16_1 \
+GlobalPtrToAO16_2 \
+GlobalPtrToAO16_3 \
+GlobalPtrToAO16_4 \
+GlobalPtrToAO16_5 \
+GlobalPtrToAO17_1 \
+GlobalPtrToAO17_2 \
+GlobalPtrToAO17_3 \
+GlobalPtrToAO17_4 \
+GlobalPtrToAO17_5 \
+GlobalPtrToAO18_1 \
+GlobalPtrToAO18_2 \
+GlobalPtrToAO18_3 \
+GlobalPtrToAO18_4 \
+GlobalPtrToAO18_5 \
+GlobalPtrToAO19_1 \
+GlobalPtrToAO19_2 \
+GlobalPtrToAO19_3 \
+GlobalPtrToAO19_4 \
+GlobalPtrToAO19_5 \
+GlobalPtrToAO20_1 \
+GlobalPtrToAO20_2 \
+GlobalPtrToAO20_3 \
+GlobalPtrToAO20_4 \
+GlobalPtrToAO20_5 \
+GlobalPtrToClock_1 \
+GlobalPtrToClock_2 \
+GlobalPtrToClock_3 \
+GlobalPtrToClock_4 \
+GlobalPtrToClock_5 \
+GlobalPtrToClock_6 \
+GlobalPtrToClock_7 \
+GlobalPtrToClock_8 \
+GlobalPtrToClock_9 \
+GlobalPtrToClock_10 \
+GlobalPtrToSensor_1 \
+GlobalPtrToSensor_2 \
+GlobalPtrToSensor_3 \
+GlobalPtrToSensor_4 \
+GlobalPtrToSensor_5 \
+GlobalPtrToSensor_6 \
+GlobalPtrToSensor_7 \
+GlobalPtrToSensor_8 \
+GlobalPtrToSensor_9 \
+GlobalPtrToSensor_10 \
+GlobalPtrToSensor_11 \
+GlobalPtrToSensor_12 \
+GlobalPtrToSensor_13 \
+GlobalPtrToSensor_14 \
+GlobalPtrToSensor_15 \
+GlobalPtrToSensor_16 \
+GlobalPtrToSensor_17 \
+GlobalPtrToSensor_18 \
+GlobalPtrToSensor_19 \
+GlobalPtrToSensor_20 
+ 
+ 
+ 
+##ToFile AEObjectTest.cpp
+ 
+#include "AEObjects.h"
+ 
+DECLARE_ALL_AO_PTR

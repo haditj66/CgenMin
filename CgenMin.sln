@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CgenMin", "CgenMin\CgenMin.csproj", "{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroTests", "MacroTests\MacroTests.csproj", "{53B9567D-B377-4B6E-8900-0BE71FA18189}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53B9567D-B377-4B6E-8900-0BE71FA18189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53B9567D-B377-4B6E-8900-0BE71FA18189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53B9567D-B377-4B6E-8900-0BE71FA18189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53B9567D-B377-4B6E-8900-0BE71FA18189}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86C02AF9-E8F0-428F-9450-4C53911F07F5}
+	EndGlobalSection
+EndGlobal

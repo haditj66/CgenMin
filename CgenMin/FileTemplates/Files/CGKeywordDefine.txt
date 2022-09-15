@@ -1,0 +1,6 @@
+﻿//#pragma once
+  
+ #define USING_GlobalBuildConfig_H false 
+##LOOP_USE###define USING_<#CGENPROJ_NAME#> false
+##END##
+

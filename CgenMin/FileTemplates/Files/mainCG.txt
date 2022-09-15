@@ -1,0 +1,21 @@
+﻿#pragma once
+
+#include "<#CGENCONF_NAME#>conf.h"
+#include "GlobalBuildConfig.h"   
+
+int mainCG()
+{  
+
+	GlobalBuildConfig glob;
+	glob.Init();
+	glob.BUILD->SetValue(BuildEnum::DEBUG);
+	glob.PLATFORM->SetValue(PlatformEnum::VS);
+
+
+	<#CGENCONF_NAME#>Conf0  <#CGENCONF_NAME#>;
+	<#CGENCONF_NAME#>.Init(); //dont forget to init() every library
+
+
+	Config::PrintDefines(<#CGENCONF_NAME#>);
+	 return 1;
+}

@@ -1,0 +1,16 @@
+class @ClassName@
+{
+	@ClassName@()
+	{}
+	
+	int @VarName1@;
+	
+	
+@$Section2$@
+	
+	
+	
+	string @VarName2@;
+	int @VarName3@;
+
+};

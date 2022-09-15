@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="whatever"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\Qt\;CMake Files\..\..\..\..\Qt\Tools\;CMake Files\..\..\..\..\Qt\Tools\QtCreator\;CMake Files\..\..\..\..\Qt\Tools\QtCreator\share\;CMake Files\..\..\..\..\Qt\Tools\QtCreator\share\qtcreator\;CMake Files\..\..\..\..\Qt\Tools\QtCreator\share\qtcreator\package-manager\;CMake Files\cmake\;CMake Files\CGensaveFiles\;CMake Files\CGensaveFiles\cmakeGui\;CMake Files\CGensaveFiles\cmakeGui\GenericConfig\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/user/QR_Sync/CgenMin/CgenMin/build-cmakeTest-Desktop-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/testcgen.cgenM.in">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/../../../../Qt/Tools/QtCreator/share/qtcreator/package-manager/auto-setup.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\Tools\QtCreator\share\qtcreator\package-manager\"/>
+		</Unit>
+		<Unit filename="/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/cmake/CgenCmakeConfigFunctions.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/CGensaveFiles/cmakeGui/GenericConfig/cgenCmakeCache.cmake">
+			<Option virtualFolder="CMake Files\CGensaveFiles\cmakeGui\GenericConfig\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

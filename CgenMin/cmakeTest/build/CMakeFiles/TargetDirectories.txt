@@ -1,0 +1,2 @@
+/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/build/CMakeFiles/rebuild_cache.dir
+/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest/build/CMakeFiles/edit_cache.dir

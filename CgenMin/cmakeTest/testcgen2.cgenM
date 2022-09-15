@@ -1,0 +1,54 @@
+##Macro1 
+
+
+
+##ToFile testcgen2.cpp
+
+//includes
+#include "AETimerSimple.h"
+
+##UserCode_f
+
+
+AETimerSimple::AETimerSimple(uint32_t periodOfTimerTicksInMilli, bool autoReload,TimerSimpleCallback_t timerSimpleCallback)
+{
+TimerSimpleCallback = timerSimpleCallback
+PeriodOfTimerTicksInMilli = periodOfTimerTicksInMilli
+AutoReload = autoReload
+
+##UserCode_a
+
+    //always stop the timer
+    StopTimer()
+
+}
+
+
+
+void AETimerSimple::StartTimer(){
+    ##UserCode_b
+}
+
+
+void AETimerSimple::StopTimer(){
+    ##UserCode_c
+}
+
+void AETimerSimple::PauseTimer(){
+    ##UserCode_d
+}
+
+bool AETimerSimple::IsTimerActive(){
+    ##UserCode_e
+}
+
+
+void AETimerSimple::ChangePeriod(uint32_t newPeriod){
+    ##UserCode_g
+}
+
+uint32_t AETimerSimple::GetPeriodOfTimer()  const {
+    ##UserCode_h
+}
+
+

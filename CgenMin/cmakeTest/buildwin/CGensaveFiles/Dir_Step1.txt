@@ -1,0 +1,5 @@
+CMAKE_CURRENT_BINARY_DIR: C:/QR_Sync/CgenMin/CgenMin/cmakeTest/buildwin
+CMAKE_CURRENT_SOURCE_DIR: C:/QR_Sync/CgenMin/CgenMin/cmakeTest
+PLATFORM: 
+CMAKE_BUILD_TYPE: Debug
+CGEN_DIRECTORY_OF_CACHE_PROJECT_FILES: GenericConfig

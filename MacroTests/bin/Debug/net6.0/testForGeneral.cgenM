@@ -1,0 +1,112 @@
+`some comment
+##Macro1 hello
+##Macro2 this is code  `some other comment
+##Macro3 somenamespacee::someclass
+##Macro4 
+`some comment
+##Macro5 bullshit
+##Macro6
+##Macro7 bbnbv
+
+``r1argtype3
+##Macro8 char
+##Macro9 
+##Macro10 
+##Macro54 uhtn54
+##Macro99 uhtn107
+##LoopIncrement1 4
+##LoopIncrement2 3
+##LoopIncrement3 20
+##LoopIncrement4 5
+##LoopIncrement5  
+##LoopIncrement6
+##LoopIncrement7
+##LoopIncrement8
+##LoopIncrement9
+##LoopIncrement10
+
+##ToFile testForGeneral.cpp 
+
+##UserCode
+
+##LOOP_1##  
+##UserCode
+ <#Macro1#><#i#>  
+ ##UserCode
+##END##
+
+##UserCode
+
+##LOOP_2##  
+##UserCode
+USING_<#i#>  
+##END##
+
+##UserCode
+
+##LOOP_3##  
+USING_<#i#>  
+##END##
+ 
+
+
+ 
+##ToFile testForGeneral.h 
+ 
+##UserCode
+ 
+hi, macro 2 is <#Macro2#>
+<#Macro3#>
+
+
+
+<#ifMacro1#>  
+  
+
+#define r1arg1_type			uint8_t<#ifMacro4#> [  ] <#ifMEnd#>
+#define r1arg1_name			row
+#define r1arg1_sizeIfArray	
+#define r1arg1_fulltype		r1arg1_type<#ifMacro4#> [  ] <#ifMEnd#>
+
+
+
+#define r1arg2_type			uint8_t
+#define r1arg2_name			column
+#define r1arg2_sizeIfArray	
+#define r1arg2_fulltype		r1arg2_type <#ifMacro7#> [  ] <#ifMEnd#>
+
+#define r1arg3_type			char
+#define r1arg3_name			thingToPrint
+#define r1arg3_sizeIfArray	15
+#define r1arg3_fulltype		r1arg3_type <#ifMacro10#>[ 15 ]<#ifMEnd#>
+
+#define r1arg4_type			
+#define r1arg4_name			
+#define r1arg4_sizeIfArray	
+#define r1arg4_fulltype		r1arg4_type <#ifMacro13#>[  ]<#ifMEnd#>
+ 
+#define r1arg5_type			
+#define r1arg5_name			
+#define r1arg5_sizeIfArray	
+#define r1arg5_fulltype		r1arg5_type <#ifMacro16#>[  ]<#ifMEnd#>
+
+<#ifMEnd#>
+
+<#ifMacro1#><#ifMacro3#> macro 1 and 3 is here &<#Macro1#> <#ifMEnd#>m<#ifMEnd#>
+<#ifMacro1#> this should be here<#ifMacro4#> this shoudl not!!!! <#ifMEnd#><#ifMEnd#>
+<#ifMacro54#><#Macro54#><#ifMEnd#>
+<#ifMacro99#><#Macro99#><#ifMEnd#>
+
+<#Macro4#>
+
+##LOOP_4##   
+#define templateByteSerializer \
+class arg1_t <#if!1#>\<#if!END#>
+<#if2#> class arg2_t <#if!2#>\<#if!END#><#ifEND#>
+<#if3#> class arg3_t <#if!3#>\<#if!END#><#ifEND#>
+<#if4#> class arg4_t <#if!4#>\<#if!END#><#ifEND#>
+<#if5#> class arg5_t <#if!5#>\<#if!END#><#ifEND#>
+<#if1#> hello this is for <#i#> <#ifEND#>
+<#if4#> hello this is for <#i#> <#ifEND#>
+ hello this is for any <#i#>  
+##END## 

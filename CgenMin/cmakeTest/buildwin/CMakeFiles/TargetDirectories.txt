@@ -1,0 +1,2 @@
+C:/QR_Sync/CgenMin/CgenMin/cmakeTest/buildwin/CMakeFiles/ALL_BUILD.dir
+C:/QR_Sync/CgenMin/CgenMin/cmakeTest/buildwin/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,17 @@
+/home/user/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin
+/home/user/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin.deps.json
+/home/user/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin.runtimeconfig.json
+/home/user/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin.dll
+/home/user/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin.pdb
+/home/user/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CommandLine.dll
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.csproj.AssemblyReference.cache
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.GeneratedMSBuildEditorConfig.editorconfig
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.AssemblyInfoInputs.cache
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.AssemblyInfo.cs
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.csproj.CoreCompileInputs.cache
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.csproj.CopyComplete
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.dll
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/refint/CgenMin.dll
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.pdb
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/CgenMin.genruntimeconfig.cache
+/home/user/QR_Sync/CgenMin/CgenMin/obj/Debug/net6.0/ref/CgenMin.dll

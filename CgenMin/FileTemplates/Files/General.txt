@@ -1,0 +1,99 @@
+//generated file: Config.hpp
+//**********************************************************************
+//this is an auto-generated file using the template file located in the directory of /home/user/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
+//ONLY WRITE CODE IN THE UserCode_Section BLOCKS
+//If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks.
+
+//*************DONT MODIFY THIS FILE HERE ******************************
+// this is a generated file from cmake's configure_file() command.
+//template for this file should be located in GeneratedFiles foldersss
+
+#pragma once
+
+
+
+
+#define PROJECT_NAME qtui_rqt
+
+
+#include <string>
+
+#include <cereal/archives/xml.hpp>
+#include <cereal/archives/json.hpp>
+
+
+##UserCode_c
+
+namespace qtui_rqt {
+
+
+             #ifdef WorldReal
+             class QR_Settings
+             {
+             public:
+               std::string id;
+
+               //put the variables you want to have as settings
+               //for example
+               //int size1;
+               //std:string someothersetting
+               ##UserCode_Worlda
+
+               // This method lets cereal know which data members to serialize.
+               template<class Archive>
+               void serialize(Archive & archive)
+               {
+
+                 //you need to now set these variables in the archive. For example
+                 //for example:
+                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
+                 ##UserCode_Worldb
+
+               }
+             };
+
+
+             ##UserCode_Worldc
+
+             #endif
+              
+             #ifdef GameobjectReal
+             class QR_Settings
+             {
+             public:
+               std::string id;
+
+               //put the variables you want to have as settings
+               //for example
+               //int size1;
+               //std:string someothersetting
+               ##UserCode_Gameobjecta
+
+               // This method lets cereal know which data members to serialize.
+               template<class Archive>
+               void serialize(Archive & archive)
+               {
+
+                 //you need to now set these variables in the archive. For example
+                 //for example:
+                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
+                 ##UserCode_Gameobjectb
+
+               }
+             };
+
+
+             ##UserCode_Gameobjectc
+
+             #endif
+                     
+
+
+##UserCode_d
+
+#ifdef ROS2_PROJECT
+extern QR_Settings QRSettings;
+#endif
+
+}
+

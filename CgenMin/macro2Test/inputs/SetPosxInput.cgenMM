@@ -1,0 +1,11 @@
+void Set@VarName@(@VarType@ p)
+{
+	@$SomeDynamicStuff$@
+	data->@VarName@ = p;
+}
+
+@VarType@ Get@VarName@()
+{
+	@$SomeDynamicStuff$@
+	return data->@VarName@;
+}

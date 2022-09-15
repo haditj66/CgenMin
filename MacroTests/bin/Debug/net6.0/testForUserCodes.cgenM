@@ -1,0 +1,52 @@
+##Macro1 
+##Macro2  
+##Macro3  
+##Macro4  
+##Macro5  
+##Macro6
+##Macro7   
+##Macro8  
+##Macro9 
+##Macro10 
+##Macro54  
+##Macro99  
+##LoopIncrement1 4
+##LoopIncrement2 
+##LoopIncrement3 
+##LoopIncrement4
+##LoopIncrement5  
+##LoopIncrement6
+##LoopIncrement7
+##LoopIncrement8
+##LoopIncrement9
+##LoopIncrement10
+
+##ToFile testForUserCodes.cpp 
+
+##UserCode
+
+##LOOP_1##  
+##UserCode 
+##END##
+
+int bla;
+##UserCode
+ 
+  
+##UserCode_b
+
+int bla;
+
+##UserCode
+
+##UserCode_c
+
+int bla;
+
+##UserCode
+
+##UserCode_a
+
+int bla;
+
+##UserCode
