@@ -1,0 +1,81 @@
+#cgen custom stuff
+#my custom alias**********************************************************************
+
+alias cgen="dotnet ~/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin.dll"
+
+
+oursourceROS()
+{
+source ~/ros2_foxy/ros2-linux/setup.bash
+source /opt/ros/foxy/setup.bash
+}
+
+oursourceROS
+
+oursourceQR()
+{
+VAR="$PWD"
+cd ~/QR_Sync/QR_Core
+oursource
+cd $VAR
+}
+
+
+
+
+
+oursource(){
+chmod +x $PWD/oursource.bash
+sed -i -e 's/\r$//' oursource.bash # i dunno, got it from here. https://stackoverflow.com/questions/14219092/bash-script-and-bin-bashm-bad-interpreter-no-such-file-or-directory
+source ./oursource.bash
+}
+
+ourcolcon(){
+chmod +x $PWD/ourcolcon.bash
+sed -i -e 's/\r$//' ourcolcon.bash  
+./ourcolcon.bash
+}
+ 
+ 
+fullclean()
+{
+chmod +x $PWD/fullclean.bash
+sed -i -e 's/\r$//' fullclean.bash  
+./fullclean.bash
+}
+ 
+ 
+fullbuild()
+{
+chmod +x $PWD/fullbuild.bash
+sed -i -e 's/\r$//' fullbuild.bash  
+./fullbuild.bash
+}
+
+modulefullbuild()
+{
+chmod +x $PWD/modulefullbuild.bash
+sed -i -e 's/\r$//' modulefullbuild.bash  
+./modulefullbuild.bash
+}
+
+modulefullclean()
+{
+chmod +x $PWD/modulefullclean.bash
+sed -i -e 's/\r$//' modulefullclean.bash  
+./modulefullclean.bash
+}
+
+
+openqt()
+{
+chmod +x $PWD/OpenQTCreatorHere.bash
+sed -i -e 's/\r$//' OpenQTCreatorHere.bash  
+./OpenQTCreatorHere.bash
+}
+
+
+
+#**************************************************************************************
+
+
