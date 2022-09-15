@@ -5,8 +5,7 @@ alias cgen="dotnet ~/QR_Sync/CgenMin/CgenMin/bin/Debug/net6.0/CgenMin.dll"
 
 
 oursourceROS()
-{
-source ~/ros2_foxy/ros2-linux/setup.bash
+{ 
 source /opt/ros/foxy/setup.bash
 }
 
