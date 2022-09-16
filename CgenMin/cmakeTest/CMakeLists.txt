@@ -5,6 +5,12 @@ message("-- USER environment variable is set to: " $ENV{USER})
 message("-- HOSTNAME environment variable is set to: " $ENV{NAME})
 set(USERNAME $ENV{USER})
 
+# --- auto-ignore build directory
+if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
+  file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
+endif()
+
+
 set(CMAKE_BUILD_TYPE Debug)
 if (WIN32)
 
