@@ -42,7 +42,7 @@ namespace CodeGenerator.FileTemplates
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                PathTOFileTemplate = @"/home/user/QR_Sync/CgenMin/CgenMin/FileTemplates/Files"; 
+                PathTOFileTemplate = @"~/QR_Sync/CgenMin/CgenMin/FileTemplates/Files"; 
             }
             else
             {
