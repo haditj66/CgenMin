@@ -39,3 +39,6 @@ To verify installation, open a new terminal and enter cgen. You should get the h
  source /opt/ros/foxy/setup.bash
  make sure this is the ROS2 command for sourcing your specific ROS2 installation.
  
+ ---
+- Step 5 (optional): Verify it worked by opening a new terminal and typing "cgen". you should get the help menu for it.
+ 
