@@ -1,99 +1,82 @@
-//generated file: Config.hpp
+//generated file: my_exe_for_two_comp_nodes_QRmain.cpp
 //**********************************************************************
 //this is an auto-generated file using the template file located in the directory of /home/user/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
 //ONLY WRITE CODE IN THE UserCode_Section BLOCKS
 //If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks.
 
-//*************DONT MODIFY THIS FILE HERE ******************************
-// this is a generated file from cmake's configure_file() command.
-//template for this file should be located in GeneratedFiles foldersss
+/*****************************************************************************
+** Includes
+*****************************************************************************/
 
-#pragma once
-
-
-
-
-#define PROJECT_NAME qtui_rqt
-
-
-#include <string>
-
-#include <cereal/archives/xml.hpp>
-#include <cereal/archives/json.hpp>
-
-
-##UserCode_c
-
-namespace qtui_rqt {
-
-
-             #ifdef WorldReal
-             class QR_Settings
-             {
-             public:
-               std::string id;
-
-               //put the variables you want to have as settings
-               //for example
-               //int size1;
-               //std:string someothersetting
-               ##UserCode_Worlda
-
-               // This method lets cereal know which data members to serialize.
-               template<class Archive>
-               void serialize(Archive & archive)
-               {
-
-                 //you need to now set these variables in the archive. For example
-                 //for example:
-                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
-                 ##UserCode_Worldb
-
-               }
-             };
-
-
-             ##UserCode_Worldc
-
-             #endif
-              
-             #ifdef GameobjectReal
-             class QR_Settings
-             {
-             public:
-               std::string id;
-
-               //put the variables you want to have as settings
-               //for example
-               //int size1;
-               //std:string someothersetting
-               ##UserCode_Gameobjecta
-
-               // This method lets cereal know which data members to serialize.
-               template<class Archive>
-               void serialize(Archive & archive)
-               {
-
-                 //you need to now set these variables in the archive. For example
-                 //for example:
-                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
-                 ##UserCode_Gameobjectb
-
-               }
-             };
-
-
-             ##UserCode_Gameobjectc
-
-             #endif
-                     
-
-
-##UserCode_d
-
-#ifdef ROS2_PROJECT
-extern QR_Settings QRSettings;
+#ifdef ISForQT__ON
+#include <QApplication>
+#include "../include/MyQtHeaders/main_window.hpp"
 #endif
 
-}
 
+#include "rclcpp/rclcpp.hpp"
+#include "world_rqt/MyNode.hpp" 
+ #include "world_rqt/MyNode2.hpp" 
+        
+
+//place your includes here
+##UserCode_a
+
+/*****************************************************************************
+** Main
+*****************************************************************************/
+
+int main(int argc, char **argv) {
+
+    int result = 1;
+
+#ifdef ISForQT__ON
+    /*********************
+    ** Qt
+    **********************/
+
+    QApplication app(argc, argv);
+
+    
+    //place any of your initialization here 
+    ##UserCode_b
+    //QTStuff::MainWindow w(argc,argv);
+    //w.setWindowTitle("name window here");
+    //w.show();
+            
+    result = app.exec();
+    
+#else
+
+
+    ##UserCode_c
+
+    rclcpp::init(argc, argv);
+
+    rclcpp::executors::MultiThreadedExecutor exec;
+    rclcpp::NodeOptions options;
+    options.use_intra_process_comms(true);
+
+       auto node_MyNode =
+     std::make_shared<world_rqt::MyNode>(rclcpp::NodeOptions());
+     exec.add_node(node_MyNode);
+
+    auto node_MyNode2 =
+     std::make_shared<world_rqt::MyNode2>(rclcpp::NodeOptions());
+     exec.add_node(node_MyNode2);
+
+        
+
+
+    ##UserCode_d
+
+     exec.spin();
+
+
+#endif
+
+    ##UserCode_e
+
+    return result;
+
+}
