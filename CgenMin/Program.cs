@@ -112,7 +112,9 @@ namespace CodeGenerator
 
 #if TESTING
 //        public static string envIronDirectory = @"/home/user/QR_Sync/CgenMin";//@"C:\QR_sync";
-        public static string envIronDirectory = @"/home/user/QR_Sync";//@"C:\QR_sync";
+        //public static string envIronDirectory = @"/home/user/QR_Sync";//@"C:\QR_sync";
+        public static string envIronDirectory = @"/home/luci/QR_Sync/World/rosqt/Launches";
+
         //public static string envIronDirectory = @"/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest";
         // public static string envIronDirectory = @"/home/user/QR_Sync/World/rosqt/Launches";
         //public static string envIronDirectory = @"/home/user/QR_Sync/CgenMin/MacroTests";
@@ -127,7 +129,10 @@ namespace CodeGenerator
         //static string[] command = "QRinit tutthree".Split(' ');
         // static string[] command = "macro".Split(' '); 
         //static string[] command = "QR_launch TestLaunchFile".Split(' '); 
-        static string[] command = "QRinit World QTUI".Split(' '); 
+
+        //static string[] command = "QRinit World QTUI".Split(' '); 
+
+        static string[] command = "QR_launch TestLaunchSur".Split(' '); 
         //static string[] command = "macro2 MyMacroProcessDer".Split(' '); 
         //static string[] command = "QR_run world my_exe_for_my_node WorldNode".Split(' '); 
         
@@ -919,9 +924,9 @@ namespace CodeGenerator
         {
             string basePathOfModule = ""; 
             DirectoryInfo d = new DirectoryInfo(QRBaseDir);
-            foreach (var dir in Directory.GetDirectories("~/QR_Sync"))
+            foreach (var dir in d.GetDirectories())// Directory.GetDirectories(QRBaseDir))
             {
-                var modPath = Path.Combine(dir,"config","module_name.cmake");
+                var modPath = Path.Combine(dir.FullName,"config","module_name.cmake");
                 if(File.Exists(modPath)){
                     string mdcont = File.ReadAllText(modPath);
                     //get module name using regex
@@ -929,7 +934,7 @@ namespace CodeGenerator
                     Match mc = modNameRegex.Match(mdcont);
                     if(mc.Success && moduleName == mc.Groups["module"].Value)
                     { 
-                        basePathOfModule = dir; 
+                        basePathOfModule = dir.FullName; 
                         break;
                     }
 

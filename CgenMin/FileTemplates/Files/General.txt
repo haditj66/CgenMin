@@ -1,8 +1,9 @@
-//generated file: my_exe_for_two_comp_nodes_QRmain.cpp
+//generated file: test_fake_world_exe_QRmain.cpp
 //**********************************************************************
-//this is an auto-generated file using the template file located in the directory of /home/user/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
+//this is an auto-generated file using the template file located in the directory of /home/luci/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
 //ONLY WRITE CODE IN THE UserCode_Section BLOCKS
 //If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks.
+
 
 /*****************************************************************************
 ** Includes
@@ -15,17 +16,28 @@
 
 
 #include "rclcpp/rclcpp.hpp"
-#include "world_rqt/MyNode.hpp" 
- #include "world_rqt/MyNode2.hpp" 
-        
+#include "gameobjects_rqt/RockAO.hpp"
 
-//place your includes here
+//put includes here
 ##UserCode_a
+
+#include "QR_Core.h"
+#include "gameobjects_rqt/Config.hpp"
+
+
+
+QR_INIT
+
+
+
+using namespace gameobjects_rqt;
+
+
+
 
 /*****************************************************************************
 ** Main
 *****************************************************************************/
-
 int main(int argc, char **argv) {
 
     int result = 1;
@@ -36,46 +48,43 @@ int main(int argc, char **argv) {
     **********************/
 
     QApplication app(argc, argv);
-
-    
-    //place any of your initialization here 
-    ##UserCode_b
-    //QTStuff::MainWindow w(argc,argv);
-    //w.setWindowTitle("name window here");
-    //w.show();
-            
+    QTStuff::MainWindow w(argc,argv);
+    w.setWindowTitle("name window here");
+    w.show();
     result = app.exec();
-    
+
 #else
 
 
-    ##UserCode_c
+
+##UserCode_b
 
     rclcpp::init(argc, argv);
 
+
     rclcpp::executors::MultiThreadedExecutor exec;
-    rclcpp::NodeOptions options;
-    options.use_intra_process_comms(true);
 
-       auto node_MyNode =
-     std::make_shared<world_rqt::MyNode>(rclcpp::NodeOptions());
-     exec.add_node(node_MyNode);
-
-    auto node_MyNode2 =
-     std::make_shared<world_rqt::MyNode2>(rclcpp::NodeOptions());
-     exec.add_node(node_MyNode2);
-
-        
+std::string fileSelect = argv[1] == nullptr ? "" : argv[1];
+    auto node =  QR_Core::Init_QR_Core<gameobjects_rqt::RockAO>(&exec,gameobjects_rqt::QRSettings, AO_NAME, fileSelect);
 
 
-    ##UserCode_d
 
-     exec.spin();
+##UserCode_c
+
+
+
+
+    QR_Print("%s started up!", AO_NAME.c_str());
+    exec.spin();
+
+
+
+    rclcpp::shutdown(); // should not return
 
 
 #endif
 
-    ##UserCode_e
+
 
     return result;
 
