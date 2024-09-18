@@ -24,7 +24,13 @@ To verify installation, open a new terminal and enter cgen. You should get the h
  
 
 ### Linux
-
+Make sure you have dotnet runtime installed for dotnet 6.0.0  . Depending on your linux version, you may have to run the following command first
+ `sudo add-apt-repository ppa:dotnet/backports`
+and then 
+ `sudo apt-get update && \
+   sudo apt-get install -y dotnet-sdk-6.0`
+and then 
+sudo apt-get install -y dotnet-runtime-6.0
 - Step 1: 
   - for linux: in your home directory create a directory named `QR_Sync` 
 - Step 2:  in a terminal run the following commands 
