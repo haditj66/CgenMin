@@ -1,4 +1,4 @@
-﻿//#define TESTING
+﻿#define TESTING
 // See https://aka.ms/new-console-template for more information
 
 
@@ -51,6 +51,8 @@ namespace CodeGenerator
         [Verb("macro", HelpText = "create a macro file in this directory out of all .cgenM files")]
         public class MacroOptions
         { 
+            [Value(0, HelpText = "Name of file you want to generate. If this is blank, all files in that directory will be generated")]
+            public string nameOfFile{ get; set; }
 
         }
 
@@ -113,7 +115,9 @@ namespace CodeGenerator
 #if TESTING
 //        public static string envIronDirectory = @"/home/user/QR_Sync/CgenMin";//@"C:\QR_sync";
         //public static string envIronDirectory = @"/home/user/QR_Sync";//@"C:\QR_sync";
-        public static string envIronDirectory = @"/home/luci/QR_Sync/World/rosqt/Launches";
+        //public static string envIronDirectory = @"/home/luci/QR_Sync/World/rosqt/Launches";
+        // public static string envIronDirectory = @"/home/hadi/QR_Sync/world/rosqt/src";
+        public static string envIronDirectory = @"/home/hadi/QR_Sync/world/rosqt/include/world_rqt";
 
         //public static string envIronDirectory = @"/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest";
         // public static string envIronDirectory = @"/home/user/QR_Sync/World/rosqt/Launches";
@@ -127,12 +131,13 @@ namespace CodeGenerator
 
 
         //static string[] command = "QRinit tutthree".Split(' ');
-        // static string[] command = "macro".Split(' '); 
+        // static string[] command = "macro WorldNode".Split(' '); 
+        static string[] command = "macro Config".Split(' ');
         //static string[] command = "QR_launch TestLaunchFile".Split(' '); 
 
         //static string[] command = "QRinit World QTUI".Split(' '); 
 
-        static string[] command = "QR_launch TestLaunchSur".Split(' '); 
+        //static string[] command = "QR_launch TestLaunchSur".Split(' '); 
         //static string[] command = "macro2 MyMacroProcessDer".Split(' '); 
         //static string[] command = "QR_run world my_exe_for_my_node WorldNode".Split(' '); 
         
@@ -799,17 +804,25 @@ namespace CodeGenerator
         
         static ParserResult<object> Macro(MacroOptions opts)
         {
+            string nameOfFile = opts.nameOfFile == null ? "" : opts.nameOfFile ;
  
 
             System.Console.WriteLine("creating macros from all .cgen files located at"+envIronDirectory);
 
-            //get all macro files in the environment directory
-            List<string> cgenMFiles = Directory.GetFiles(envIronDirectory).Where((file) =>
-            {
-                return Path.GetExtension(file).Equals(".cgenM");
-            }).ToList();
+            List<string> cgenMFiles = new List<string>();      
+            //get all macro files in the environment directory          
+            cgenMFiles = Directory.GetFiles(envIronDirectory).Where((file) =>
+                {
+                    return Path.GetExtension(file).Equals(".cgenM");
+                }).ToList();
+            if (nameOfFile != "")
+            { 
+                cgenMFiles = cgenMFiles.Where(file => Path.GetFileNameWithoutExtension(file).Equals(nameOfFile)).ToList();
+
+            } 
 
 
+            
             if (cgenMFiles.Count == 0)
             {
                 Console.WriteLine("no files with extension .cgenM was found at this directory.");
