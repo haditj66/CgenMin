@@ -245,6 +245,21 @@ namespace CodeGenerator.FileTemplates
 
             //replace user codes that have a user given subscript first
             List<string> patternsForUserCode_ = new List<string>() {
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
+                @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
                 @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
                 @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",
                 @"##UserCode_(\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w\w)",

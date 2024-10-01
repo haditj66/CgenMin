@@ -1,91 +1,99 @@
-//generated file: test_fake_world_exe_QRmain.cpp
+//generated file: Config.hpp
 //**********************************************************************
-//this is an auto-generated file using the template file located in the directory of /home/luci/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
+//this is an auto-generated file using the template file located in the directory of /home/hadi/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
 //ONLY WRITE CODE IN THE UserCode_Section BLOCKS
 //If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks.
 
+//*************DONT MODIFY THIS FILE HERE ******************************
+// this is a generated file from cmake's configure_file() command.
+//template for this file should be located in GeneratedFiles foldersss
 
-/*****************************************************************************
-** Includes
-*****************************************************************************/
-
-#ifdef ISForQT__ON
-#include <QApplication>
-#include "../include/MyQtHeaders/main_window.hpp"
-#endif
-
-
-#include "rclcpp/rclcpp.hpp"
-#include "gameobjects_rqt/RockAO.hpp"
-
-//put includes here
-##UserCode_a
-
-#include "QR_Core.h"
-#include "gameobjects_rqt/Config.hpp"
-
-
-
-QR_INIT
-
-
-
-using namespace gameobjects_rqt;
+#pragma once
 
 
 
 
-/*****************************************************************************
-** Main
-*****************************************************************************/
-int main(int argc, char **argv) {
-
-    int result = 1;
-
-#ifdef ISForQT__ON
-    /*********************
-    ** Qt
-    **********************/
-
-    QApplication app(argc, argv);
-    QTStuff::MainWindow w(argc,argv);
-    w.setWindowTitle("name window here");
-    w.show();
-    result = app.exec();
-
-#else
+#define PROJECT_NAME world_rqt
 
 
+#include <string>
 
-##UserCode_b
-
-    rclcpp::init(argc, argv);
-
-
-    rclcpp::executors::MultiThreadedExecutor exec;
-
-std::string fileSelect = argv[1] == nullptr ? "" : argv[1];
-    auto node =  QR_Core::Init_QR_Core<gameobjects_rqt::RockAO>(&exec,gameobjects_rqt::QRSettings, AO_NAME, fileSelect);
-
+#include <cereal/archives/xml.hpp>
+#include <cereal/archives/json.hpp>
 
 
 ##UserCode_c
 
+namespace world_rqt {
 
 
+             #ifdef WorldReal
+             class QR_Settings
+             {
+             public:
+               std::string id;
 
-    QR_Print("%s started up!", AO_NAME.c_str());
-    exec.spin();
+               //put the variables you want to have as settings
+               //for example
+               //int size1;
+               //std:string someothersetting
+               ##UserCode_Worlda
+
+               // This method lets cereal know which data members to serialize.
+               template<class Archive>
+               void serialize(Archive & archive)
+               {
+
+                 //you need to now set these variables in the archive. For example
+                 //for example:
+                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
+                 ##UserCode_Worldb
+
+               }
+             };
 
 
+             ##UserCode_Worldc
 
-    rclcpp::shutdown(); // should not return
+             #endif
+              
+             #ifdef GameobjectReal
+             class QR_Settings
+             {
+             public:
+               std::string id;
+
+               //put the variables you want to have as settings
+               //for example
+               //int size1;
+               //std:string someothersetting
+               ##UserCode_Gameobjecta
+
+               // This method lets cereal know which data members to serialize.
+               template<class Archive>
+               void serialize(Archive & archive)
+               {
+
+                 //you need to now set these variables in the archive. For example
+                 //for example:
+                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
+                 ##UserCode_Gameobjectb
+
+               }
+             };
 
 
+             ##UserCode_Gameobjectc
+
+             #endif
+                     
+
+
+##UserCode_d
+
+#ifdef ROS2_PROJECT
+extern QR_Settings QRSettings;
 #endif
 
-
-
-    return result;
-
 }
+
