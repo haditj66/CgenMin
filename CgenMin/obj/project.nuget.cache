@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "KjoXTz7EO4HvdV714LhgjWvhGSyAhBiGvZk35igzRKkOJmvBYY5S71i+j9vB1s44VKbe/dX2NNNiAdL6dP88Zg==",
+  "dgSpecHash": "nGNnXAS/B6NLlY1pdRznA/tS+iTzgwoYNNKIwhmtVH4emG11m2mw0xkOxJqLvSzYmFST7Iqz/9DwNHzZaUTrlA==",
   "success": true,
-  "projectFilePath": "/home/luci/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+  "projectFilePath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
   "expectedPackageFiles": [
-    "/home/luci/.nuget/packages/commandlineparser/2.9.1/commandlineparser.2.9.1.nupkg.sha512"
+    "/home/hadi/.nuget/packages/commandlineparser/2.9.1/commandlineparser.2.9.1.nupkg.sha512"
   ],
   "logs": []
 }
