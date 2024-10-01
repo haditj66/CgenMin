@@ -5,14 +5,10 @@
       "CommandLineParser/2.9.1": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/CommandLine.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/CommandLine.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/CommandLine.dll": {
-            "related": ".xml"
-          }
+          "lib/netstandard2.0/CommandLine.dll": {}
         }
       }
     }
@@ -47,19 +43,19 @@
     ]
   },
   "packageFolders": {
-    "/home/luci/.nuget/packages/": {}
+    "/home/hadi/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/luci/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+      "projectUniqueName": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
       "projectName": "CgenMin",
-      "projectPath": "/home/luci/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
-      "packagesPath": "/home/luci/.nuget/packages/",
-      "outputPath": "/home/luci/QR_Sync/CgenMin/CgenMin/obj/",
+      "projectPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+      "packagesPath": "/home/hadi/.nuget/packages/",
+      "outputPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/luci/.nuget/NuGet/NuGet.Config"
+        "/home/hadi/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -94,8 +90,7 @@
           "net47",
           "net471",
           "net472",
-          "net48",
-          "net481"
+          "net48"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -104,7 +99,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/snap/dotnet-sdk/180/sdk/6.0.401/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.133/RuntimeIdentifierGraph.json"
       }
     }
   }
