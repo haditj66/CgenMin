@@ -1,0 +1,325 @@
+﻿namespace CgenMin.MacroProcesses.QR
+{
+    public enum ServiceTypeEnum
+    {
+        Normal,
+        Surrogate
+    }
+
+
+    [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+    public class SurrogateServiceFunction : ServiceFunction
+    {
+        public SurrogateServiceFunction() : base()
+        {
+            ServiceType = ServiceTypeEnum.Surrogate;
+            PartOfCallBackGroup_Named = "client_cb_group_";
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+    [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+    public class ServiceFunction : System.Attribute
+    {
+        public bool IsSurrogateFunction { get{ return ServiceType == ServiceTypeEnum.Surrogate; }   }
+
+        public ServiceTypeEnum ServiceType;
+
+        public string PartOfCallBackGroup_Named {   get; protected set; }
+
+        public ServiceFunction(string partOfCallBackGroup_Named = "")
+        {
+            PartOfCallBackGroup_Named = partOfCallBackGroup_Named;
+        }
+
+        public string GenerateAllForEvery_Arguments(Func<FunctionArgs, string> functionDelegate, string delimiter)
+        {
+
+            ServiceType = ServiceTypeEnum.Normal;
+
+            if (Args.Count == 0)
+            {
+                return "";
+            }
+
+
+            string ret = "";
+            //for the last one, do not add the delimiter
+            for (int i = 0; i < Args.Count - 1; i++)
+            {
+                ret += functionDelegate(Args[i]) + delimiter;
+            }
+            ret += functionDelegate(Args[Args.Count - 1]); //add the last one
+            return ret;
+        }
+
+        public string ARG(FunctionArgs functionArg)
+        {
+            //the return type  and the name of the argument
+            return $"{functionArg.TypeName} {functionArg.ARGNAME()}";
+        }
+        public string ARG_FILL_REQUEST_DATA(FunctionArgs functionArg)
+        {
+            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOArgFillRequestData",
+                    new MacroVar() { MacroName = "NAMEASINSERVICE", VariableValue = functionArg.NAMEASINSERVICE() },
+                    new MacroVar() { MacroName = "ARGREQUESTFILL", VariableValue = functionArg.ARGREQUESTFILL() }
+                    );
+            return ret;
+
+        }
+
+        public string NUMOFARGS()
+        {
+            //for every num of Args.Count, make a string that will be _1, _2, _3 up to the number of Args.Count
+            string ret = "";
+            for (int i = 1; i <= Args.Count; i++)
+            {
+                //dont put a comma for the last one
+                ret += i == Args.Count ? $"_{i}" : $"_{i},";
+            }
+            return ret;
+        }
+
+
+
+
+        //just the arguments names separated by comma without return type
+        public string ARGSNAME()
+        {
+            if (Args.Count == 0)
+            {
+                return "";
+            }
+
+
+            //for every Args, get the name and separate by comma
+            string ret = "";
+            //for the last one, do not add the delimiter
+            for (int i = 0; i < Args.Count - 1; i++)
+            {
+                ret += Args[i].ARGNAME() + ",";
+            }
+            ret += Args[Args.Count - 1].ARGNAME(); //add the last one
+            return ret;
+        }
+
+        public FunctionArgs TypeOFResponse;
+        public List<FunctionArgs> Args { get; set; }
+
+        public QREventSRV FunctionServiceEvent { get; set; }
+        public string Name { get; internal set; }
+
+
+        public string NAMEOFFUNCTION { get { return Name; } }
+        public string ARGRETURN { get { return TypeOFResponse.TypeName; } }
+        public string ARGS
+        {
+            get
+            {
+                if (Args.Count == 0)
+                {
+                    return "";
+                }
+
+                string ret = "";
+                //foreach Args, get the type and name  and separate by comma
+                //for the last one, do not add the delimiter
+                for (int i = 0; i < Args.Count - 1; i++)
+                {
+                    ret += $"{Args[i].TypeName} {Args[i].ARGNAME()},";
+                }
+                ret += $"{Args[Args.Count - 1].TypeName} {Args[Args.Count - 1].ARGNAME()}"; //add the last one
+                return ret;
+
+            }
+        }
+
+         
+        //protected static string RunForAllServiceFunctions(List<ServiceFunction> serviceFunctions, string methodToExecutestr)
+        //{
+        //    MethodInfo methodToExecute = typeof(ServiceFunction).GetMethod(methodToExecutestr);
+
+        //    if (serviceFunctions == null || methodToExecute == null)
+        //    {
+        //        throw new ArgumentNullException("serviceFunctions or methodToExecute cannot be null");
+        //    }
+
+        //    string ret = "";
+        //    foreach (var servFun in serviceFunctions)
+        //    {
+        //        ret += methodToExecute.Invoke(servFun, null) + "\n";
+        //    }
+        //    return ret;
+        //}
+        public static string WNFUNCTION_SERVICES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions) where TServiceFunctionType : ServiceFunction
+        {
+            string ret = "";
+            foreach (var servFun in serviceFunctions)
+            {
+                ret += servFun.WNFUNCTION_SERVICE() + "\n";
+            }
+            return ret;
+            //return RunForAllServiceFunctions(  serviceFunctions, "WNFUNCTION_SERVICE"); 
+        }        
+       
+        //this is a service declaration.     rclcpp::Service<world2_i::srv::MoveObject>::SharedPtr serviceMoveObject;
+        protected string WNFUNCTION_SERVICE()
+        {
+            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\WNFunction_Service",
+                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION }
+                    );
+            return ret;
+        }
+
+
+        public static string WNFUNCTION_SERVICES_DEFINES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string AONAME) where TServiceFunctionType : ServiceFunction
+        {
+            string ret = "";
+            foreach (var servFun in serviceFunctions)
+            {
+                ret += servFun.WNFUNCTION_SERVICES_DEFINE(AONAME) + "\n";
+            }
+            return ret;
+            //return RunForAllServiceFunctions(  serviceFunctions, "WNFUNCTION_SERVICES_DEFINE"); 
+        }
+
+       //this defines the service in the constructor.
+        //serviceMoveObject =
+        //ForNode->create_service<world2_i::srv::MoveObject>(
+        //cppobj->Getid() + "/MoveObject",
+        //std::bind(&WorldNodeAO::MoveObject, this, _1,_2), //
+        //rmw_qos_profile_services_default_MINE, client_cb_group_);
+        protected string WNFUNCTION_SERVICES_DEFINE(string AONAME)
+        {
+            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\WNFunction_Service_Define",
+                    new MacroVar() { MacroName = "AONAME", VariableValue = AONAME },
+                    new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION },
+                    new MacroVar() { MacroName = "NUMOFARGS", VariableValue = this.NUMOFARGS() },
+                    new MacroVar() { MacroName = "COMMA_IF_ARGSNAME", VariableValue = this.NUMOFARGS() == "" ? "" : "," },
+                    new MacroVar() { MacroName = "IF_PART_OF_CALLBACK_GROUP", VariableValue = this.PartOfCallBackGroup_Named == "" ? "" : ",rmw_qos_profile_services_default_MINE," },//
+                    new MacroVar() { MacroName = "CALLBACK_GROUP", VariableValue = this.PartOfCallBackGroup_Named }
+                    );
+            return ret;
+        }
+
+ 
+
+
+        public static string WNFUNCTIONS_IMPLS<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string MODULENAME) where TServiceFunctionType : ServiceFunction
+        {
+            string ret = "";
+            foreach (var servFun in serviceFunctions)
+            {
+                ret += servFun.WNFUNCTIONS_IMPL(MODULENAME) + "\n";
+            }
+            return ret;
+            //return RunForAllServiceFunctions(  serviceFunctions, "WNFUNCTION_SERVICES_DEFINE"); 
+        }
+
+
+
+        protected string WNFUNCTIONS_IMPL(string MODULENAME)
+        {
+            //go through every serviceFunction's arguments and create a string that will be the arguments
+            string ARGS_SURROGATE_GET = "";
+            string ARGSFILL = "";
+            int count = 0;
+            foreach (var surArg in this.Args)
+            {
+                if (surArg.FunctionArgType == FunctionArgsType.SurrogateAO)
+                {
+                    ARGS_SURROGATE_GET += $"{surArg.TypeName.Replace("*", "")}* g{count.ToString()} = {surArg.TypeName.Replace("*", "")}::GetObjectFromPool(request->id);\n";
+                    ARGSFILL += $"g{count.ToString()}";
+                }
+                else
+                {
+                    ARGSFILL += $"request->{surArg.Name}";
+                }
+
+                count++;
+                if (count < this.Args.Count)
+                {
+                    ARGSFILL += ",";
+                }
+            }
+
+            string COMMENTDOIFVOID = (this.ARGRETURN == "void" || this.IsSurrogateFunction == false) ? "//" : "";
+            string COMMENTDOIFVOID2 = (this.IsSurrogateFunction == false ) ? "//" : "";
+
+            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\WNFunction_impl",
+                    new MacroVar() { MacroName = "MODULENAME", VariableValue = MODULENAME },
+                    new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION },
+                    new MacroVar() { MacroName = "ARGS_SURROGATE_GET", VariableValue = ARGS_SURROGATE_GET },
+                    new MacroVar() { MacroName = "COMMENTDOIFVOID", VariableValue = COMMENTDOIFVOID },
+                    new MacroVar() { MacroName = "COMMENTDOIFVOID2", VariableValue = COMMENTDOIFVOID2 },
+                    new MacroVar() { MacroName = "ARGSFILL", VariableValue = ARGSFILL }
+                    );
+            return ret;
+        }
+
+    }
+
+
+
+
+
+
+    [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+    public class SurrogateData : System.Attribute
+    {
+        //FunctionArgs functionArg;
+
+        public SurrogateData(bool isPublicSet, string defaultValue = "")
+        {
+            IsPublicSet = isPublicSet;
+            DefaultValue = defaultValue;
+
+        }
+        public Type _Type;
+        public string TypeOfData
+        {
+            get
+            {
+                string ret = FunctionArgs.CsharpTypeToCppType(_Type.Name);
+                return ret;
+            }
+        }
+
+        public string NAMEASINSERVICE(bool isSurrogate)
+        {
+            return FunctionArgs.STR_to_NAMEASINSERVICE(isSurrogate, NameOfData);
+
+        }
+        public string TYPEASINSERVICE(bool isSurrogate)
+        {
+            return FunctionArgs.STR_to_NAMEASINSERVICE(isSurrogate, this._Type.Name);
+        }
+
+        public string NameOfData { get; set; }
+        public string DefaultValue { get; set; }
+        public bool IsPublicSet { get; }
+    }
+
+
+    public abstract class AOSurrogatePatternBase : AOWritableConstructible
+    {
+
+        public AOSurrogatePatternBase(string AOName, bool isSurrogate) : base(QRInitializing.RunningProjectName, AOName, AOTypeEnum.AOSurrogatePattern)
+        {
+        }
+
+
+    }
+
+
+
+}

@@ -1,0 +1,28 @@
+set(EXE_TARGET_SELECTED @EXE_TARGET_SELECTED@)
+
+####################################
+#Library Target
+#################################### 
+QR_CreateTarget_ROS2Library()
+@LIBRARY_LINKS@
+QR_target_done()
+
+
+
+@TargetsEXE@
+
+
+@TargetsUnitTest@
+
+  
+
+
+
+
+
+
+
+
+
+ 
+

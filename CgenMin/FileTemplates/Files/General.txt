@@ -13,7 +13,7 @@
 
 
 
-#define PROJECT_NAME world_rqt
+#define PROJECT_NAME world2_rqt
 
 
 #include <string>
@@ -24,7 +24,7 @@
 
 ##UserCode_c
 
-namespace world_rqt {
+namespace world2_rqt {
 
 
              #ifdef WorldReal

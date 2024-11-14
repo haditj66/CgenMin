@@ -1,0 +1,66 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj": {}
+  },
+  "projects": {
+    "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+        "projectName": "CgenMin",
+        "projectPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+        "packagesPath": "/home/hadi/.nuget/packages/",
+        "outputPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/hadi/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "CommandLineParser": {
+              "target": "Package",
+              "version": "[2.9.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.133/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

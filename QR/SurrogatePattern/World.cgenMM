@@ -1,0 +1,88 @@
+#pragma once
+
+//place all headers you need here.
+##UserCode_header
+ 
+#include "@MODULENAME@_cp/@AONAME@Base.h" 
+  
+
+ 
+
+//**************************************************************************************************************
+//50% code generated from previous class and 50% is implemented by user.
+//this is the meat and potatoes of the user's code. this is the class that will have all function implementations
+//This IS essentially the gameobject that will also run in cpp project. All functions that are implemented here
+//will be used to code generate subsequent classes like the GameobjectAOBase
+
+
+namespace @MODULENAME@_cp {
+using namespace @MODULENAME@_i::msg;
+class @AONAME@ : public @AONAME@Base_cppobj //@AONAME@AccessReal
+{
+public:
+
+
+	##UserCode_pubproperties
+
+
+    @AONAME@(  
+        ##UserCode_constructargs 
+
+        ) : @AONAME@Base_cppobj()
+    {
+        //generated code
+        @MODULENAME@_i::msg::@AONAME@Data objectData;
+
+        //user part:
+		##UserCode_constructor
+
+        //generated code
+        this->data = objectData;  
+    }
+
+	
+	##UserCode_pubfuncs
+	 
+	//AOFUNCTION_REAL_IMPS
+	@AOFUNCTION_REAL_IMPS@
+
+private:
+
+	##UserCode_privproperties
+
+	##UserCode_privfuncs
+
+
+ 
+
+protected:
+
+
+	##UserCode_protproperties
+
+
+	##UserCode_protfuncs
+  
+
+};
+
+ 
+ ##UserCode_section2
+
+
+}
+
+
+##UserCode_section3
+
+
+
+
+
+
+
+
+
+
+ 
+

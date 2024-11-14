@@ -1,0 +1,15 @@
+
+
+#include "@MODULENAME@_cp/@AONAME@.h"
+
+##UserCode_headers
+
+ 
+namespace @MODULENAME@_cp{
+
+ ##UserCode_cp1
+
+}
+ 
+ 
+##UserCode_cp2

@@ -1,0 +1,134 @@
+#pragma once
+
+
+/*****************************************************************************
+** Includes a
+*****************************************************************************/
+
+#ifdef ISForQT__ON
+//*******DONT INCLUDE THIS!! this will cause some circular dependency with undefined behaviours and bugs
+//#include "../include/MyQtHeaders/main_window.hpp"
+#include "ui_main_window.h"
+#include <QMainWindow>
+#endif
+
+#include "Config.hpp"
+
+//ROS2
+#include "rclcpp/rclcpp.hpp" 
+#include "std_msgs/msg/string.hpp"
+#include "QR_Core.h" 
+
+
+//CPP
+#include <chrono>
+#include <memory>
+#include <functional>
+#include <string>
+
+
+//place all headers you need here.
+##UserCode_header
+//ISSURROGATE_HEADER
+@ISSURROGATE_HEADER@   //#include "world2_rqt/WorldNodeAO.h"
+
+//*********************
+//** interface headers
+//**********************
+//SERVICE_INTERFACE_HEADERS
+@SERVICE_INTERFACE_HEADERS@
+#include "world2_i/srv/add_object_to_world.hpp"
+
+
+
+using namespace @MODULENAME@_rqt;
+ 
+
+/*****************************************************************************
+** Namespaces
+*****************************************************************************/
+using namespace std::chrono_literals;
+
+
+namespace @MODULENAME@_rqt {
+using std::placeholders::_1;
+using std::placeholders::_2;
+ 
+##UserCode_section1
+
+/*****************************************************************************
+  ** Class
+  *****************************************************************************/
+class @INSTANCENAME@ : public rclcpp::Node@ISSURROGATE_INHERIT@   //, public WorldNodeAO
+{
+public:
+
+	//WNFUNCTION_SERVICES
+	@WNFUNCTION_SERVICES@
+
+
+    COMPOSITION_PUBLIC
+        explicit @INSTANCENAME@(const rclcpp::NodeOptions & options)
+        : Node(AO_NAME, options) {
+			
+			//WNFUNCTION_SERVICES_DEFINES
+			@WNFUNCTION_SERVICES_DEFINES@
+			
+			this->ForNode = this;
+			
+			
+			@TIMER_DEFINES@
+			
+			}
+
+
+
+    //virtual ~WorldNode (); // not working?? maybe because of multiple inheritance
+
+	  /*********************
+      ** Services implemented
+      **********************/
+	  //WNFUNCTIONS_IMPL
+	  @WNFUNCTIONS_IMPL@
+
+private:
+
+
+	##UserCode_priv
+	
+
+      /*********************
+      ** Publishers
+      **********************/
+ 
+      /*********************
+      ** Subscribers
+      **********************/
+		
+	  /*********************
+      ** Timers
+      **********************/
+	  @TIMER_DECLARES@
+
+
+public:
+
+      /*********************
+      ** Subscriber callback declarations
+      **********************/
+	  
+	  /*********************
+      ** Timers callbacks
+      **********************/
+	
+	  @TIMER_FUNC_IMPS@
+	  
+};
+
+ 
+
+
+}  
+
+ 
+

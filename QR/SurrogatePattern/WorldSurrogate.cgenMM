@@ -1,0 +1,164 @@
+#pragma once
+
+//place all headers you need here.
+##UserCode_header
+
+#include "@MODULENAME@_cp/@AONAME@Base.h" 
+
+
+
+namespace @MODULENAME@_rqt {
+using namespace @MODULENAME@_i::msg;
+using namespace @MODULENAME@_i::srv;
+ 
+ 
+
+//this gets code generated 100% from the previous  cpp object! there is nothing for the user to do here. all public functions will be code generated over to here.
+//This is the surrogate object.
+ 
+@AOFUNCTION_TICKETS@
+ 
+ 
+//This class is the surrogate class
+class @AONAME@Surrogate : public  @AONAME@Base
+{
+public:
+
+
+    friend void @AONAME@Initialized_Callback(const @MODULENAME@_i::msg::@AONAME@Data msg);
+
+
+    //I need a pool of tickets as  everytime a callback comes in, it needs to know which ticket to mutex-unlock.
+    //    std::stack<AddobjectToWorldTicket_t*> AddobjectToWorldTickets;
+    //    std::stack<MoveObjectTicket_t*> MoveObjectTickets;
+
+    //for every service
+    //there should be a global node variable this object can use.
+
+    //This class is the surrogate class
+    @AONAME@Surrogate(std::string id): @AONAME@Base(id)//(AOGlobalNode, msg.id)// : nodeForThisSurrogate(node), Id(id) //(const @MODULENAME@_i::msg::@AONAME@Data msg)
+    {
+        _isReal = false;
+
+        auto nodeToUse = TheDataAccessManagerNode;
+
+        //instances of surrogates can be created at any point of the application life cycle! THink aboiut the case
+        //here where @MODULENAME@ holds a list of gameobjects. These gameobjects are AO that can be created at any time.
+
+
+        //scratch the bottom!!! ----------------------------------------------------
+        //we are assuming that the instance for this surrogate is created already. we need to grab the data for this surrogate
+        //before moving on. The reason we need to wait to grab it is because we are assuming that this application relies on this
+        //instance being created already. What this means though is that instances of AO CANNOT be instantiated in midst of the application
+        //running. For example within function calls might have  @AONAME@* w = new @AONAME@();
+ 
+
+		@AOFUNCTION_CLIENTS@
+ 
+ 
+    }
+ 
+	//AOFUNCTION_IMPS
+	@AOFUNCTION_IMPS@
+ 
+ 
+	//PROPERTYIMPLS
+	@PROPERTYIMPLS@
+ 
+
+
+    void UpdateObjCallback(const @MODULENAME@_i::msg::@AONAME@Data* msg)
+    {
+        data = *msg;
+    }
+
+    void _UpdateObjCallback(const @MODULENAME@_i::msg::@AONAME@Data::SharedPtr msg)
+    {
+        UpdateObjCallback(msg.get());
+        //        data = *);
+    }
+ 
+
+
+private:
+
+	@AOFUNCTION_CLIENT_DECLARES@
+ 
+
+};
+
+
+ 
+
+//This object will subscribe to an initialization event that all REAL AO objects publish after they are created.
+//For example, for this case, a @AONAME@AO will publish an InitializedEvent triggered via a one shot timer when the AO spins.
+//Then all modules that have a surrogate of this type will get that event and sync @AONAME@DataAccess data with it.
+
+
+class @AONAME@Init
+{
+public:
+    rclcpp::Subscription<@MODULENAME@_i::msg::@AONAME@Data>::SharedPtr subscriptionInitialized;
+
+
+
+    void InitializeSurrogates()
+    {
+#ifdef AllSurrogates
+        auto nodeToUse = TheNodeForAllSurrogates;
+
+#else
+        auto nodeToUse = TheDataAccessManagerNode;
+
+#endif
+
+        subscriptionInitialized = nodeToUse->create_subscription<@MODULENAME@_i::msg::@AONAME@Data>
+                                  ("/@AONAME@Initialized", 10, std::bind(&@AONAME@Init::@AONAME@Initialized_Callback,this, _1));
+
+
+        /*    subscriptionInitialized = TheDataAccessManagerNode->create_subscription<@MODULENAME@_i::msg::@AONAME@Data>
+                ("/@AONAME@Initialized", 10, &@AONAME@Initialized_Callback);*///std::bind(@AONAME@Initialized_Callback,_1));//std::bind(&@AONAME@::@AONAME@Initialized_Callback, this,_1));
+    }
+
+private:
+
+    void @AONAME@Initialized_Callback(const @MODULENAME@_i::msg::@AONAME@Data::SharedPtr msg)
+    {
+        QR_Print("Surrogate created for AO: %s", msg->id.c_str());
+        //if this object exists already, just update the data, if it does not exist, create the object
+        @AONAME@Surrogate* o = (@AONAME@Surrogate*)@AONAME@Surrogate::GetObjectFromPool(msg->id);
+        if (o == nullptr)
+        {
+            //first create an instance of the surrogate
+            @AONAME@Surrogate* sur = new @AONAME@Surrogate(msg->id);
+            sur->_UpdateObjCallback(msg);
+            //and that's it actually, the object adds itself to the surrogate object pool.
+
+        }
+        else
+        {
+            o->_UpdateObjCallback(msg);
+
+        }
+
+        //maybe notify this AO that the AO in question has been created?
+
+    }
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+ 
+

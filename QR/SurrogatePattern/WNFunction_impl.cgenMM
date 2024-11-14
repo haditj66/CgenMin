@@ -1,0 +1,15 @@
+    void @NAMEOFFUNCTION@(const std::shared_ptr<@MODULENAME@_i::srv::@NAMEOFFUNCTION@::Request>  request,
+                            std::shared_ptr<@MODULENAME@_i::srv::@NAMEOFFUNCTION@::Response> response )
+    {
+
+        //get the AO this arg is suppose to be for. Remember that this object may or may not be a surrogate.
+		@ARGS_SURROGATE_GET@
+		
+		##UserCode_@NAMEOFFUNCTION@1 
+
+        @COMMENTDOIFVOID@response->result = 
+		@COMMENTDOIFVOID2@this->cppobj->@NAMEOFFUNCTION@(@ARGSFILL@);
+		
+		##UserCode_@NAMEOFFUNCTION@2 
+    }
+		  

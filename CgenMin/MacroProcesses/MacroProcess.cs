@@ -1,17 +1,23 @@
-﻿using System;
+﻿//#define LEAVE_DEBUG_COMMENTS
+
+using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CodeGenerator;
+using CodeGenerator.FileTemplates.GeneralMacoTemplate;
 using CodeGenerator.ProblemHandler;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace CgenMin.MacroProcesses
 {
 
-    class MacroVar
+    public class MacroVar
     {
         ///name of var to be replaced in file
         public string MacroName;
@@ -20,12 +26,12 @@ namespace CgenMin.MacroProcesses
     }
 
 
-    abstract class MacroProcess
+    public abstract class MacroProcess
     {
         public string EvironmentDirectory { get; private set; }
 
         private static bool FirstCall = false;
-        private static List<string> SectionComments  =new List<string>();
+        private static List<string> SectionComments = new List<string>();
         private static Stack<string> SectionNameStack = new Stack<string>();
 
 
@@ -36,72 +42,106 @@ namespace CgenMin.MacroProcesses
         }
 
         ///-------------------------------------------------
-        public void Init(string environDir) 
-        { 
-            EvironmentDirectory = environDir; 
+        public void Init(string environDir)
+        {
+            EvironmentDirectory = environDir;
         }
         public abstract void RunProcess();
 
 
         ///-------------------------------------------------
-        public string GrabFileContents(string fileFromRelativePath )
+        public string GrabFileContents(string fileFromRelativePath, string alternateDir = "")
         {
-            string fullpath =Path.Combine(this.EvironmentDirectory, fileFromRelativePath);
+
+
+            string fullpath = "";
             //check if this file exists, if not, throw problem.
-            if (File.Exists(fullpath) == false)
+            if (alternateDir == "")
             {
-                probhandler.ThereisAProblem($"file {fullpath} did not exist. when attempting to grab it.");
-                System.Environment.Exit(1);
+                fullpath = Path.Combine(this.EvironmentDirectory, fileFromRelativePath);
+                if (File.Exists(fullpath) == false)
+                {
+                    probhandler.ThereisAProblem($"file {fullpath} did not exist. when attempting to grab it.");
+                    System.Environment.Exit(1);
+                }
+
             }
-            return File.ReadAllText(fullpath); 
-            
+            else
+            {
+                fullpath = alternateDir;
+            }
+
+            return File.ReadAllText(fullpath);
+
         }
 
 
 
-        ///-------------------------------------------------
-        public void WriteFileContents(string contentsToWrite, string toFileFromRelativePath, string extensionOfFile)
+
+
+
+        public void WriteFileContents_FromCGENMMFile_ToFullPath(string relativePathToCgenMMFile_WithFileName_NoExtension, string DirectoryToFinalOutFile_WithFileName_AndExtension, bool createFileIfExists, bool useMacro1, bool includeHeader, params MacroVar[] macroVars)
         {
+
+            bool dontGenerate = createFileIfExists == false && File.Exists(DirectoryToFinalOutFile_WithFileName_AndExtension);
+
+            if (dontGenerate == false)
+            {
+                WriteFileContentsToFullPath(this.GenerateFileOut(relativePathToCgenMMFile_WithFileName_NoExtension, macroVars)
+            , DirectoryToFinalOutFile_WithFileName_AndExtension, Path.GetExtension(DirectoryToFinalOutFile_WithFileName_AndExtension), useMacro1, includeHeader);
+            }
+        }
+
+
+        public void WriteFileContents_FromCGENMMFile_ToFullPath(string relativePathToCgenMMFile_WithFileName_NoExtension, string DirectoryToFinalOutFile_WithFileName_AndExtension, bool createFileIfExists, bool useMacro1 = false, params MacroVar[] macroVars)
+        {
+            WriteFileContents_FromCGENMMFile_ToFullPath(relativePathToCgenMMFile_WithFileName_NoExtension, DirectoryToFinalOutFile_WithFileName_AndExtension, createFileIfExists, useMacro1, true, macroVars);
+
+        }
+
+
+        public void WriteFileContentsToFullPath(string contentsToWrite, string fullPathWithFileNameNoExtension, string extensionOfFile, bool useMacro1 = false, bool includeHeader = true)
+        {
+
+
+
             string commentSyntax = @"//";
-            extensionOfFile = extensionOfFile.Replace(@".",@"");
+            extensionOfFile = extensionOfFile.Replace(@".", @"");
             if (extensionOfFile == "cpp" ||
             extensionOfFile == "hpp" ||
             extensionOfFile == "c" ||
             extensionOfFile == "h" ||
-            extensionOfFile == "cs" )
+            extensionOfFile == "cs")
             {
                 commentSyntax = @"//";
-            }else if(extensionOfFile == "cmake" ||
-            extensionOfFile == "py" ||
-            extensionOfFile == "bash" || 
-            extensionOfFile == "sh" ||
-            extensionOfFile == "bat")
+            }
+            else if (extensionOfFile == "cmake" ||
+           extensionOfFile == "py" ||
+           extensionOfFile == "bash" ||
+           extensionOfFile == "sh" ||
+           extensionOfFile == "bat")
             {
-                commentSyntax = @"#"; 
+                commentSyntax = @"#";
             }
 
-            contentsToWrite = 
-            commentSyntax + "############################################### \n" + 
-            commentSyntax + "this is an autogenerated file using cgen's macro2 command. Dont modify this file here unless it is in user sections \n" + 
-            commentSyntax + "###############################################" + "\n\n" + contentsToWrite ;
-            if (Path.HasExtension(toFileFromRelativePath))
+            if (includeHeader)
             {
-                if (Path.GetExtension(toFileFromRelativePath) != extensionOfFile  )
-                {
-                    probhandler.ThereisAProblem($"the file you gave {toFileFromRelativePath} has the wrong extension. should be {extensionOfFile}");
- 
-                }
-            }
-            else
-            { 
-                toFileFromRelativePath = Path.ChangeExtension(toFileFromRelativePath, extensionOfFile);
+                contentsToWrite =
+                    commentSyntax + "############################################### \n" +
+                    commentSyntax + "this is an autogenerated file using cgen's macro2 command. Dont modify this file here unless it is in user sections \n" +
+                    commentSyntax + "###############################################" + "\n\n" + contentsToWrite;
+
             }
 
+
+            string fullpath = fullPathWithFileNameNoExtension;
+
+            Console.WriteLine($"macro2: generating file {Path.GetFileName(fullpath)}");
 
             List<string> contentsToWriteSplit = Regex.Split(contentsToWrite, "\r\n|\r|\n").ToList();
 
-            var ttt = new {CommentIndex = 0,CommentLinNum = 0,CommentContentToInsert = ""};
-            var markingList = new[] {ttt}.ToList();markingList.Clear();
+            var ttt = new { CommentIndex = 0, CommentLinNum = 0, CommentContentToInsert = "" };
+            var markingList = new[] { ttt }.ToList(); markingList.Clear();
 
             for (int i = 0; i < contentsToWriteSplit.Count; i++)
             {
@@ -109,18 +149,21 @@ namespace CgenMin.MacroProcesses
                 Regex anySectionsRegex = new Regex(@"<<\*(?<CommentIndex>\d*)\*>>");
                 var matchesr = anySectionsRegex.Matches(contentsToWriteSplit[i])
                 .Cast<Match>()
-                .Select(s => new {CommentIndex =  Int32.Parse(s.Groups["CommentIndex"].Value),
-                                  CommentLinNum = i,
-                                  CommentContentToInsert = SectionComments[Int32.Parse(s.Groups["CommentIndex"].Value)] })
-                .ToList();  
+                .Select(s => new
+                {
+                    CommentIndex = Int32.Parse(s.Groups["CommentIndex"].Value),
+                    CommentLinNum = i,
+                    CommentContentToInsert = SectionComments[Int32.Parse(s.Groups["CommentIndex"].Value)]
+                })
+                .ToList();
 
                 //remove the comment markings
                 foreach (var item in matchesr)
                 {
-                    contentsToWriteSplit[i] = contentsToWriteSplit[i].Replace($@"<<*{item.CommentIndex}*>>",$"");    
+                    contentsToWriteSplit[i] = contentsToWriteSplit[i].Replace($@"<<*{item.CommentIndex}*>>", $"");
                 }
- 
-                markingList.AddRange(matchesr); 
+
+                markingList.AddRange(matchesr);
             }
 
             markingList = markingList.OrderByDescending(m => m.CommentLinNum).ToList();
@@ -129,134 +172,234 @@ namespace CgenMin.MacroProcesses
                 //go through the markings found from before and replace the comment contents on the line before
                 contentsToWriteSplit.Insert(mlist.CommentLinNum, commentSyntax + mlist.CommentContentToInsert);
             }
- 
 
-            string fullpath =Path.Combine(this.EvironmentDirectory, toFileFromRelativePath);
-            
-             File.WriteAllText(fullpath,string.Join("\n",contentsToWriteSplit));  
+
+
+
+            if (Directory.Exists(Path.GetDirectoryName(fullpath)) == false)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(fullpath));
+
+                //probhandler.ThereisAProblem($"the file directory you are trying to write out to does not exist \n {fullpath} \n  ");
+
+            }
+
+            if (useMacro1)
+            {
+
+                string pathtoTemplateFileAndOutputFiles = $@"C:\CodeGenerator\CodeGenerator\MacroProcesses\temp";
+                string nameOfcGenMacroFile = $"{Path.GetFileNameWithoutExtension(fullpath)}";
+                string fullpathToTempCgenMFile = Path.Combine(pathtoTemplateFileAndOutputFiles, nameOfcGenMacroFile);
+
+                //first write all contents with the macro1 header contents
+                string ContentsWithmacro1Header = string.Join("\n", contentsToWriteSplit);// File.ReadAllText(fullpath); 
+                string fileName = Path.GetFileName(fullpath);
+                string macro1header = $"##Macro1 \n ##LoopIncrement1 \n ##ToFile {fullpath} \n";// {nameOfcGenMacroFile}.{extensionOfFile} \n";//{ fullpath}.{extensionOfFile} \n"; 
+
+
+                //write headermacro1 contetns to the temp cgenM file.
+                File.WriteAllText(fullpathToTempCgenMFile + ".cgenM", macro1header + ContentsWithmacro1Header);
+
+                //read the old contents
+                //string oldContents = "";
+                //string newContents = "";
+                //string pathToTempGenerated = Path.Combine(pathtoTemplateFileAndOutputFiles, nameOfcGenMacroFile + "." + extensionOfFile);
+                //if (File.Exists(fullpath))
+                //{
+                //    oldContents = File.ReadAllText(fullpath);
+                //}
+
+                GeneralMacro generalMacro = new GeneralMacro(pathtoTemplateFileAndOutputFiles, nameOfcGenMacroFile + $".cgenM");
+                generalMacro.CreateTemplate(includeHeader);
+                //if (File.Exists(pathToTempGenerated))
+                //{
+                //    newContents = File.ReadAllText(pathToTempGenerated);
+                //} 
+
+                ////Get the contents of the generated macro1 file and write it to the final destination
+                //if (oldContents != newContents)
+                //{ 
+                //    File.WriteAllText(fullpath, newContents);
+                //} 
+
+            }
+            else
+            {
+                //read the old contents
+                string oldContents = "";
+                string newContents = "";
+                if (File.Exists(fullpath))
+                {
+                    oldContents = File.ReadAllText(fullpath);
+                }
+                newContents = string.Join("\n", contentsToWriteSplit);
+                if (oldContents != newContents)
+                {
+                    Console.WriteLine($"macro2: writing generated contents to {Path.GetFileName(fullpath)} \n *******************************************");
+                    File.WriteAllText(fullpath, newContents);
+                }
+                else
+                {
+                    Console.WriteLine($"macro2: no contents written to {Path.GetFileName(fullpath)} as contents have not changed \n -------------");
+                }
+
+            }
+
+        }
+
+
+        ///-------------------------------------------------
+        public void WriteFileContents(string contentsToWrite, string toFileFromRelativePath, string extensionOfFile, bool useMacro1 = false, bool includeHeader = true)
+        {
+
+            if (extensionOfFile.Contains(".") == false)
+            {
+                extensionOfFile = "." + extensionOfFile;
+            }
+            if (Path.HasExtension(toFileFromRelativePath))
+            {
+                if (Path.GetExtension(toFileFromRelativePath) != extensionOfFile)
+                {
+                    probhandler.ThereisAProblem($"the file you gave {toFileFromRelativePath} has the wrong extension. should be {extensionOfFile}");
+
+                }
+            }
+            else
+            {
+                toFileFromRelativePath = Path.ChangeExtension(toFileFromRelativePath, extensionOfFile);
+            }
+
+
+            string fullpath = Path.Combine(this.EvironmentDirectory, toFileFromRelativePath);
+
+            WriteFileContentsToFullPath(contentsToWrite, fullpath, extensionOfFile, useMacro1, includeHeader);
+
         }
 
 
 
 
 
-    ///-------------------------------------------------
-    ///This function will get the contents of the input file provided and replace the macrovariables passed in.
-    ///Any places marked with @$something$@ will be considered a subMacroProcess that will run within the same class.
-    public string GenerateFileOut(string fromInputFile, params MacroVar[] macVar)
-    {
-        bool isTopLevel = FirstCall == false ? true : false; 
-        FirstCall = true;
-
-        //if the file extention is wrong, throw a problem. if there is no extention, give it one. 
-        if (Path.HasExtension(fromInputFile))
+        ///-------------------------------------------------
+        ///This function will get the contents of the input file provided and replace the macrovariables passed in.
+        ///Any places marked with @$something$@ will be considered a subMacroProcess that will run within the same class.
+        public string GenerateFileOut(string fromInputFile, params MacroVar[] macVar)
         {
-            if (Path.GetExtension(fromInputFile) != "cgenMM" || Path.GetExtension(fromInputFile) != ".cgenMM")
+            bool isTopLevel = FirstCall == false ? true : false;
+            FirstCall = true;
+
+            //if the file extention is wrong, throw a problem. if there is no extention, give it one. 
+            if (Path.HasExtension(fromInputFile))
             {
-                probhandler.ThereisAProblem($"the file you gave {fromInputFile} has the wrong extension. should be .cgenMM");
+                if (Path.GetExtension(fromInputFile) != "cgenMM" || Path.GetExtension(fromInputFile) != ".cgenMM")
+                {
+                    probhandler.ThereisAProblem($"the file you gave {fromInputFile} has the wrong extension. should be .cgenMM");
+                    System.Environment.Exit(1);
+                }
+            }
+            else
+            {
+                fromInputFile = Path.ChangeExtension(fromInputFile, "cgenMM");
+            }
+
+            //string GenFileDir = Path.Combine(Program.DIRECTORYOFTHISCG, "../../MacroProcesses/InputFiles", fromInputFile);
+            string GenFileDir = Path.Combine($"{CodeGenerator.Program.CGenMinLocation}", fromInputFile);//  @"C:\CodeGenerator\CodeGenerator\bin\Debug", "../../MacroProcesses/InputFiles", fromInputFile);
+            string fileContents = this.GrabFileContents(GenFileDir);
+
+            //go through and replace macro variables.
+            foreach (var mVar in macVar)
+            {
+                fileContents = fileContents.Replace($"@{mVar.MacroName}@", $"{mVar.VariableValue}");
+            }
+
+            Regex anyMacrosleftRegex = new Regex(@"@(?<MacroName>\w*)@");
+            var matches = anyMacrosleftRegex.Matches(fileContents);
+            Match mc = anyMacrosleftRegex.Match(fileContents);
+            if (mc.Success)
+            {
+                probhandler.ThereisAProblem($"there was still a macro left that you did not provide a macrovar for. For input file {fromInputFile}. \n with macro name: {mc.Groups["MacroName"].Value}");
                 System.Environment.Exit(1);
             }
-        }
-        else
-        {
-            fromInputFile = Path.ChangeExtension(fromInputFile, "cgenMM");
-        }
+
+            //now I need to grab all processRun vars, reflect into the function here. If I find that function, run it.
+            Regex anySectionsRegex = new Regex(@"@\$(?<SectionName>\w*)\$@");
+            var matchesr = anySectionsRegex.Matches(fileContents)
+            .Cast<Match>()
+            .Select(s => new { SectionName = s.Groups["SectionName"].Value })
+            .ToList();
 
 
-        string fileContents = this.GrabFileContents(fromInputFile);
-
-        //go through and replace macro variables.
-        foreach (var mVar in macVar)
-        {
-            fileContents = fileContents.Replace($"@{mVar.MacroName}@",$"{mVar.VariableValue}");
-        }
-
-        Regex anyMacrosleftRegex = new Regex(@"@(?<MacroName>\w*)@");
-        var matches = anyMacrosleftRegex.Matches(fileContents);
-         Match mc = anyMacrosleftRegex.Match(fileContents);
-        if(mc.Success)
-        { 
-            probhandler.ThereisAProblem($"there was still a macro left that you did not provide a macrovar for. For input file {fromInputFile}. \n with macro name: {mc.Groups["MacroName"].Value}");
-            System.Environment.Exit(1);
-        }  
-
-        //now I need to grab all processRun vars, reflect into the function here. If I find that function, run it.
-        Regex anySectionsRegex = new Regex(@"@\$(?<SectionName>\w*)\$@");
-        var matchesr = anySectionsRegex.Matches(fileContents)
-        .Cast<Match>()
-        .Select(s => new {SectionName = s.Groups["SectionName"].Value})
-        .ToList();  
-
-
-        List<MethodInfo> methodsForSectionsToCall = new List<MethodInfo>();
-        foreach (var m in matchesr)
-        {
-            //go through every section captured and reflect into the function if it exists.
-
-            var methodsHere = this.GetType().GetMethods();
-            var functiontToCallHere = methodsHere
-            .Where( method => method.Name == m.SectionName)
-            .FirstOrDefault();
-
-            if (functiontToCallHere == null)
+            List<MethodInfo> methodsForSectionsToCall = new List<MethodInfo>();
+            foreach (var m in matchesr)
             {
-                probhandler.ThereisAProblem($"you  did not provide a function for section named {m.SectionName}  for file {fromInputFile}");
-            } 
+                //go through every section captured and reflect into the function if it exists.
 
-            methodsForSectionsToCall.Add(functiontToCallHere); 
+                var methodsHere = this.GetType().GetMethods();
+                var functiontToCallHere = methodsHere
+                .Where(method => method.Name == m.SectionName)
+                .FirstOrDefault();
+
+                if (functiontToCallHere == null)
+                {
+                    probhandler.ThereisAProblem($"you  did not provide a function for section named {m.SectionName}  for file {fromInputFile}");
+                }
+
+                methodsForSectionsToCall.Add(functiontToCallHere);
+            }
+
+            //go through all methodsForSectionsToCall and invoke them.
+            string sectionName = "";
+            for (int i = 0; i < methodsForSectionsToCall.Count; i++)
+            {
+                SectionNameStack.Push(matchesr[i].SectionName);
+                string sectionContentsToFill = (string)methodsForSectionsToCall[i].Invoke(this, null);
+                AddCommentMark(ref sectionContentsToFill, $"Macro2: {matchesr[i].SectionName}");
+                sectionName = SectionNameStack.Pop();
+
+                //Now that I have the contents of the section, I can replace it 
+                fileContents = fileContents.Replace($"@${matchesr[i].SectionName}$@", $"{sectionContentsToFill}");
+
+
+            }
+
+
+            //turn off FirstCall indicating that top level call of this recursive funcion is done
+            if (isTopLevel == true)
+            {
+                isTopLevel = false;
+                FirstCall = false;
+                sectionName = "TopLevel";
+                //SectionComments.Clear();
+            }
+            else
+            {
+                sectionName = SectionNameStack.Peek();
+            }
+
+            //place a comment marker to be removed later at the end of the top level vall to this function. 
+            AddCommentMark(ref fileContents, $"Macro2 - {fromInputFile}::{sectionName}");
+            //  fileContents = $@"<<*{SectionComments.Count}*>>"+fileContents;
+            //  SectionComments.Add(fromInputFile + "::" + sectionName); 
+
+
+
+            return fileContents;
         }
 
-        //go through all methodsForSectionsToCall and invoke them.
-        string sectionName = "";
-        for (int i = 0; i < methodsForSectionsToCall.Count; i++)
-        {  
-            SectionNameStack.Push(matchesr[i].SectionName); 
-            string sectionContentsToFill = (string)methodsForSectionsToCall[i].Invoke(this,null); 
-            AddCommentMark(ref sectionContentsToFill, $"Macro2: {matchesr[i].SectionName}");
-            sectionName = SectionNameStack.Pop(); 
-  
-            //Now that I have the contents of the section, I can replace it 
-            fileContents = fileContents.Replace($"@${matchesr[i].SectionName}$@",$"{sectionContentsToFill}");  
 
-            
-        } 
 
- 
-        //turn off FirstCall indicating that top level call of this recursive funcion is done
-        if (isTopLevel == true)
+
+        ///-------------------------------------------------
+        private void AddCommentMark(ref string fileContents, string commentValue)
         {
-            isTopLevel = false;
-            FirstCall = false; 
-            sectionName = "TopLevel";
-            //SectionComments.Clear();
-        } 
-        else
-        {
-            sectionName = SectionNameStack.Peek();
+#if LEAVE_DEBUG_COMMENTS
+            fileContents = $@"<<*{SectionComments.Count}*>>" + fileContents;
+            SectionComments.Add(commentValue);
+#endif
         }
 
-        //place a comment marker to be removed later at the end of the top level vall to this function. 
-        AddCommentMark(ref fileContents, $"Macro2 - {fromInputFile}::{sectionName}");
-        //  fileContents = $@"<<*{SectionComments.Count}*>>"+fileContents;
-        //  SectionComments.Add(fromInputFile + "::" + sectionName); 
- 
-
-
-        return fileContents;
-    }
- 
-
-
-
-    ///-------------------------------------------------
-    private void AddCommentMark(ref string fileContents, string commentValue)
-    {
-        fileContents = $@"<<*{SectionComments.Count}*>>"+fileContents;
-        SectionComments.Add(commentValue); 
-    }
-
-    //private -----------------------------------------------
-    protected ProblemHandle probhandler; 
+        //private -----------------------------------------------
+        protected ProblemHandle probhandler;
 
 
     }

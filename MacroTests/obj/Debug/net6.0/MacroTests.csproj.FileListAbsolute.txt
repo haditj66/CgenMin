@@ -209,3 +209,13 @@ C:/QR_Sync/CgenMin/MacroTests/obj/Debug/net6.0/ref/MacroTests.dll
 /home/user/QR_Sync/CgenMin/MacroTests/obj/Debug/net6.0/MacroTests.pdb
 /home/user/QR_Sync/CgenMin/MacroTests/obj/Debug/net6.0/MacroTests.genruntimeconfig.cache
 /home/user/QR_Sync/CgenMin/MacroTests/obj/Debug/net6.0/ref/MacroTests.dll
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\bin\Debug\net6.0\CoverletSourceRootsMapping
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.csproj.AssemblyReference.cache
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.AssemblyInfoInputs.cache
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.AssemblyInfo.cs
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.csproj.CoreCompileInputs.cache
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.sourcelink.json
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.dll
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\refint\MacroTests.dll
+C:\Users\SyncthingServiceAcct\QR_Sync\CgenMin\MacroTests\obj\Debug\net6.0\MacroTests.pdb

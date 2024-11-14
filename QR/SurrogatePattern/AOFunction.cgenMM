@@ -1,0 +1,2 @@
+    virtual @ARGRETURN@ @NAMEOFFUNCTION@(@ARGS@) = 0;
+    virtual Ticket<@ARGRETURN@>* @NAMEOFFUNCTION@_async(@ARGS@) = 0;

@@ -1,0 +1,12 @@
+
+	void @NameOfTimer@_callback()
+	{ 
+		if(isInitialized == false)
+		{
+			QR_Print_Node("not yet initiailized.");
+			this->publisherInitialized->publish(cppobj->GetObjectData());
+			isInitialized= true;
+			return;
+		} 
+		@NameOfTimer@->cancel();
+	}

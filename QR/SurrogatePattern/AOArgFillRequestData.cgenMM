@@ -1,0 +1,1 @@
+request->@NAMEASINSERVICE@ = @ARGREQUESTFILL@; //whenever the arguments is a surrogate, it will get the id instead of passing the actual object
