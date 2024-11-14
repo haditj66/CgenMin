@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "nGNnXAS/B6NLlY1pdRznA/tS+iTzgwoYNNKIwhmtVH4emG11m2mw0xkOxJqLvSzYmFST7Iqz/9DwNHzZaUTrlA==",
+  "success": true,
+  "projectFilePath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+  "expectedPackageFiles": [
+    "/home/hadi/.nuget/packages/commandlineparser/2.9.1/commandlineparser.2.9.1.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,30 @@
+set(EXE_TARGET_SELECTED @EXE_TARGET_SELECTED@)
+
+####################################
+#Library Target
+####################################  
+QR_CreateTarget_CPPLibrary()
+@LIBRARY_LINKS@
+QR_target_done()
+
+
+
+@TargetsEXE@
+
+
+@TargetsUnitTest@
+
+
+QR_CreateTarget_UnitTests()
+QR_target_done()
+
+
+
+
+
+
+
+
+
+ 
+

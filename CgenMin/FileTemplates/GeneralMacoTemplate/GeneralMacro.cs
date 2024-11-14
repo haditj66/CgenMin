@@ -11,21 +11,21 @@ using System.Threading.Tasks;
 namespace CodeGenerator.FileTemplates.GeneralMacoTemplate
 {
     public class GeneralMacro
-    { 
+    {
 
         public string PathtoTemplateFileAndOutputFiles { get; }
         public string NameOfcGenMacroFile { get; }
 
         FileTemplateGeneral GeneralTemplate;
 
-        public GeneralMacro(string pathtoTemplateFileAndOutputFiles, string nameOfcGenMacroFile )
+        public GeneralMacro(string pathtoTemplateFileAndOutputFiles, string nameOfcGenMacroFile)
         {
             PathtoTemplateFileAndOutputFiles = pathtoTemplateFileAndOutputFiles;
             NameOfcGenMacroFile = nameOfcGenMacroFile;
         }
 
 
-        public void CreateTemplate()
+        public void CreateTemplate(bool includeHeader = true)
         {
 
             //get the ##ToFile value 
@@ -39,7 +39,7 @@ namespace CodeGenerator.FileTemplates.GeneralMacoTemplate
             {
                 Debug.Assert(false, "you need a ##ToFile with the file name of your destination file that the macro will generate code to");
             }
-            
+
 
             while (matches.Count > 0)
             {
@@ -48,7 +48,7 @@ namespace CodeGenerator.FileTemplates.GeneralMacoTemplate
 
 
 
-                 
+
                 //get all contents after the ##ToFile stuff
                 string macroContents = contents.Substring(mm.Index + mm.Length, contents.Length - (mm.Index + mm.Length));
 
@@ -79,19 +79,26 @@ namespace CodeGenerator.FileTemplates.GeneralMacoTemplate
                 string macroContents_gen = "";
                 if (ext == ".xml")
                 {
-                    macroContents_gen =  macroContents;
+                    macroContents_gen = macroContents;
                     macroContents.TrimStart();
                 }
                 else
                 {
-                    macroContents_gen = COMMENT_CGEN + "generated file: " + GeneralTemplate.NameOfOutputTemplateFile + COMMENT_CGEN_END + "\n"
-                        + COMMENT_CGEN  + "**********************************************************************" + COMMENT_CGEN_END  + "\n" 
-                        + COMMENT_CGEN + "this is an auto-generated file using the template file located in the directory of " + GeneralTemplate.PathTOFileTemplate + COMMENT_CGEN_END  +  "\n" 
-                        + COMMENT_CGEN + "ONLY WRITE CODE IN THE UserCode_Section BLOCKS" + COMMENT_CGEN_END + "\n" 
-                        + COMMENT_CGEN + "If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks." + COMMENT_CGEN_END + "\n"
-                        + macroContents;
+                    if (includeHeader == true)
+                    {
+                        macroContents_gen = COMMENT_CGEN + "generated file: " + GeneralTemplate.NameOfOutputTemplateFile + COMMENT_CGEN_END + "\n"
+                    + COMMENT_CGEN + "**********************************************************************" + COMMENT_CGEN_END + "\n"
+                    + COMMENT_CGEN + "this is an auto-generated file using the template file located in the directory of " + GeneralTemplate.PathTOFileTemplate + COMMENT_CGEN_END + "\n"
+                    + COMMENT_CGEN + "ONLY WRITE CODE IN THE UserCode_Section BLOCKS" + COMMENT_CGEN_END + "\n"
+                    + COMMENT_CGEN + "If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks." + COMMENT_CGEN_END + "\n"
+                    + macroContents;
+                    }
+                    else
+                    {
+                        macroContents_gen = macroContents;
+                    }
                 }
-                
+
                 File.WriteAllText(pathToGeneraltxt, macroContents_gen);
 
 

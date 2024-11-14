@@ -1,0 +1,21 @@
+
+ 
+@MAINHEADER_RQT@
+
+##UserCode_header 
+
+int main(int argc, char **argv) {
+    int result = 1;
+
+	##UserCode_main1
+	
+	@MAININIT_RQT@
+	
+	##UserCode_main2
+	  
+
+    return result;
+}
+
+
+##UserCode_main3

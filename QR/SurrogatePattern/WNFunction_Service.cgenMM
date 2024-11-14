@@ -1,0 +1,3 @@
+    rclcpp::Service<world2_i::srv::@NAMEOFFUNCTION@>::SharedPtr service@NAMEOFFUNCTION@;
+    
+ 

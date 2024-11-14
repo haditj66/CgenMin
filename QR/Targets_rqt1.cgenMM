@@ -1,0 +1,27 @@
+####################################
+#@NAMEOFTARGET@ EXE Target
+####################################
+if(${EXE_TARGET_SELECTED} STREQUAL @NAMEOFTARGET@)
+    
+	QR_CreateTarget_ROS2IntegrationEXE(
+	NAME_OF_TARGET @NAMEOFTARGET@
+	IS_FOR_COMPOSABLES OFF
+	WantToGenerateMain FALSE
+	FOR_REAL_AO World)
+	
+	#QR_target_link_to_ROSLibrary(MODULE_NAME ${MODULE_NAME})
+	QR_target_done() 
+	
+	@TARGETSLINK@
+	
+endif()
+
+
+
+
+
+
+
+
+ 
+

@@ -1,25 +1,34 @@
 {
   "format": 1,
   "restore": {
-    "/home/user/QR_Sync/CgenMin/MacroTests/MacroTests.csproj": {}
+    "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj": {}
   },
   "projects": {
-    "/home/user/QR_Sync/CgenMin/CgenMin/CgenMin.csproj": {
+    "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/user/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+        "projectUniqueName": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj",
         "projectName": "CgenMin",
-        "projectPath": "/home/user/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
-        "packagesPath": "/home/user/.nuget/packages/",
-        "outputPath": "/home/user/QR_Sync/CgenMin/CgenMin/obj/",
+        "projectPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj",
+        "packagesPath": "C:\\Users\\hadi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "/home/user/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\hadi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,6 +41,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -41,6 +55,10 @@
             "CommandLineParser": {
               "target": "Package",
               "version": "[2.9.1, )"
+            },
+            "Stateless": {
+              "target": "Package",
+              "version": "[5.16.0, )"
             }
           },
           "imports": [
@@ -49,7 +67,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -58,34 +77,43 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.301/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/user/QR_Sync/CgenMin/MacroTests/MacroTests.csproj": {
+    "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/user/QR_Sync/CgenMin/MacroTests/MacroTests.csproj",
+        "projectUniqueName": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj",
         "projectName": "MacroTests",
-        "projectPath": "/home/user/QR_Sync/CgenMin/MacroTests/MacroTests.csproj",
-        "packagesPath": "/home/user/.nuget/packages/",
-        "outputPath": "/home/user/QR_Sync/CgenMin/MacroTests/obj/",
+        "projectPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj",
+        "packagesPath": "C:\\Users\\hadi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
         "configFilePaths": [
-          "/home/user/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\hadi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "/home/user/QR_Sync/CgenMin/CgenMin/CgenMin.csproj": {
-                "projectPath": "/home/user/QR_Sync/CgenMin/CgenMin/CgenMin.csproj"
+              "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj": {
+                "projectPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj"
               }
             }
           }
@@ -94,6 +122,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -127,7 +160,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -136,7 +170,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.301/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

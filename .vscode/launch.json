@@ -18,6 +18,17 @@
             "stopAtEntry": false
         },
         {
+            "name": ".NET Core Launch Tests (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/MacroTests/bin/Debug/net6.0/CgenMin.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/CgenMin",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"

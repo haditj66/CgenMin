@@ -1,0 +1,13 @@
+    void Set@NAMEOFDATA@Callback(const std::shared_ptr<qr_core::srv::@ARGCAP@@ARGCAP@::Request>  request,
+                            std::shared_ptr<qr_core::srv::@ARGCAP@@ARGCAP@::Response> response )
+    {
+        this->cppobj->Set@NAMEOFDATA@(request->arg1);
+
+        //publish @NAMEOFDATA@ has changed to all surrogates
+        auto message = qr_core::msg::Void@ARGCAP@Changed();
+        message.data = request->arg1;
+        publisher@NAMEOFDATA@Changed->publish(message);
+
+        response->result = request->arg1;
+        //RCLCPP_INFO(ForNode->get_logger(), "@NAMEOFDATA@ has been changed to: %d", request->arg1);
+    }

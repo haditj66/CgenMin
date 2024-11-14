@@ -1,0 +1,2 @@
+#@NAMEOFTARGET@ is being linked to project @PROJECTNAME@ target @NAMEOFTARGET_TOLINKTO@
+target_link_libraries(@NAMEOFTARGET@ @NAMEOFTARGET_TOLINKTO@) 

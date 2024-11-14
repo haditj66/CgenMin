@@ -1,0 +1,4 @@
+    @ARGRETURN@ @NAMEOFFUNCTION@(@ARGS@)
+    {
+		##UserCode_@NAMEOFFUNCTION@imp
+	}

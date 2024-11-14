@@ -1,0 +1,17 @@
+
+#include "@MODULENAME@_cp/@AONAME@Base.h" 
+
+##UserCode_headers
+ 
+namespace @MODULENAME@_cp{
+  
+std::vector<@AONAME@Base*> @AONAME@Base::objectPool;
+std::mutex @AONAME@Base::mutexForObjectPool;
+
+ ##UserCode_cp1
+
+}
+
+
+##UserCode_cp2
+ 

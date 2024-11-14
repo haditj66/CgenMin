@@ -1,0 +1,13 @@
+    Ticket<@ARGRETURN@>* @NAMEOFFUNCTION@_async(@ARGS@)
+    {
+        //this return type will not be the same as the return type of the Ros service. that one returns a service return type.
+        //this one returns just the return type.
+        std::shared_future<@ARGRETURN@> future =
+            std::async(&@AONAME@Base::@NAMEOFFUNCTION@,this@COMMA_IF_ARGSNAME@ @ARGSNAME@);
+
+        auto Ticket
+            = new TicketFuture<std::shared_future<@ARGRETURN@>, @ARGRETURN@>(future);
+
+
+        return Ticket;
+    };

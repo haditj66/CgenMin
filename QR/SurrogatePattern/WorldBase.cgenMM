@@ -1,0 +1,158 @@
+#pragma once
+
+//place all headers you need here.
+##UserCode_header
+
+ 
+@INTERFACE_HEADERS@
+
+#include "QR_Core.h"
+
+
+
+
+namespace @MODULENAME@_cp {
+using namespace @MODULENAME@_i::msg;
+using namespace @MODULENAME@_i::srv;
+class @AONAME@Base : public QR_AO
+{
+public:
+
+    @AONAME@Base(@MODULENAME@_i::msg::@AONAME@Data thedata ): data(thedata){
+
+        //add object to the pool.
+        mutexForObjectPool.lock();
+        objectPool.push_back(this);
+        mutexForObjectPool.unlock();
+        
+    }
+
+    @AONAME@Base(std::string id )  {
+
+        @MODULENAME@_i::msg::@AONAME@Data thedata;
+        thedata.id = id;
+        data = thedata;
+
+        //add object to the pool.
+        mutexForObjectPool.lock();
+        objectPool.push_back(this);
+        mutexForObjectPool.unlock();
+
+    }
+
+
+    std::string Getid() const override {return this->data.id;}
+
+    void Setid(std::string id) override
+    {
+        this->data.id = id;
+    }
+
+    //Property get/setters------------------
+	@PROPERTYGETANDSETS@ 
+
+
+
+    //AO functions----------------
+	//AOFUNCTIONS
+	@AOFUNCTIONS@ 
+ 
+
+
+    @AONAME@Data GetObjectData() const
+    {
+        return data;//@AONAME@Data::ConstRawPtr(data);// &this->data;
+    }
+
+    //this version only gets the surrogate version of the object. This is public and is what the user should call
+    //when trying to get an AO.
+    static @AONAME@Base* GetObjectFromPool(std::string id)
+    {
+        return _GetObjectFromPool(id, false);
+    }
+
+protected:
+
+    @AONAME@Base()  {
+
+        //add object to the pool.
+        mutexForObjectPool.lock();
+        objectPool.push_back(this);
+        mutexForObjectPool.unlock();
+
+    }
+ 
+
+    //shold not be called from the user.
+    static @AONAME@Base* _GetObjectFromPoolReal(std::string id)
+    {
+        return _GetObjectFromPool(id, true);
+    }
+
+    static @AONAME@Base* _GetObjectFromPool(std::string id, bool isForReal)
+    {
+        mutexForObjectPool.lock();
+        @AONAME@Base* ret = nullptr;
+        for (@AONAME@Base* o : objectPool)
+        {
+            if (id == o->Getid())
+            {
+
+                // //check if it is a surrogate
+                // if(o->_isReal == isForReal)
+                // // if(o->_isReal != isForReal)
+                // {
+                    ret = o;
+                    break;
+                // }
+            }
+        }
+        mutexForObjectPool.unlock();
+
+        return ret;
+    }
+
+    static std::vector<@AONAME@Base*> objectPool;
+
+    @AONAME@Data data;
+
+private:
+
+    static std::mutex mutexForObjectPool;
+
+
+};
+
+
+
+
+  
+
+
+using namespace @MODULENAME@_i::msg;
+class @AONAME@Base_cppobj : public @AONAME@Base
+{
+public:
+
+	// dataaccess code generated stuff ==============================
+	//PROPERTYIMPLS
+	@PROPERTYIMPLS@
+
+
+    @AONAME@Base_cppobj(@MODULENAME@_i::msg::@AONAME@Data thedata): @AONAME@Base(thedata){
+        _isReal = true; 
+    }
+
+	//AOFUNCTION_CPPOBJS
+	@AOFUNCTION_CPPOBJS@
+    
+
+protected:
+    @AONAME@Base_cppobj(): @AONAME@Base(){}
+};
+
+
+
+
+}
+
