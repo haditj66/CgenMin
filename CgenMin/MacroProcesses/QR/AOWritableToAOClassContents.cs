@@ -295,8 +295,8 @@ namespace CgenMin.MacroProcesses
         public CppFunctionArgs TheCppFunctionArgs { get; protected set; }
 
 
-        public AOWritableConstructible(string fromLibrary, string instanceNameOfTDU, AOTypeEnum aOTypeEnum, CppFunctionArgs cppFunctionArgs = null)
-            : base(fromLibrary, instanceNameOfTDU, aOTypeEnum)
+        public AOWritableConstructible(string fromLibrary, string instanceNameOfTDU,  CppFunctionArgs cppFunctionArgs = null)
+            : base(fromLibrary, instanceNameOfTDU )
         {
             TheCppFunctionArgs = cppFunctionArgs;
         }

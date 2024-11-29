@@ -1,5 +1,10 @@
 ﻿namespace CgenMin.MacroProcesses.QR
 {
+
+
+   
+
+
     public enum ServiceTypeEnum
     {
         Normal,
@@ -38,13 +43,13 @@
 
         public ServiceFunction(string partOfCallBackGroup_Named = "")
         {
+            
+            ServiceType = ServiceTypeEnum.Normal;
             PartOfCallBackGroup_Named = partOfCallBackGroup_Named;
         }
 
-        public string GenerateAllForEvery_Arguments(Func<FunctionArgs, string> functionDelegate, string delimiter)
-        {
-
-            ServiceType = ServiceTypeEnum.Normal;
+        public string GenerateAllForEvery_Arguments(Func<FunctionArgsBase, string> functionDelegate, string delimiter)
+        { 
 
             if (Args.Count == 0)
             {
@@ -61,85 +66,40 @@
             ret += functionDelegate(Args[Args.Count - 1]); //add the last one
             return ret;
         }
+         
 
-        public string ARG(FunctionArgs functionArg)
+        public string NUMOFARGS_UNDERSCORE()
         {
-            //the return type  and the name of the argument
-            return $"{functionArg.TypeName} {functionArg.ARGNAME()}";
+            return Args.NUMOFARGS_UNDERSCORE();
+      
         }
-        public string ARG_FILL_REQUEST_DATA(FunctionArgs functionArg)
-        {
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOArgFillRequestData",
-                    new MacroVar() { MacroName = "NAMEASINSERVICE", VariableValue = functionArg.NAMEASINSERVICE() },
-                    new MacroVar() { MacroName = "ARGREQUESTFILL", VariableValue = functionArg.ARGREQUESTFILL() }
-                    );
-            return ret;
-
-        }
-
-        public string NUMOFARGS()
-        {
-            //for every num of Args.Count, make a string that will be _1, _2, _3 up to the number of Args.Count
-            string ret = "";
-            for (int i = 1; i <= Args.Count; i++)
-            {
-                //dont put a comma for the last one
-                ret += i == Args.Count ? $"_{i}" : $"_{i},";
-            }
-            return ret;
-        }
-
-
-
+          
 
         //just the arguments names separated by comma without return type
         public string ARGSNAME()
         {
-            if (Args.Count == 0)
-            {
-                return "";
-            }
-
-
-            //for every Args, get the name and separate by comma
-            string ret = "";
-            //for the last one, do not add the delimiter
-            for (int i = 0; i < Args.Count - 1; i++)
-            {
-                ret += Args[i].ARGNAME() + ",";
-            }
-            ret += Args[Args.Count - 1].ARGNAME(); //add the last one
-            return ret;
+            return Args.ARGSNAME(); 
         }
 
-        public FunctionArgs TypeOFResponse;
-        public List<FunctionArgs> Args { get; set; }
+        public FunctionArgsBase TypeOFResponse;
+        public List<FunctionArgsBase> Args { get; set; }
 
         public QREventSRV FunctionServiceEvent { get; set; }
         public string Name { get; internal set; }
 
 
         public string NAMEOFFUNCTION { get { return Name; } }
-        public string ARGRETURN { get { return TypeOFResponse.TypeName; } }
+        public string ARGRETURN { get { return TypeOFResponse.TypeName; } } 
+        public string TICKET_RETURN_TYPE1(string MODULENAME) {  return ARGRETURN == "void" ? "void" : $"{MODULENAME}_i::srv::{NAMEOFFUNCTION}_Response::_result_type"; } //@MODULENAME@_i::srv::@NAMEOFFUNCTION@_Response::_result_type
+        public string TICKET_RETURN_TYPE2(string MODULENAME) { return ARGRETURN == "void" ? "void" : $"{MODULENAME}_i::srv::{NAMEOFFUNCTION}_Response::_result_type"; } //@MODULENAME@_i::srv::@NAMEOFFUNCTION@::Response::_result_type
+
+ 
+
         public string ARGS
         {
             get
             {
-                if (Args.Count == 0)
-                {
-                    return "";
-                }
-
-                string ret = "";
-                //foreach Args, get the type and name  and separate by comma
-                //for the last one, do not add the delimiter
-                for (int i = 0; i < Args.Count - 1; i++)
-                {
-                    ret += $"{Args[i].TypeName} {Args[i].ARGNAME()},";
-                }
-                ret += $"{Args[Args.Count - 1].TypeName} {Args[Args.Count - 1].ARGNAME()}"; //add the last one
-                return ret;
-
+               return Args.ARGS(); 
             }
         }
 
@@ -181,12 +141,12 @@
         }
 
 
-        public static string WNFUNCTION_SERVICES_DEFINES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string AONAME) where TServiceFunctionType : ServiceFunction
+        public static string WNFUNCTION_SERVICES_DEFINES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string AONAME, bool isForSurrogateAO) where TServiceFunctionType : ServiceFunction
         {
             string ret = "";
             foreach (var servFun in serviceFunctions)
-            {
-                ret += servFun.WNFUNCTION_SERVICES_DEFINE(AONAME) + "\n";
+            { 
+                ret += servFun.WNFUNCTION_SERVICES_DEFINE(AONAME, isForSurrogateAO) + "\n";
             }
             return ret;
             //return RunForAllServiceFunctions(  serviceFunctions, "WNFUNCTION_SERVICES_DEFINE"); 
@@ -198,13 +158,14 @@
         //cppobj->Getid() + "/MoveObject",
         //std::bind(&WorldNodeAO::MoveObject, this, _1,_2), //
         //rmw_qos_profile_services_default_MINE, client_cb_group_);
-        protected string WNFUNCTION_SERVICES_DEFINE(string AONAME)
+        protected string WNFUNCTION_SERVICES_DEFINE(string AONAME, bool isForSurrogateAO)
         {
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\WNFunction_Service_Define",
+            string fileGen = isForSurrogateAO ? "WNFunction_Service_Define" : "WNFunction_Service_Define_NodeAO";
+            string ret = QRInitializing.TheMacro2Session.GenerateFileOut($"QR\\SurrogatePattern\\{fileGen}",
                     new MacroVar() { MacroName = "AONAME", VariableValue = AONAME },
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION },
-                    new MacroVar() { MacroName = "NUMOFARGS", VariableValue = this.NUMOFARGS() },
-                    new MacroVar() { MacroName = "COMMA_IF_ARGSNAME", VariableValue = this.NUMOFARGS() == "" ? "" : "," },
+                    new MacroVar() { MacroName = "NUMOFARGS", VariableValue = this.NUMOFARGS_UNDERSCORE() },
+                    new MacroVar() { MacroName = "COMMA_IF_ARGSNAME", VariableValue = this.NUMOFARGS_UNDERSCORE() == "" ? "" : "," },
                     new MacroVar() { MacroName = "IF_PART_OF_CALLBACK_GROUP", VariableValue = this.PartOfCallBackGroup_Named == "" ? "" : ",rmw_qos_profile_services_default_MINE," },//
                     new MacroVar() { MacroName = "CALLBACK_GROUP", VariableValue = this.PartOfCallBackGroup_Named }
                     );
@@ -289,19 +250,19 @@
         {
             get
             {
-                string ret = FunctionArgs.CsharpTypeToCppType(_Type.Name);
+                string ret = FunctionArgsBase.CsharpTypeToCppType(_Type.Name);
                 return ret;
             }
         }
 
         public string NAMEASINSERVICE(bool isSurrogate)
         {
-            return FunctionArgs.STR_to_NAMEASINSERVICE(isSurrogate, NameOfData);
+            return FunctionArgsBase.STR_to_NAMEASINSERVICE(isSurrogate, NameOfData);
 
         }
         public string TYPEASINSERVICE(bool isSurrogate)
         {
-            return FunctionArgs.STR_to_NAMEASINSERVICE(isSurrogate, this._Type.Name);
+            return FunctionArgsBase.STR_to_NAMEASINSERVICE(isSurrogate, this._Type.Name);
         }
 
         public string NameOfData { get; set; }
@@ -313,7 +274,7 @@
     public abstract class AOSurrogatePatternBase : AOWritableConstructible
     {
 
-        public AOSurrogatePatternBase(string AOName, bool isSurrogate) : base(QRInitializing.RunningProjectName, AOName, AOTypeEnum.AOSurrogatePattern)
+        public AOSurrogatePatternBase(string AOName, bool isSurrogate) : base(QRInitializing.RunningProjectName, AOName )
         {
         }
 

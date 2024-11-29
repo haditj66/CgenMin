@@ -1,99 +1,29 @@
-//generated file: Config.hpp
+//generated file: main.cpp
 //**********************************************************************
 //this is an auto-generated file using the template file located in the directory of /home/hadi/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
 //ONLY WRITE CODE IN THE UserCode_Section BLOCKS
 //If you write code anywhere else,  it will be overwritten. modify the actual template file if needing to modify code outside usersection blocks.
 
-//*************DONT MODIFY THIS FILE HERE ******************************
-// this is a generated file from cmake's configure_file() command.
-//template for this file should be located in GeneratedFiles foldersss
 
-#pragma once
+ //put all your includes for the tests here manually. If you dont want a test, comment it out.
+##UserCode_a
 
 
+ #include "gtest/gtest.h"
+ 
+// floating point comparisons.
+//EXPECT_FLOAT_EQ (expected, actual)
+//EXPECT_DOUBLE_EQ (expected, actual)
+//EXPECT_NEAR (expected, actual, absolute_range)
+
+//strings
+// EXPECT_STREQ("h", "h");
 
 
-#define PROJECT_NAME world2_rqt
 
 
-#include <string>
-
-#include <cereal/archives/xml.hpp>
-#include <cereal/archives/json.hpp>
-
-
-##UserCode_c
-
-namespace world2_rqt {
-
-
-             #ifdef WorldReal
-             class QR_Settings
-             {
-             public:
-               std::string id;
-
-               //put the variables you want to have as settings
-               //for example
-               //int size1;
-               //std:string someothersetting
-               ##UserCode_Worlda
-
-               // This method lets cereal know which data members to serialize.
-               template<class Archive>
-               void serialize(Archive & archive)
-               {
-
-                 //you need to now set these variables in the archive. For example
-                 //for example:
-                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
-                 ##UserCode_Worldb
-
-               }
-             };
-
-
-             ##UserCode_Worldc
-
-             #endif
-              
-             #ifdef GameobjectReal
-             class QR_Settings
-             {
-             public:
-               std::string id;
-
-               //put the variables you want to have as settings
-               //for example
-               //int size1;
-               //std:string someothersetting
-               ##UserCode_Gameobjecta
-
-               // This method lets cereal know which data members to serialize.
-               template<class Archive>
-               void serialize(Archive & archive)
-               {
-
-                 //you need to now set these variables in the archive. For example
-                 //for example:
-                 //archive(CEREAL_NVP(id),CEREAL_NVP(size1), CEREAL_NVP(someothersetting));
-                 ##UserCode_Gameobjectb
-
-               }
-             };
-
-
-             ##UserCode_Gameobjectc
-
-             #endif
-                     
-
-
-##UserCode_d
-
-#ifdef ROS2_PROJECT
-extern QR_Settings QRSettings;
-#endif
-
+int main(int argc, char** argv)
+{
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
-

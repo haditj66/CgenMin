@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CgenMin.MacroProcesses.QR;
 using CodeGenerator;
 using CodeGenerator.FileTemplates.GeneralMacoTemplate;
 using CodeGenerator.ProblemHandler;
@@ -185,9 +186,8 @@ namespace CgenMin.MacroProcesses
             }
 
             if (useMacro1)
-            {
-
-                string pathtoTemplateFileAndOutputFiles = $@"C:\CodeGenerator\CodeGenerator\MacroProcesses\temp";
+            { 
+                string pathtoTemplateFileAndOutputFiles = Path.Combine(CodeGenerator.Program.CGenMinLocation, "CgenMin", "MacroProcesses","temp");//  $@"C:\CodeGenerator\CodeGenerator\MacroProcesses\temp";
                 string nameOfcGenMacroFile = $"{Path.GetFileNameWithoutExtension(fullpath)}";
                 string fullpathToTempCgenMFile = Path.Combine(pathtoTemplateFileAndOutputFiles, nameOfcGenMacroFile);
 

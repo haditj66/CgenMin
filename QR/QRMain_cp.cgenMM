@@ -1,15 +1,20 @@
 
+@AO_DESCRIPTIONS@
  
-@MAINHEADER_CP@
+@AO_MAINHEADER@
 
 ##UserCode_header 
+
+
+@AO_DECLARES@
 
 int main(int argc, char **argv) {
     int result = 1;
 
+	@AO_DEFINE_COMMENTS@
 	##UserCode_main1
-	
-	@MAININIT_CP@
+	 
+	@AO_MAININIT@
 	
 	##UserCode_main2
 	  

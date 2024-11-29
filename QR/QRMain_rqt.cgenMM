@@ -1,21 +1,75 @@
 
- 
-@MAINHEADER_RQT@
+//===============================
+@AO_DESCRIPTIONS@
+//AO: world 
+//instances: world 
+//type: surrogate pattern 
+//isSurrogate: false
+//===============================
+
+#include "rclcpp/rclcpp.hpp"
+
+//AO_MAINHEADER
+@AO_MAINHEADER@ 
 
 ##UserCode_header 
+ 
+#include "QR_Core.h"
+#include "@MODULENAME@_rqt/Config.hpp"
+
+
+QR_INIT 
+
+//AO_DECLARES
+@AO_DECLARES@ 
 
 int main(int argc, char **argv) {
     int result = 1;
-
-	##UserCode_main1
 	
-	@MAININIT_RQT@
+	rclcpp::init(argc, argv); 
+	
+	rclcpp::executors::MultiThreadedExecutor exec;
+	
+	//loading settings from settings file
+    std::string fileSelect = argv[1] == nullptr ? "" : argv[1]; 
+    QR_Core::Init_QR_Core(&exec,@MODULENAME@_rqt::QRSettings, AO_NAME, fileSelect);
+
+	//AO defines the user needs to do 
+	@AO_DEFINE_COMMENTS@ ##UserCode_aouserdefine
+	
+	
+	 
+	##UserCode_main1
+	 
+	
+	//AO_MAININIT
+	@AO_MAININIT@ 
+	
 	
 	##UserCode_main2
 	  
+	//surrogate initializing. if you want to  get a surrogate object, dont instantiate one, 
+	//instead use function WorldBase::GetObjectFromPool("WorldNode");
+	
+	//surrogate AO are automatically created from this class. when 
+	//a real object is created somewhere, this class will get the event and update the respective surrogate. 
+	//This will grab any data not updated via the gets
+	@AO_SURROGATE_INIT@ 
+	
+	QR_Print("started up!");
+    exec.spin();
 
+
+
+    rclcpp::shutdown();
     return result;
 }
 
 
 ##UserCode_main3
+
+
+
+
+
+

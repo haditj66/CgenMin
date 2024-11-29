@@ -1,1 +1,1 @@
-client@NAMEOFFUNCTION@ = TheDataAccessManagerNode->create_client<@MODULENAME@_i::srv::@NAMEOFFUNCTION@>(id + "/@NAMEOFFUNCTION@"); 
+client@NAMEOFFUNCTION@ = nodeToUse->create_client<@MODULENAME@_i::srv::@NAMEOFFUNCTION@>(id + "/@NAMEOFFUNCTION@"); 

@@ -1,5 +1,5 @@
     //the non-async version will just call the async version but will immediately wait for the ticket.
-    @ARGRETURN@ @NAMEOFFUNCTION@(@ARGS@) override
+    @ARGRETURN@ @NAMEOFFUNCTION@(@ARGS@) @ISOVERRIDE@
     {
         auto ticket = @NAMEOFFUNCTION@_async(@ARGSNAME@);
         return ticket->AwaitRequestUntilFinished();
@@ -10,11 +10,11 @@
 
     TicketFuture_RosService<std::shared_future<
                                 rclcpp::Client<@MODULENAME@_i::srv::@NAMEOFFUNCTION@>::SharedResponse>,
-                            @MODULENAME@_i::srv::@NAMEOFFUNCTION@_Response::_result_type,
+                            @TICKET_RETURN_TYPE1@,
                             @MODULENAME@_i::srv::@NAMEOFFUNCTION@>* TicketFor_@NAMEOFFUNCTION@;
 
 
-    @NAMEOFFUNCTION@Ticket_t* @NAMEOFFUNCTION@_async(@ARGS@) override
+    @NAMEOFFUNCTION@Ticket_t* @NAMEOFFUNCTION@_async(@ARGS@) @ISOVERRIDE@
     {
         //in this surrogate, I need to prepare the data for transmission over the network.
         //First I need to package the data into the data interface type for this service function.
@@ -28,6 +28,7 @@
         //        @MODULENAME@_i::msg::Move move
 
 		auto request = std::make_shared<@MODULENAME@_i::srv::@NAMEOFFUNCTION@::Request>();  
+		 //whenever the arguments is a surrogate, it will get the id instead of passing the actual object
         @ARG_FILL_REQUEST_DATAS@
  
 
@@ -35,7 +36,7 @@
 
         TicketFor_@NAMEOFFUNCTION@= new TicketFuture_RosService<std::shared_future<
                                                            rclcpp::Client<@MODULENAME@_i::srv::@NAMEOFFUNCTION@>::SharedResponse>,
-                                                           @MODULENAME@_i::srv::@NAMEOFFUNCTION@::Response::_result_type,
+                                                           @TICKET_RETURN_TYPE2@,
                                                            @MODULENAME@_i::srv::@NAMEOFFUNCTION@>();
         auto result =
             client@NAMEOFFUNCTION@->async_send_request(request, TicketFor_@NAMEOFFUNCTION@->CallbackToServiceVar); 

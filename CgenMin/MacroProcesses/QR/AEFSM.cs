@@ -54,7 +54,7 @@ namespace CgenMin.MacroProcesses
         public int FrequencyOfUpdate { get; }
         public string ThisStateIsASubFSMNamed { get; }
 
-        private static QREventMSG updEvent = new QREventMSG("updEvent", new FunctionArgs(typeof(bool),""));
+        private static QREventMSG updEvent = new QREventMSG("","updEvent", new FunctionArgsBase(typeof(bool),""));
         
         //private static UpdateEVT updEvent = (UpdateEVT)UpdateEVT.Init(10);
         //private static ExitFSM ExitFSMEvent = (ExitFSM)ExitFSM.QREventFactory(10);
@@ -151,9 +151,9 @@ namespace CgenMin.MacroProcesses
         }
 
         public AEFSM(string fromLibrary, string instanceNameOfMachine, AEState initialState,  CppFunctionArgs constructorArgs = null)
-            : base(fromLibrary, instanceNameOfMachine, AOTypeEnum.SimpleFSM, constructorArgs)
+            : base(fromLibrary, instanceNameOfMachine, constructorArgs)
         {
-
+            AOType = AOTypeEnum.SimpleFSM;
 
             fsm = new StateMachine<string, string>(initialState.NameOfState);
             _AllStates.Add(initialState);
@@ -324,43 +324,43 @@ namespace CgenMin.MacroProcesses
         //    return ret;
         //}
 
-        public override string GenerateMainHeaderSection_CP()
-        {
-            //static AELoopObject1Test * objectTest;
-            //#include "LoopObjeect1Test.h"
-            string ret = "";
-            ret += $"#include \"{ClassName}.h\""; ret += "\n";
-            ret += $"static {ClassName}* {InstanceName};"; ret += "\n";
-            return ret;
-        }
+        //public override string  AO_MAINHEADER_RQT_CP()
+        //{
+        //    //static AELoopObject1Test * objectTest;
+        //    //#include "LoopObjeect1Test.h"
+        //    string ret = "";
+        //    ret += $"#include \"{ClassName}.h\""; ret += "\n";
+        //    ret += $"static {ClassName}* {InstanceName};"; ret += "\n";
+        //    return ret;
+        //}
 
 
 
 
-        public override string GenerateMainInitializeSection_CP()
-        {
+        //public override string GenerateAO_DECLARES_CP()
+        //{
 
-            //static BlindsUITopFSM BlindsUIfsmL;
-            //BlindsUIfsm = &BlindsUIfsmL;
-            //BlindsUIfsm->Init(false, 1, ConfigBlindsUIfsm, NormalUserOperationBlindsfsm);
+        //    //static BlindsUITopFSM BlindsUIfsmL;
+        //    //BlindsUIfsm = &BlindsUIfsmL;
+        //    //BlindsUIfsm->Init(false, 1, ConfigBlindsUIfsm, NormalUserOperationBlindsfsm);
 
-            string issubMachine = AllAEFSMs[0].ClassName == this.ClassName ? "false" : "true";
+        //    string issubMachine = AllAEFSMs[0].ClassName == this.ClassName ? "false" : "true";
 
-            //AEFSM submachine1 = GetSubmachine1();
-            //AEFSM submachine2 = GetSubmachine2();
-            //AEFSM submachine3 = GetSubmachine3();
-            //string submachine1NameStr = submachine1 == null ? "" : "," + submachine1.InstanceName;
-            //string submachine2NameStr = submachine2 == null ? "" : "," + submachine2.InstanceName;
-            //string submachine3NameStr = submachine3 == null ? "" : "," + submachine3.InstanceName;
+        //    //AEFSM submachine1 = GetSubmachine1();
+        //    //AEFSM submachine2 = GetSubmachine2();
+        //    //AEFSM submachine3 = GetSubmachine3();
+        //    //string submachine1NameStr = submachine1 == null ? "" : "," + submachine1.InstanceName;
+        //    //string submachine2NameStr = submachine2 == null ? "" : "," + submachine2.InstanceName;
+        //    //string submachine3NameStr = submachine3 == null ? "" : "," + submachine3.InstanceName;
 
-            string freqstr = InitialTimerPeriodIfAnyMilli == 0 ? "1" : InitialTimerPeriodIfAnyMilli.ToString();
+        //    string freqstr = InitialTimerPeriodIfAnyMilli == 0 ? "1" : InitialTimerPeriodIfAnyMilli.ToString();
 
-            string ret = "";
-            ret += $"static {ClassName} {InstanceName}_l;"; ret += "\n";
-            ret += $"{InstanceName} = &{InstanceName}_l;"; ret += "\n";
-            ret += $"{InstanceName}->Init({issubMachine},  {freqstr});"; ret += "\n";
-            return ret;
-        }
+        //    string ret = "";
+        //    ret += $"static {ClassName} {InstanceName}_l;"; ret += "\n";
+        //    ret += $"{InstanceName} = &{InstanceName}_l;"; ret += "\n";
+        //    ret += $"{InstanceName}->Init({issubMachine},  {freqstr});"; ret += "\n";
+        //    return ret;
+        //}
 
         //public override string GenerateMainLinkSetupsSection()
         //{

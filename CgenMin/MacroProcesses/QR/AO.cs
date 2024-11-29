@@ -29,379 +29,35 @@ namespace CgenMin.MacroProcesses
     public enum AOTypeEnum
     {
         AOSimple,
-        AOSurrogatePattern,
-        AONode,
-        Event,
-        LoopObject,
-        SimpleFSM
+        AOSurrogatePattern,  
+        SimpleFSM,
+        Event
     }
 
-    public enum QRTargetProjectType
+
+
+    public interface IGeneratedInMain
     {
-        cp,
-        rqt,
-        IF
+        public string AO_DESCRIPTIONS_CP();
+        public  string AO_MAINHEADER_CP();
+        public  string AO_DECLARES_CP();
+        public  string AO_DEFINE_COMMENTS_CP();
+        public  string AO_MAININIT_CP();
+
+
+        public string AO_DESCRIPTIONS_RQT();
+        public  string AO_MAINHEADER_RQT();
+        public  string AO_DECLARES_RQT();
+        public  string AO_DEFINE_COMMENTS_RQT();
+        public  string AO_MAININIT_RQT();
     }
-
-    public enum QRTargetType
-    {
-        cpp_library,
-        cpp_exe,
-        cpp_unittest,
-        rosqt_library,
-        rosqt_exe,
-        IF
-    }
-
-
-    public class LibraryDependence
-    {
-        public QRProject ProjectIDependOn { get; set; }
-        public QRTargetType TargetType { get; set; }
-
-        public override string ToString()
-        {
-            return $"{ProjectIDependOn.Name}:{TargetType}";
-        }
-
-        public static LibraryDependence FromString(string str, object obj)
-        {
-            var parts = str.Split(':');
-            var projectName = parts[0];
-            var targetType = Enum.Parse<QRTargetType>(parts[1]);
-
-            // Use reflection to find a derived class of AEProject with the specified name
-            var projectType = obj.GetType().Assembly
-                                      .GetTypes()
-                                      .FirstOrDefault(t => t.IsSubclassOf(typeof(QRProject)) && t.Name == projectName);
-
-            if (projectType == null)
-            {
-                throw new InvalidOperationException($"No derived class of AEProject found with the name {projectName}");
-            }
-
-            // Only create the instance of the project if it is not already created
-            var projectInstance = QRProject.AllProjects
-                                           .FirstOrDefault(a => a.GetType() == projectType)
-                                           ?? (QRProject)Activator.CreateInstance(projectType);
-
-            //var projectInstance = (QRProject)Activator.CreateInstance(projectType);
-
-            return new LibraryDependence
-            {
-                ProjectIDependOn = projectInstance,
-                TargetType = targetType
-            };
-        }
-    }
-
-
-    //[System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public abstract class QRTarget : System.Attribute
-    {
-        public QRProject ProjIBelongTo { get; set; }
-        public QRTargetType qRTargetType;
-        public QRTargetProjectType QRTargetProjType
-        {
-            get
-            {
-                QRTargetProjectType ret = qRTargetType == QRTargetType.rosqt_library ?
-                    QRTargetProjectType.rqt :
-                    qRTargetType == QRTargetType.rosqt_exe ?
-                    QRTargetProjectType.rqt :
-                    qRTargetType == QRTargetType.cpp_library ?
-                    QRTargetProjectType.cp  :
-                    qRTargetType == QRTargetType.cpp_unittest ?
-                    QRTargetProjectType.cp :
-                    QRTargetProjectType.IF;
-                return ret;
-
-            }
-        }
-
-        public string TargetName { get; set; }
-        public string TargetIncludePath { get; set; }
-        public QRConfig AEconfigToUse { get; protected set; }
-
-        public List<string> IF_Module_Dependencies { get; set; }
-        public List<string> ROSQT_Module_Dependencies { get; set; }
-        public List<string> CPP_Module_Dependencies { get; set; }
-
-        public static List<QRTarget> AllTargets = new List<QRTarget>();
-
-        public List<LibraryDependence> LibraryDependencies { get; set; }
-
-
-        //get a list of all the library dependencies target names
-        public List<string> LibraryDependenciesTargetNames
-        {
-            get
-            {
-                var ret = LibraryDependencies.Select(d =>
-                {
-                    if (d.TargetType == QRTargetType.cpp_library)
-                    {
-                        return d.ProjectIDependOn.Target_CPPLib.TargetName;
-                    }
-                    else if (d.TargetType == QRTargetType.rosqt_library)
-                    {
-                        return d.ProjectIDependOn.Target_ROSLib.TargetName;
-                    }
-                    else
-                    {
-                        return d.ProjectIDependOn.Target_IF.TargetName;
-                    }
-                    //remove the "" strings
-                }).Where(d => d != "").ToList();
-
-                return ret;
-            }
-        }
-
-        public List<string> LibraryDependenciesTargetFULLNames
-        {
-            get
-            {
-                var ret = LibraryDependencies.Select(d =>
-                { 
-                    if (d.TargetType == QRTargetType.cpp_library)
-                    { 
-                        string targname = d.ProjectIDependOn.Target_CPPLib.TargetName;
-                        string projname = d.ProjectIDependOn.Name;
-
-                        //if the running target is the same as the this target project type and
-                        //if this target's project it belongs to is the same as the running project,
-                        //then dont add the namespace
-                        string namespaceName = 
-                        (QRInitializing.RunningTarget.QRTargetProjType == QRTargetProjectType.cp &&
-                        this.ProjIBelongTo.Name == QRInitializing.RunningProjectName) ?
-                        "" : $"{projname}_cp::";
-
-                        return $"{namespaceName}{targname}";
-                    }
-                    else if (d.TargetType == QRTargetType.rosqt_library)
-                    {
-                        string targname = d.ProjectIDependOn.Target_ROSLib.TargetName;
-                        string projname = d.ProjectIDependOn.Name;
-
-                        //if the running target is the same as the this target project type and
-                        //if this target's project it belongs to is the same as the running project,
-                        //then dont add the namespace
-                        string namespaceName =
-                        (QRInitializing.RunningTarget.QRTargetProjType == QRTargetProjectType.rqt &&
-                        this.ProjIBelongTo.Name == QRInitializing.RunningProjectName) ?
-                        "" : $"{projname}_rqt::";
-
-                        return $"{namespaceName}{targname}";
-                    }
-                    else
-                    {
-                        return d.ProjectIDependOn.Target_IF.TargetName;
-                    }
-                    //remove the "" strings
-                }).Where(d => d != "").ToList();
-
-                return ret;
-            }
-        }
-
-
-        public abstract void Init();
-
-        public QRTarget(params string[] libraryDependencies)
-        {
-            IF_Module_Dependencies = new List<string>();
-            ROSQT_Module_Dependencies = new List<string>();
-            CPP_Module_Dependencies = new List<string>();
-            //go through the libraryDependencies, parse out th string such that anycharacters followed by a colon is the module name
-            //and any characters after the colon is the target name
-            foreach (var item in libraryDependencies)
-            {
-                var parts = item.Split(':');
-                if (parts[1] == "IF")
-                {
-                    IF_Module_Dependencies.Add(parts[0]);
-                }
-                else if (parts[1] == "rosqt_library")
-                {
-                    ROSQT_Module_Dependencies.Add(parts[0]);
-                }
-                else if (parts[1] == "cpp_library")
-                {
-                    CPP_Module_Dependencies.Add(parts[0]);
-                }
-            }
-
-            //remove duplicates for CPP_Module_Dependencies
-            CPP_Module_Dependencies = CPP_Module_Dependencies.Distinct().ToList();
-            ROSQT_Module_Dependencies = ROSQT_Module_Dependencies.Distinct().ToList();
-            IF_Module_Dependencies = IF_Module_Dependencies.Distinct().ToList();
-
-
-
-            AllTargets.Add(this);
-
-            LibraryDependencies = new List<LibraryDependence>();
-
-            foreach (var item in libraryDependencies)
-            {
-                LibraryDependencies.Add(LibraryDependence.FromString(item, QRProject.AllProjects[0]));
-            }
-        }
-    }
-
-
-
-    public abstract class QRTarget_Lib : QRTarget
-    {
-        public QRTarget_Lib(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-
-        }
-    }
-
-
-
-    //[System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public class QRTarget_IF : QRTarget
-    {
-        //public QRConfig AEconfigToUse { get; protected set; }
-
-        //make variable params for the library dependence
-        public QRTarget_IF(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-
-        }
-        public override void Init()
-        {
-            AEconfigToUse = new QRConfig();
-            this.qRTargetType = QRTargetType.IF;
-
-            //TargetName = $"{ProjIBelongTo.Name}_IFlib";
-            TargetName = $"";
-            TargetIncludePath = Path.Combine(ProjIBelongTo.DirectoryOfLibrary, "rosqt", "IF", "include", $"{ProjIBelongTo.Name}_i");
-
-        }
-    }
-
-    //[System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public class QRTarget_RosLib : QRTarget_Lib
-    {
-        //public QRConfig AEconfigToUse { get; protected set; }
-
-        //make variable params for the library dependence
-        public QRTarget_RosLib(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-
-        }
-        public override void Init()
-        {
-            AEconfigToUse = new QRConfig();
-            this.qRTargetType = QRTargetType.rosqt_library;
-
-            TargetName = $"{ProjIBelongTo.Name}_ROSlib";
-            TargetIncludePath = Path.Combine(ProjIBelongTo.DirectoryOfLibrary, "rosqt", "include", $"{ProjIBelongTo.Name}_rqt");
-
-        }
-    }
-
-
-
-
-    public abstract class QRTarget_EXE : QRTarget
-    {
-        //public QRConfig AEconfigToUse { get; protected set; }
-        public string MethodName { get; set; }
-
-        //make variable params for the library dependence
-        public QRTarget_EXE(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-        }
-
-    }
-
-
-
-
-
-    [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public class QRTarget_RosEXE : QRTarget_EXE
-    {
-        //public QRConfig AEconfigToUse { get; protected set; }
-
-
-        //make variable params for the library dependence
-        public QRTarget_RosEXE(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-
-            this.qRTargetType = QRTargetType.rosqt_exe;
-
-        }
-
-        public override void Init()
-        {
-            AEconfigToUse = new QRConfig();
-
-            TargetName = MethodName;
-            TargetIncludePath = Path.Combine(ProjIBelongTo.DirectoryOfLibrary, "rosqt", "include", $"{ProjIBelongTo.Name}_cp");
-
-        }
-    }
-
-
-
-    //[System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public class QRTarget_cpLib : QRTarget_Lib
-    {
-        //public QRConfig AEconfigToUse { get; protected set; }
-
-
-
-        //make variable params for the library dependence
-        public QRTarget_cpLib(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-
-            this.qRTargetType = QRTargetType.cpp_library;
-
-        }
-
-        public override void Init()
-        {
-            AEconfigToUse = new QRConfig();
-            TargetName = $"{ProjIBelongTo.Name}_CPPlib";
-            TargetIncludePath = Path.Combine(ProjIBelongTo.DirectoryOfLibrary, "include", $"{ProjIBelongTo.Name}_cp");
-        }
-    }
-
-    [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public class QRTarget_cpEXE : QRTarget_EXE
-    {
-        //public QRConfig AEconfigToUse { get; protected set; }
-
-        //make variable params for the library dependence
-        public QRTarget_cpEXE(params string[] libraryDependencies) : base(libraryDependencies)
-        {
-            this.qRTargetType = QRTargetType.cpp_exe;
-
-        }
-
-        public override void Init()
-        {
-            AEconfigToUse = new QRConfig();
-            TargetName = MethodName;
-            TargetIncludePath = Path.Combine(ProjIBelongTo.DirectoryOfLibrary, "include", $"{ProjIBelongTo.Name}_cp");
-        }
-    }
-
-
-
-
+    
 
 
     public abstract class AO
     {
 
-        private static List<string> listOfAdditionalIncludes = new List<string>();
+        protected static List<string> listOfAdditionalIncludes = new List<string>();
         protected string GetAdditionalIncludeInAEConfig(string fileNameWithoutTheExt)
         {
             //return only if this file has not been included yet
@@ -426,13 +82,14 @@ namespace CgenMin.MacroProcesses
         public AOTypeEnum AOType { get; protected set; }
         public string ClassName;
         public string InstanceName;
+        public static int numOfAOSoFarAEConfigGenerated { get { return _numOfAOSoFarAEConfigGenerated; } protected set { _numOfAOSoFarAEConfigGenerated = value; } }
+        protected static int _numOfAOSoFarAEConfigGenerated = 0;
 
-        public AO(string instanceName, AOTypeEnum aOType)
+        public AO(string instanceName )
         {
             ClassName = GetType().Name;
 
-            InstanceName = instanceName.Trim();
-            AOType = aOType;
+            InstanceName = instanceName.Trim(); 
 
             if (this.ClassName != "UpdateEVT")
             {
@@ -469,65 +126,97 @@ namespace CgenMin.MacroProcesses
 
 
         //the part that goes into the header of the main.cpp file. stuff like callback function declarations static void clockTimer1(TimerHandle_t xTimerHandle);
-        public abstract string GenerateMainHeaderSection_CP();
-        public abstract string GenerateMainInitializeSection_CP();
-        public abstract string GenerateMainHeaderSection_RQT();
-        public abstract string GenerateMainInitializeSection_RQT();
-        //set AO to clocks section
-        //public abstract string GenerateMainClockSetupsSection();
-        //link AOs together section
-        //public abstract string GenerateMainLinkSetupsSection();
 
-        //bottom area of main file for defining callback functions.
-        //public abstract string GenerateFunctionDefinesSection();
+        
 
 
-        public static string All_GenerateMainHeaderSection_CP()
+        protected static string _All_Generate(Func<IGeneratedInMain, string> generateSectionFunc)
         {
             string ret = "";
             foreach (var ao in AllInstancesOfAO)
             {
-                ret += ao.GenerateMainHeaderSection_CP();
+                if (ao is IGeneratedInMain aao)
+                {
+                    //IGeneratedInMain aao = (IGeneratedInMain)ao;
+                    string rett = generateSectionFunc(aao) + "\n";
+                    string retttrim = rett.Trim();
+                    ret = retttrim == "" ? ret + "" : ret + rett;
+                }
+             
             }
 
             return ret;
         }
-        public static string All_GenerateMainInitializeSection_CP()
+
+        public static string All_GenerateAO_DESCRIPTIONS_CP()
         {
-            string ret = "";
-
-            foreach (var ao in AllInstancesOfAO)
-            {
-                string rett = ao.GenerateMainInitializeSection_CP() + "\n";
-                string retttrim = rett.Trim();
-                ret = retttrim == "" ? ret : rett + "\n";
-            }
-            return ret;
+            return _All_Generate(ao => ao.AO_DESCRIPTIONS_CP());
         }
-
-
-        public static string All_GenerateMainHeaderSection_RQT()
+        public static string All_GenerateAO_DESCRIPTIONS_RQT()
         {
-            string ret = "";
-            foreach (var ao in AllInstancesOfAO)
-            {
-                ret += ao.GenerateMainHeaderSection_RQT();
-            }
-
-            return ret;
+            return _All_Generate(ao => ao.AO_DESCRIPTIONS_RQT());
         }
-        public static string All_GenerateMainInitializeSection_RQT()
+
+        public static string All_GenerateAO_MAINHEADER_CP()
         {
-            string ret = "";
+            return _All_Generate(ao => ao.AO_MAINHEADER_CP());
+        }
+        public static string All_GenerateAO_DECLARES_CP()
+        {
+            return _All_Generate(ao => ao.AO_DECLARES_CP());
+        }
 
-            foreach (var ao in AllInstancesOfAO)
+        public static string All_GenerateAO_DEFINE_COMMENTS_CP()
+        {
+            return _All_Generate(ao => ao.AO_DEFINE_COMMENTS_CP());
+        }  
+        
+        public static string All_GenerateAO_MAININIT_CP()
+        {
+            return _All_Generate(ao => ao.AO_MAININIT_CP());
+        }
+         
+        public static string All_GenerateAO_MAINHEADER_RQT()
+        {
+            return _All_Generate(ao => ao.AO_MAINHEADER_RQT());
+        }
+        public static string All_GenerateAO_DECLARES_RQT()
+        {
+            return _All_Generate(ao => ao.AO_DECLARES_RQT());
+        }
+
+        public static string All_GenerateAO_DEFINE_COMMENTS_RQT()
+        {
+            return _All_Generate(ao => ao.AO_DEFINE_COMMENTS_RQT());
+        }
+
+        public static string All_GenerateAO_MAININIT_RQT()
+        {
+            return _All_Generate(ao => ao.AO_MAININIT_RQT());
+        }
+
+
+
+
+        public static string All_GenerateAO_SURROGATE_INIT_RQT()
+        {
+            //go through all AllInstancesOfAO and get the ones of type surrogatepattern
+            string ret = "";
+            foreach (var item in AllInstancesOfAO)
             {
-                string rett = ao.GenerateMainInitializeSection_RQT() + "\n";
-                string retttrim = rett.Trim();
-                ret = retttrim == "" ? ret : ret + rett + "\n";
+                if (item.AOType == AOTypeEnum.AOSurrogatePattern)
+                {
+                    string rett = ((ISurrogateAO)item).GenerateAO_SURROGATE_INIT_RQT() + "\n";
+                    string retttrim = rett.Trim();
+                    ret = retttrim == "" ? ret + "" : ret + rett;
+
+                }
             }
             return ret;
+
         }
+
+
 
 
         //public static string All_GenerateMainClockSetupsSection()
@@ -584,8 +273,7 @@ namespace CgenMin.MacroProcesses
 
 
 
-        public static int numOfAOSoFarAEConfigGenerated { get { return _numOfAOSoFarAEConfigGenerated; } protected set { _numOfAOSoFarAEConfigGenerated = value; } }
-        protected static int _numOfAOSoFarAEConfigGenerated = 0;
+ 
 
         public bool IsGeneratedConfg { get { return isGeneratedConfg; } protected set { isGeneratedConfg = value; } }
         public bool isGeneratedConfg = false;
