@@ -1,34 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj": {}
+    "/home/hadi/QR_Sync/CgenMin/MacroTests/MacroTests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj": {
+    "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj",
+        "projectUniqueName": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
         "projectName": "CgenMin",
-        "projectPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj",
-        "packagesPath": "C:\\Users\\hadi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\obj\\",
+        "projectPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
+        "packagesPath": "/home/hadi/.nuget/packages/",
+        "outputPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\hadi\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "/home/hadi/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -41,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -67,8 +53,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -77,43 +62,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.133/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj": {
+    "/home/hadi/QR_Sync/CgenMin/MacroTests/MacroTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj",
+        "projectUniqueName": "/home/hadi/QR_Sync/CgenMin/MacroTests/MacroTests.csproj",
         "projectName": "MacroTests",
-        "projectPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\MacroTests.csproj",
-        "packagesPath": "C:\\Users\\hadi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\MacroTests\\obj\\",
+        "projectPath": "/home/hadi/QR_Sync/CgenMin/MacroTests/MacroTests.csproj",
+        "packagesPath": "/home/hadi/.nuget/packages/",
+        "outputPath": "/home/hadi/QR_Sync/CgenMin/MacroTests/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\hadi\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "/home/hadi/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj": {
-                "projectPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj"
+              "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj": {
+                "projectPath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj"
               }
             }
           }
@@ -122,11 +98,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -160,8 +131,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -170,7 +140,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/6.0.133/RuntimeIdentifierGraph.json"
         }
       }
     }

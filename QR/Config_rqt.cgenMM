@@ -1,0 +1,66 @@
+#pragma once
+
+
+//####################################
+//AE Settings
+//####################################
+
+@AESettingsDefines@
+
+
+
+
+
+
+
+//####################################
+//AO defines
+//####################################
+
+@AODefines@
+
+
+//####################################
+//AE hal defines
+//####################################
+
+@AEHalDefines@
+
+
+
+
+#define PROJECT_NAME @PROJECT_NAME@
+
+
+#include <string>
+
+#include <cereal/archives/xml.hpp>
+#include <cereal/archives/json.hpp>
+
+
+##UserCode_c
+
+namespace @PROJECT_NAME@_rqt {
+ 
+@QR_SETTING@
+
+##UserCode_d
+
+#ifdef ROS2_PROJECT
+extern QR_Settings QRSettings;
+#endif
+
+}
+
+
+
+
+
+
+
+
+
+
+
+ 
+

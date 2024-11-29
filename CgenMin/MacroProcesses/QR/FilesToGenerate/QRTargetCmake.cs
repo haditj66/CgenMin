@@ -94,9 +94,9 @@ namespace CgenMin.MacroProcesses.QR
 
 
             //write the contents to the file at DepNames.cmake. This file will be called to write modules to the QR_Find_List_Of_Ros_Packages
-            string modules_depends_cp = "set(MODULE_DEPENDS_CP " + string.Join(" ", QRTarget_lib.CPP_Module_Dependencies) + ")";
-                string modules_depends_rqt = "set(MODULE_DEPENDS_RQT " + string.Join(" ", QRTarget_lib.ROSQT_Module_Dependencies) + ")";
-                string modules_depends_if = "set(MODULE_DEPENDS_IF " + string.Join(" ", QRTarget_lib.IF_Module_Dependencies) + ")";
+            string modules_depends_cp = "set(MODULE_DEPENDS_CP " + string.Join(";", QRTarget_lib.CPP_Module_Dependencies) + ")";
+                string modules_depends_rqt = "set(MODULE_DEPENDS_RQT " + string.Join(";", QRTarget_lib.ROSQT_Module_Dependencies) + ")";
+                string modules_depends_if = "set(MODULE_DEPENDS_IF " + string.Join(";", QRTarget_lib.IF_Module_Dependencies) + ")";
                 //write out to file at PathToTargetFile_DepNames
                 string modules_depends_str = modules_depends_cp + "\n" + modules_depends_rqt + "\n" + modules_depends_if;
                 File.WriteAllText(PathToTargetFile_DepNames, modules_depends_str);
@@ -125,6 +125,7 @@ namespace CgenMin.MacroProcesses.QR
                 string TargetsEXE = "";
                 foreach (var item in targetsExe)
                 {
+                var rtrt = QRTarget.sscsc();
                     //get the targets that it wants to link to
                     dependsStr = item.LibraryDependenciesTargetFULLNames;
                     string TargetLinks = "";

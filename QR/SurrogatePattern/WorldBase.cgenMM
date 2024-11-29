@@ -19,7 +19,8 @@ class @AONAME@Base : public QR_AO
 public:
 
     @AONAME@Base(@MODULENAME@_i::msg::@AONAME@Data thedata ): data(thedata){
-
+		_isReal = true;
+		
         //add object to the pool.
         mutexForObjectPool.lock();
         objectPool.push_back(this);
@@ -28,7 +29,8 @@ public:
     }
 
     @AONAME@Base(std::string id )  {
-
+	
+			
         @MODULENAME@_i::msg::@AONAME@Data thedata;
         thedata.id = id;
         data = thedata;
@@ -68,7 +70,7 @@ public:
     //when trying to get an AO.
     static @AONAME@Base* GetObjectFromPool(std::string id)
     {
-        return _GetObjectFromPool(id, false);
+        return _GetObjectFromPool(id);
     }
 
 protected:
@@ -86,8 +88,39 @@ protected:
     //shold not be called from the user.
     static @AONAME@Base* _GetObjectFromPoolReal(std::string id)
     {
-        return _GetObjectFromPool(id, true);
+        return _GetObjectFromPool(id);
     }
+
+	//go through all objects and look for one that matches the object's id. however prioritize finding the surrogate one first
+	//as this is the one that protects against race conditions as the service calls assures one at a time execution. 
+	static @AONAME@Base* _GetObjectFromPool(std::string id)
+	{
+		mutexForObjectPool.lock();
+		
+		@AONAME@Base* ret = nullptr; // Store a real object if found
+		for (@AONAME@Base* o : objectPool)
+		{
+			if (id == o->Getid()) // Check if the object's id matches
+			{
+				if (o->_isReal == false)
+				{
+					// If it's not real and matches the requirement, return it immediately
+					mutexForObjectPool.unlock();
+					return o;
+				}
+				else if (ret == nullptr)
+				{
+					// Store the first  real object found
+					ret = o;
+				}
+			}
+		}
+		
+		 mutexForObjectPool.unlock();
+		// If no real object is found, return the stored non-real object or nullptr if none was found
+		return ret;
+	}
+
 
     static @AONAME@Base* _GetObjectFromPool(std::string id, bool isForReal)
     {
@@ -148,7 +181,7 @@ public:
     
 
 protected:
-    @AONAME@Base_cppobj(): @AONAME@Base(){}
+    @AONAME@Base_cppobj(): @AONAME@Base(){_isReal = true; }
 };
 
 

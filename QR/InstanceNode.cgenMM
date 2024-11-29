@@ -56,28 +56,50 @@ using std::placeholders::_2;
  
 ##UserCode_section1
 
+//==========================
+//PUB_HEADER SUB_HEADER
+@PUB_HEADER@
+@SUB_HEADER@
+
+
 /*****************************************************************************
   ** Class
   *****************************************************************************/
-class @INSTANCENAME@ : public rclcpp::Node@ISSURROGATE_INHERIT@   //, public WorldNodeAO
+class @AONAME@Node : public rclcpp::Node@ISSURROGATE_INHERIT1@   //, public WorldNodeAO
 {
 public:
-
+ 
+	##UserCode_pub
+	
+	@ISSURROGATE_INHERIT2@ 
+ 
 	//WNFUNCTION_SERVICES
 	@WNFUNCTION_SERVICES@
 
+	@ISSURROGATE_FORNODE_DEC@
 
     COMPOSITION_PUBLIC
-        explicit @INSTANCENAME@(const rclcpp::NodeOptions & options)
+        explicit @AONAME@Node(const rclcpp::NodeOptions & options)
         : Node(AO_NAME, options) {
+			
+			@ISSURROGATE_INHERIT3@
+			
+			##UserCode_constr1
 			
 			//WNFUNCTION_SERVICES_DEFINES
 			@WNFUNCTION_SERVICES_DEFINES@
-			
+			  
 			this->ForNode = this;
 			
-			
 			@TIMER_DEFINES@
+			
+			##UserCode_constr2
+			
+			
+			//==========================
+			//PUBLISHER_DEFINE SUBSCRIBER_DEFINE 
+			@SUBSCRIBER_DEFINE@
+			@PUBLISHER_DEFINE@
 			
 			}
 
@@ -97,13 +119,10 @@ private:
 	##UserCode_priv
 	
 
-      /*********************
-      ** Publishers
-      **********************/
- 
-      /*********************
-      ** Subscribers
-      **********************/
+	//==========================
+	//PUB_DECLARE SUB_DECLARE 
+	@SUBSCRIBER_DECLARE@
+	@PUBLISHER_DECLARE@
 		
 	  /*********************
       ** Timers
@@ -113,15 +132,24 @@ private:
 
 public:
 
-      /*********************
-      ** Subscriber callback declarations
-      **********************/
+	//=====================================
+	//PUBLISHER_FUNCTION
+	//=====================================
+	@PUBLISHER_FUNCTION@
+		
+	//=====================================
+	//SUBSCRIBER_FUNCTION_CALLBACK
+	//=====================================
+	@SUBSCRIBER_FUNCTION_CALLBACK@
 	  
 	  /*********************
       ** Timers callbacks
       **********************/
 	
 	  @TIMER_FUNC_IMPS@
+	  
+	  
+	  
 	  
 };
 

@@ -40,9 +40,9 @@
 
 ##UserCode_c
 
-namespace @PROJECT_NAME@ {
+namespace @PROJECT_NAME@_cp {
  
-
+@QR_SETTING@
 
 ##UserCode_d
 

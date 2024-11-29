@@ -1,6 +1,8 @@
 ﻿using CodeGenerator.MacroProcesses.AESetups;
+using CodeGenerator.ProblemHandler;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -51,6 +53,34 @@ namespace CgenMin.MacroProcesses.QR
             return basePathOfModule;
 
         }
+
+        public static string GetModuleNameForType(Type type)
+        {
+            var t = type;// typeof(T);// this.GetType();
+            var ns = t.Namespace;
+
+
+            //get all types of QRProject that are in the assembly of this namespace 
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRProject)))).ToList();
+
+            //if there are more than 2 types of QRproject, then give a problem as there should only be one in one namespace
+            if (types.Count > 1)
+            {
+                ProblemHandle problemHandle = new ProblemHandle();
+                problemHandle.ThereisAProblem($"There are more than one type of QRProject in the namespace {ns}. There should only be one type of QRProject in one namespace");
+            }
+            else if (types.Count == 0)
+            {
+                return "";
+            }
+            return types[0].Name;
+        }
+
+        public static string GetModuleNameForType<T>()
+        {
+            return GetModuleNameForType(typeof(T));
+        }
+
         public static string GetRunningDirectoryFromProjectName(string projectName)
         {
 
@@ -119,7 +149,7 @@ namespace CgenMin.MacroProcesses.QR
         {
             var pr = GetAllCurrentAEProjects();
 
-            return pr.Where(p => SameDirectory(ofDir, p.DirectoryOfLibrary)).FirstOrDefault();
+            return pr.Where(p => SameDirectory(ofDir, p.DirectoryOfProject)).FirstOrDefault();
 
         }
 
@@ -153,7 +183,7 @@ namespace CgenMin.MacroProcesses.QR
 
             ProjectTestName = projectTargetName;
 
-            
+
 
             TheMacro2Session = this;
 
@@ -165,7 +195,7 @@ namespace CgenMin.MacroProcesses.QR
                 probhandler.ThereisAProblem($"project of name {RunningProjectName} did not exist.");
             }
 
-            RunningProjectDir = projToGenerate.DirectoryOfLibrary;
+            RunningProjectDir = projToGenerate.DirectoryOfProject;
 
 
 
@@ -182,8 +212,7 @@ namespace CgenMin.MacroProcesses.QR
                 this.probhandler.ThereisAProblem($"the AEInit class of projectName {RunningProjectName}  does exist");
             }
 
-            QRProject aeProject = (QRProject)Activator.CreateInstance(typeProcessToRun);
-            aeProject.Init();
+
             //aeProject.InitAE();
 
             //get the project test lists
@@ -194,7 +223,6 @@ namespace CgenMin.MacroProcesses.QR
             //          .SelectMany(t => t.GetMethods())
             //          .Where(m => m.GetCustomAttributes(typeof(AEEXETest), false).Length > 0)
             //          .ToArray(); 
-
 
 
 
@@ -221,25 +249,89 @@ namespace CgenMin.MacroProcesses.QR
 
             //var peripheralslib = aeProject.PeripheralsInLibrary;
 
-            //this will run the selected target for the project
+            //=====================================================
+            //generate all events in module, saves events created. 
+            //QRProject aeProjectToGetAllEvts = (QRProject)Activator.CreateInstance(typeProcessToRun);
+            //aeProjectToGetAllEvts.Init();
+            //aeProjectToGetAllEvts.GenerateAllTestForModule();
+            //string allEVTcmake = "";
+            //foreach (var evtsTarg in QREvent.AllAEEvents)
+            //{
+            //    //to make sure there are not duplicates, check if the name is already there 
+            //    allEVTcmake += "\n\n" + evtsTarg.GenerateCmakeCommand();
+
+            //}
+
+            //QRTarget.Reset();
+            //AOWritableToAOClassContents.Reset();
+            //QRProject.Reset();
+            //ROSSubPub.Reset();
+            //QREvent.Reset();
+
+
+            //=====================================================
+            //run the selected target for the project
+            QRProject aeProject = (QRProject)Activator.CreateInstance(typeProcessToRun);
+            aeProject.Init();
+
             QREvent.TargetStartRun();
             QRConfig aEConfig = aeProject.GenerateTestOfName(projectTargetName);
             QREvent.TargetEndRun();
 
 
 
-            //generate the cmake command for all the events ===================================================
-            string allEVTcmake = "";
-            foreach (var evtsTarg in QREvent.AllSelectedTargetEvents)
-            {
-                allEVTcmake += "\n\n"+evtsTarg.GenerateCmakeCommand();
-            }
-            this.WriteFileContents_FromCGENMMFile_ToFullPath(
-                "QR\\InterfaceTargets",
-                Path.Combine(QRInitializing.RunningProjectDir, "rosqt","IF", "InterfaceTargets.cmake"),
-                true, false,
-                 new MacroVar() { MacroName = "EMPTY", VariableValue = allEVTcmake } 
-                 );
+
+
+            //this will write to a file that will have all interfaces for this exe target. But first, we need to get all the interfaces from all files that have file name InterfaceTargets_filename the name will be under the line that says NAME_OF_MESSAGE.
+            //get all files that have naming convention InterfaceTargets_filename.cmake
+            //string pathToInterfaceTargets = Path.Combine(QRInitializing.RunningProjectDir, "rosqt", "IF");
+            //string[] files = Directory.GetFiles(pathToInterfaceTargets, "InterfaceTargets_*.cmake");
+            //List<string> interfaceNamesAlreadyThere = new List<string>();
+            //foreach (string file in files)
+            //{
+            //    if (File.Exists(file))
+            //    {
+            //        string[] lines = File.ReadAllLines(file);
+            //        for (int i = 0; i < lines.Length; i++)
+            //        //foreach (string line in lines)
+            //        {
+            //            if (lines[i].Contains("NAME_OF_MESSAGE\n"))
+            //            {
+            //                //the next line will have the name of the interface
+            //                interfaceNamesAlreadyThere.Add(lines[i + 1]);
+            //            }
+            //        }
+            //    } 
+            //}
+
+            //string pathToInterfaceTargets1 = Path.Combine(QRInitializing.RunningProjectDir, "rosqt", "IF", "srv");
+            //string pathToInterfaceTargets2 = Path.Combine(QRInitializing.RunningProjectDir, "rosqt", "IF", "msg");
+            //string[] files1 = Directory.GetFiles(pathToInterfaceTargets1, "*.srv");
+            //string[] files2 = Directory.GetFiles(pathToInterfaceTargets2, "*.msg");
+            ////append the two arrays
+            //string[] files = new string[files1.Length + files2.Length];
+            //List<string> interfaceNamesAlreadyThere = new List<string>();
+            //foreach (string file in files)
+            //{
+            //    string[] lines = File.ReadAllLines(file);
+            //    for (int i = 0; i < lines.Length; i++)
+            //    //foreach (string line in lines)
+            //    {
+            //        if (lines[i].Contains("NAME_OF_MESSAGE\n"))
+            //        {
+            //            //the next line will have the name of the interface
+            //            interfaceNamesAlreadyThere.Add(lines[i + 1]);
+            //        }
+            //    }
+
+            //    if (File.Exists(file))
+            //    {
+            //        //get the file name
+            //        string fileName = Path.GetFileName(file);
+            //        interfaceNamesAlreadyThere.Add(fileName);
+            //    }
+            //}
+
             //=================================================================================================
 
 
@@ -249,8 +341,8 @@ namespace CgenMin.MacroProcesses.QR
             {
                 fsm.GenerateDOTDiagramFromUML();
             }
-            
-            
+
+
 
 
             string aeconfig = AO.All_GenerateAEConfigSection();
@@ -258,11 +350,17 @@ namespace CgenMin.MacroProcesses.QR
             //string linksInit = AO.All_GenerateMainLinkSetupsSection();
             //string funcInit = AO.All_GenerateFunctionDefinesSection();
 
-
+            QRSetting qrsetting = new QRSetting();// aeProject.GetQRSetting();
 
             //AEConfig aEConfig = new AEConfig();
-            aEConfig.GenerateFile(RunningProjectDir, this, aeconfig, "");
+            aEConfig.GenerateFile(RunningProjectDir, this, aeconfig, "", qrsetting);
 
+
+            //generate all cereal settings files
+            foreach (var setting in aeProject.GetTargetSetting())
+            {
+                setting.GenerateFile();
+            }
 
             //AOWritableToAOClassContents.WriteAllFileContents();
 
@@ -273,7 +371,7 @@ namespace CgenMin.MacroProcesses.QR
             //Console.WriteLine($"generating AEConfig.h ");
             //WriteFileContentsToFullPath(aeConfigOUT, Path.Combine(RunningProjectDir, "conf", "AEConfig.h"), "h", true);
 
- 
+
 
 
             //            rt(CGEN_PROJECT_DIRECTORY "@DependDir@")
@@ -326,46 +424,85 @@ namespace CgenMin.MacroProcesses.QR
             ////create testname.cpp file
             //Console.WriteLine($"generating {projectTest}.cpp ");
 
-            
-           
+
+
             if (RunningTarget.qRTargetType == QRTargetType.cpp_exe)
             {
-                string MAINHEADER_CP = AO.All_GenerateMainHeaderSection_CP();
-                string MAININIT_CP = AO.All_GenerateMainInitializeSection_CP();
+                string AO_DESCRIPTIONS = AO.All_GenerateAO_DESCRIPTIONS_CP();
+                string AO_MAINHEADER = AO.All_GenerateAO_MAINHEADER_CP();
+                string AO_MAININIT = AO.All_GenerateAO_MAININIT_CP();
+                string AO_DECLARES = AO.All_GenerateAO_DECLARES_CP();
+                string AO_DEFINE_COMMENTS = AO.All_GenerateAO_DEFINE_COMMENTS_CP();
 
                 WriteFileContents_FromCGENMMFile_ToFullPath(
                    "QR\\QRMain_cp",
-                   Path.Combine(RunningProjectDir,"src", $"{projectTargetName}_QRmain.cpp"),
+                   Path.Combine(RunningProjectDir, "src", $"{projectTargetName}_QRmain.cpp"),
                    true, true,
-                    new MacroVar() { MacroName = "ProjectName", VariableValue = RunningProjectName },
+                    new MacroVar() { MacroName = "MODULENAME", VariableValue = RunningProjectName },
                     new MacroVar() { MacroName = "ProjectTest", VariableValue = projectTargetName },
-                    new MacroVar() { MacroName = "MAINHEADER_CP", VariableValue = MAINHEADER_CP }, 
-                    new MacroVar() { MacroName = "MAININIT_CP", VariableValue = MAININIT_CP } 
+                    new MacroVar() { MacroName = "AO_DESCRIPTIONS", VariableValue = AO_DESCRIPTIONS },
+                    new MacroVar() { MacroName = "AO_MAINHEADER", VariableValue = AO_MAINHEADER },
+                    new MacroVar() { MacroName = "AO_MAININIT", VariableValue = AO_MAININIT },
+                    new MacroVar() { MacroName = "AO_DECLARES", VariableValue = AO_DECLARES },
+                    new MacroVar() { MacroName = "AO_DEFINE_COMMENTS", VariableValue = AO_DEFINE_COMMENTS }
                    );
 
             }
             else if (RunningTarget.qRTargetType == QRTargetType.rosqt_exe)
             {
-
-                string MAINHEADER_RQT = AO.All_GenerateMainHeaderSection_RQT();
-                string MAININIT_RQT = AO.All_GenerateMainInitializeSection_RQT();
-
+                string AO_DESCRIPTIONS = AO.All_GenerateAO_DESCRIPTIONS_RQT();
+                string AO_MAINHEADER = AO.All_GenerateAO_MAINHEADER_RQT();
+                string AO_MAININIT = AO.All_GenerateAO_MAININIT_RQT();
+                string AO_DECLARES = AO.All_GenerateAO_DECLARES_RQT();
+                string AO_DEFINE_COMMENTS = AO.All_GenerateAO_DEFINE_COMMENTS_RQT();
+                string AO_SURROGATE_INIT = AO.All_GenerateAO_SURROGATE_INIT_RQT();
 
 
                 WriteFileContents_FromCGENMMFile_ToFullPath(
                 "QR\\QRMain_rqt",
                 Path.Combine(RunningProjectDir, "rosqt", "src", $"{projectTargetName}_QRmain.cpp"),
                 true, true,
-                 new MacroVar() { MacroName = "ProjectName", VariableValue = RunningProjectName },
-                 new MacroVar() { MacroName = "ProjectTest", VariableValue = projectTargetName },
-                 new MacroVar() { MacroName = "MAINHEADER_RQT", VariableValue = MAINHEADER_RQT }, 
-                 new MacroVar() { MacroName = "MAININIT_RQT", VariableValue = MAININIT_RQT }  
+                 new MacroVar() { MacroName = "MODULENAME", VariableValue = RunningProjectName },
+                    new MacroVar() { MacroName = "AO_DESCRIPTIONS", VariableValue = AO_DESCRIPTIONS },
+                    new MacroVar() { MacroName = "AO_MAINHEADER", VariableValue = AO_MAINHEADER },
+                    new MacroVar() { MacroName = "AO_MAININIT", VariableValue = AO_MAININIT },
+                    new MacroVar() { MacroName = "AO_DECLARES", VariableValue = AO_DECLARES },
+                    new MacroVar() { MacroName = "AO_DEFINE_COMMENTS", VariableValue = AO_DEFINE_COMMENTS },
+                    new MacroVar() { MacroName = "AO_SURROGATE_INIT", VariableValue = AO_SURROGATE_INIT }
                 );
             }
 
-       
+
 
             AOWritableToAOClassContents.WriteAllFileContents();
+
+
+
+            //======================================================================================================
+            //generate the cmake command for all the events ===================================================
+            QRProject aeProjectToGetAllEvts = (QRProject)Activator.CreateInstance(typeProcessToRun);
+            aeProjectToGetAllEvts.Init();
+            aeProjectToGetAllEvts.GenerateAllTestForModule();
+
+            string allEVTcmake = "";
+            foreach (var evtsTarg in QREvent.AllAEEvents)
+            {
+                if (evtsTarg.FromModuleName == RunningProjectName)
+                {
+                    //to make sure there are not duplicates, check if the name is already there 
+                    allEVTcmake += "\n\n" + evtsTarg.GenerateCmakeCommand();
+                }
+
+            } 
+
+
+            this.WriteFileContents_FromCGENMMFile_ToFullPath(
+                "QR\\InterfaceTargets",
+                Path.Combine(QRInitializing.RunningProjectDir, "rosqt", "IF", $"InterfaceTargets.cmake"),
+                true, false,
+                 new MacroVar() { MacroName = "EMPTY", VariableValue = allEVTcmake }
+                 );
+
             //WriteFileContentsToFullPath(this.GenerateFileOut("AERTOS\\TargetCreation",
             //    new MacroVar() { MacroName = "AODefines", VariableValue = aeconfig }
             //    ) 

@@ -1,10 +1,12 @@
-﻿using CgenMin.MacroProcesses.QR;
+﻿using CgenMin.MacroProcesses;
+using CgenMin.MacroProcesses.QR;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CgenMin.MacroProcesses
 {
+     
 
     public interface IWriteAOClassContents
     {
@@ -39,10 +41,10 @@ namespace CgenMin.MacroProcesses
         }
 
 
-        public AOWritableToAOClassContents(string fromLibraryName, string instanceName, AOTypeEnum aOType) :
-            base(instanceName, aOType)
+        public AOWritableToAOClassContents(string fromLibraryName, string instanceName ) :
+            base(instanceName  )
         {
-            FromLibraryName = fromLibraryName;
+            FromModuleName = fromLibraryName;
             //// from this library name, I need to get the directory that it belongs to.
             ////first grab all the contents of the cmake file in C:/AERTOS/AERTOS/CMakeLists.txt .
             //string cmakeCont = File.ReadAllText(@"C:/AERTOS/AERTOS/CMakeLists.txt");
@@ -61,7 +63,12 @@ namespace CgenMin.MacroProcesses
         }
 
         public string ProjectDirectory { get => _ProjectDirectory; set => _ProjectDirectory = value; }
-        public string FromLibraryName { get; }
+        private string _FromModuleName;
+        public string FromModuleName { get { return _FromModuleName; } protected set {
+                _FromModuleName = value;
+                _ProjectDirectory = QRInitializing.GetRunningDirectoryFromProjectName(value);
+            }
+        }
 
         private string _ProjectDirectory;
 
@@ -96,6 +103,15 @@ namespace CgenMin.MacroProcesses
 
         public abstract string GetFullTemplateArgsValues();
         public abstract string GetFullTemplateArgs();
+
+        public static void Reset()
+        {
+            AllAOWritableToAOClassContents.Clear();
+            listOfAdditionalIncludes.Clear();
+            atLeastOneEvt = false;
+            AllInstancesOfAO.Clear();
+            _numOfAOSoFarAEConfigGenerated = 0;
+        }
     }
 
 }

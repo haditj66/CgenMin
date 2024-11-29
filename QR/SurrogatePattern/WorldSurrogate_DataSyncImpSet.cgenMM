@@ -1,0 +1,45 @@
+ 
+	void Set@NAME@(@TYPEOFDATA@ p) override{
+        //QR_Print("@NAME@ Set() has been entered by surrogate");
+
+
+        //await the ticket if there was a previously created set requested.
+        //this may not actually be needed but is here to assure one-at-a-time requests
+        //if(TicketFor_Set@NAME@ != nullptr)
+        //{
+            //TicketFor_Set@NAME@->AwaitRequestUntilFinished();
+        //}
+
+        //set a datasync to generate a random session number for this request
+        auto syncSession = @NAME@_datasync->GenerateSession();
+ 
+        //QR_Print("starting a set@NAME@ request.");
+ 
+        auto request = std::make_shared<qr_core::srv::Sync@TYPEOFDATASERV@::Request>();
+        request->arg1 = p;
+        request->id1 = syncSession->getArg1();
+        request->id2 = syncSession->getArg2();
+
+        auto set@NAME@_callback = [&,this](rclcpp::Client<qr_core::srv::Sync@TYPEOFDATASERV@>::SharedFuture inner_future ){
+            //unlock the ticket's mutex
+            //QR_Print("callback for service @NAME@ recieved");
+            //this->data.@NAME@ = inner_future.get()->result;
+            //this->TicketFor_Set@NAME@->MutexForTicket.unlock();
+        };
+        auto result = clientset@NAME@->async_send_request(request, set@NAME@_callback);
+
+
+
+        TicketFor_Set@NAME@ = new TicketFuture<std::shared_future<rclcpp::Client<qr_core::srv::Sync@TYPEOFDATASERV@>::SharedResponse>, void>(result.future);
+        TicketFor_Set@NAME@->MutexForTicket.lock();
+
+        @NAME@_datasync->SetHasBeenRefreshedSinceSet(false);
+
+        //you can now set the actual data update in this surrogate. the publishedchanged event wont effect this
+        //surrogate as this is the requesting surrogate
+        this->data.@NAME@ = p;
+
+        //give this ticket to the data_sync object
+        //@NAME@_datasync->TicketForData = TicketFor_Set@NAME@;
+ 
+    }

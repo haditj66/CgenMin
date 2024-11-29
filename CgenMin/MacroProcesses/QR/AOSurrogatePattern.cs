@@ -12,25 +12,41 @@ namespace CgenMin.MacroProcesses.QR
 
 
 
+   public interface ISurrogateAO 
+    {
+        public string GenerateAO_SURROGATE_INIT_RQT(); 
+    }
 
-     
 
-    public abstract class AOSurrogatePattern<TDerivedType> : AONode<TDerivedType>
+    public abstract class AOSurrogateNode<TDerivedType> : AOSurrogatePattern<TDerivedType>
+    {
+        public AOSurrogateNode(string instanceName,  bool isSurrogate) : base(instanceName, isSurrogate)
+        { 
+        }
+    }
+
+
+    public abstract class AOSurrogatePattern<TDerivedType> : AONode<TDerivedType>, ISurrogateAO
     {
 
         public bool IsSurrogate { get; }
 
-        public static List<SurrogateData> SurrogateDatas { get; private set; }
+        
         public static string DerivedClassName { get; set; }
         private static bool isInited = false;
 
         public static QREventMSG DataEvt { get; set; }
 
+        protected override AOTypeEnum GetAOType()
+        {
+            return AOTypeEnum.AOSurrogatePattern;
+        }
+
+
         //for every surrogate AO, there is a data eventMSG, and a eventSRV for every surrogate function args and response.
 
 
-
-        public AOSurrogatePattern(string AOName, bool isSurrogate) : base(AOName)
+        public AOSurrogatePattern(string instanceName, bool isSurrogate) : base(instanceName)
         {
             IsSurrogate = isSurrogate;
              
@@ -43,9 +59,7 @@ namespace CgenMin.MacroProcesses.QR
                 this.AddROSTimer(rOSTimer);
 
                 //========================================================================================
-                //Get all the SurrogateDatas. These are the properties that are marked with SurrogateData
 
-                SurrogateDatas = new List<SurrogateData>();
 
                 //get the derived class name
                 string derivedClassName = derivedType.Name;
@@ -74,14 +88,14 @@ namespace CgenMin.MacroProcesses.QR
                 }
 
                 //create the Data that every surrogate has
-                List<FunctionArgs> DataEvtFuncArgs = new List<FunctionArgs>();
-                DataEvtFuncArgs.Add(new FunctionArgs(typeof(string), "id"));
+                List<FunctionArgsBase> DataEvtFuncArgs = new List<FunctionArgsBase>();
+                DataEvtFuncArgs.Add(new FunctionArgsBase(typeof(string), "id"));
                 foreach (var item in SurrogateDatas)
                 {
-                    DataEvtFuncArgs.Add(new FunctionArgs(item._Type, item.NameOfData));
+                    DataEvtFuncArgs.Add(new FunctionArgsBase(item._Type, item.NameOfData));
                 }
 
-                DataEvt = new QREventMSG(ClassName + "Data", DataEvtFuncArgs);
+                DataEvt = new QREventMSG(this.FromModuleName, ClassName + "Data", DataEvtFuncArgs);
 
                 isInited = true;
 
@@ -108,26 +122,7 @@ namespace CgenMin.MacroProcesses.QR
         public override string GetFullTemplateArgs()
         {
             return "";
-        }
-
-        public override string GenerateMainHeaderSection_CP()
-        {
-            return "";
-        }
-
-        public override string GenerateMainInitializeSection_CP()
-        {
-            return "";
-        }
-        public override string GenerateMainHeaderSection_RQT()
-        {
-            return "";
-        }
-
-        public override string GenerateMainInitializeSection_RQT()
-        {
-            return "";
-        }
+        } 
         protected override string _GenerateAEConfigSection(int numOfAOOfThisSameTypeGeneratesAlready)
         {
             return "";
@@ -135,41 +130,168 @@ namespace CgenMin.MacroProcesses.QR
 
 
 
+        //=======================================================================================================
+        #region cgenMM Generation variables for main.cpp
+        //=======================================================================================================
+         
+        static bool GenerateAO_SURROGATE_INIT_RQT_Called_once = false;
+        public string GenerateAO_SURROGATE_INIT_RQT()
+        {
+            //GameobjectInit* ginit = new GameobjectInit(); ginit->InitializeSurrogates();
+            //GameobjectSurrogate* gObjsurr = new GameobjectSurrogate("Rock1");
+            string ret = "";
+
+            //do the first line only once per class of this surrogate
+            if (GenerateAO_SURROGATE_INIT_RQT_Called_once == false)
+            {
+                ret += $"{AONAME}Init* {AONAME}init = new {AONAME}Init(); {AONAME}init->InitializeSurrogates();\n";
+                 
+                GenerateAO_SURROGATE_INIT_RQT_Called_once = true;
+            }
+            //only do this part if this is a surrogate 
+            if (this.IsSurrogate)
+            {
+                ret += $"{AONAME}Surrogate* {InstanceName}surr = new {AONAME}Surrogate(\"{InstanceName}\");\n";
+            }
+            
+            return ret;
+        }
 
 
-        //give it argument delegate to a function that will be called in the functino for every SurrogateFunctions
 
 
-        protected string GenerateAllForEvery_SurrogateData(Func<SurrogateData, string> functionDelegate)
+
+        public override string AO_DESCRIPTIONS_CP()
+        {
+            //AO: world 
+            //instances: world 
+            //type: surrogate pattern 
+            //isSurrogate: false
+            string strIsSurrogate = IsSurrogate ? "true\n" : "false\n";
+            string ret = $"//InstanceName: {InstanceName} \n";
+            ret += $"//     AO: {AONAME}\n";
+            ret += $"//     type: {AOType.ToString()}\n";
+            ret += $"//     isSurrogate: {strIsSurrogate}"; 
+            return ret;
+        }
+        public override string AO_DESCRIPTIONS_RQT()
+        {
+            return AO_DESCRIPTIONS_CP();
+        }
+
+
+        public override string AO_MAINHEADER_CP()
+        {
+            //#include "world2_cp/World.h"
+            string ret = $"#include \"{MODULENAME}_cp/{AONAME}.h\"";
+            return ret;
+        }
+
+        static bool AO_MAINHEADER_RQT_Called_once = false;
+        public override string AO_MAINHEADER_RQT()
         {
             string ret = "";
-            foreach (var item in SurrogateDatas)
+            if (AO_MAINHEADER_RQT_Called_once == false)
             {
-                ret += functionDelegate(item) + "\n";
+
+                //#include "world2_rqt/WorldNode.hpp"
+                ret = $"#include \"{MODULENAME}_rqt/{AONAME}Node.hpp\"\n";
+                ret += $"#include \"{MODULENAME}_rqt/{AONAME}Surrogate.h\"";
+                AO_MAINHEADER_RQT_Called_once = true;
             }
             return ret;
         }
 
-        protected string PROPERTYGETANDSET(SurrogateData surrogateData)
+        public override string AO_DECLARES_CP()
         {
-            //if this is a public set, then add the set
-            string ret = $"virtual {surrogateData.TypeOfData} Get{surrogateData.NameOfData}() const = 0;";
-            string access = surrogateData.IsPublicSet ? "public:" : "protected:";
-            ret += "\n";
-            ret += $"{access} virtual void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value) = 0;";
-
-            ret += "\npublic:";
+            //WorldBase* World_cppobj;
+            string ret = $"{AONAME}* {InstanceName}_cppobj;";
             return ret;
         }
 
-        protected string PROPERTYIMPL(SurrogateData surrogateData)
+        public override string AO_DECLARES_RQT()
+        {
+            //only do this part if this is not a surrogate
+            string ret = "";
+            if (this.IsSurrogate == false)
+            {
+                ret = AO_DECLARES_CP();
+            }
+            else
+            {
+                //WorldSurrogate* World1surr;
+                ret = $"{AONAME}Surrogate* {InstanceName}surr;";
+            }
+            return ret;
+        }
+
+
+        public override string AO_DEFINE_COMMENTS_CP()
+        { 
+
+            //only do this part if this is not a surrogate
+            string ret = "";
+            if (this.IsSurrogate == false)
+            {
+                //example for @AONAME@: @AONAME@_cppobj = new @AONAME@(...);  
+                ret = $"//example for {AONAME} of {InstanceName}: {InstanceName}_cppobj = new {AONAME}(...);";
+            }
+            return ret;
+        } 
+        public override string AO_DEFINE_COMMENTS_RQT()
+        {
+            return AO_DEFINE_COMMENTS_CP();
+        }
+
+        public override string AO_MAININIT_RQT()
+        {
+            //only do this part if this is not a surrogate
+            string ret = "";
+            if (this.IsSurrogate == false)
+            {
+                //auto wAO = QR_Core::CreateNode<world2_rqt::WorldNode>(&exec, "WorldNode");
+                //wAO->Init(&w); 
+                ret += $"auto {InstanceName}_nodeobj = QR_Core::CreateNode <{MODULENAME}_rqt::{AONAME}Node> (&exec, \"{InstanceName}\");\n";
+                ret += $"{InstanceName}_nodeobj->Init({InstanceName}_cppobj);\n";
+            } 
+            return ret;
+        }
+        public override string AO_MAININIT_CP()
+        {
+            return "";
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+        protected string PROPERTYGETANDSET(SurrogateData surrogateData)
         {
             //if this is a public set, then add the set
-            string ret = $"{surrogateData.TypeOfData} Get{surrogateData.NameOfData}() const" + "{{" + $"return this->data.{surrogateData.NameOfData};" + "}}";
-            string access = surrogateData.IsPublicSet ? "public:" : "protected:";
+            string ret = $"virtual {surrogateData.TypeOfData} Get{surrogateData.NameOfData}() const = 0;"; 
             ret += "\n";
-            ret += $"{access} void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value)" + "{" + $"this->data.{surrogateData.NameOfData} = value;" + "}";
-
+            if (surrogateData.IsPublicSet == true)
+            {
+                ret += $"public: virtual void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value) = 0;";
+            }
+            else
+            {
+                ret += $"protected: void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value) ";
+                ret += "{";
+                ret += $" data.{surrogateData.NameOfData} = value;";
+                ret += "}"; 
+            }
             ret += "\npublic:";
             return ret;
         }
@@ -210,11 +332,12 @@ namespace CgenMin.MacroProcesses.QR
 
             //if this is a public set, then add the set
             //I need to get the return type of the surrogateData and the argument type of the surrogateData and capitalize the first letter
+            // rclcpp::Service<qr_core::srv::SyncInt64>::SharedPtr servicesetposx;
             string argCap = char.ToUpper(surrogateData.TYPEASINSERVICE(false)[0]) + surrogateData.TYPEASINSERVICE(false).Substring(1);
-            string ret = $"rclcpp::Service<qr_core::srv::{argCap}{argCap}>::SharedPtr serviceset{surrogateData.NameOfData};";
+            string ret = $"rclcpp::Service<qr_core::srv::Sync{argCap}>::SharedPtr serviceset{surrogateData.NameOfData};";
 
             //add the event to the SurrogateDataEventsDeclared_HEADERS so to be able to include it in the headers
-            PROPERTYEVTS_HEADERS.Add($"#include \"qr_core/srv/{argCap.ToLower()}_{argCap.ToLower()}.hpp\"");
+            PROPERTYEVTS_HEADERS.Add($"#include \"qr_core/srv/sync_{argCap.ToLower()}.hpp\"");
             PROPERTYEVTS_HEADERS.Add($"#include \"qr_core/msg/void_{argCap.ToLower()}_changed.hpp\"");
 
             return ret;
@@ -231,7 +354,7 @@ namespace CgenMin.MacroProcesses.QR
             //if this is a public set, then add the set
             //I need to get the return type of the surrogateData and the argument type of the surrogateData and capitalize the first letter
             string argCap = char.ToUpper(surrogateData.TYPEASINSERVICE(false)[0]) + surrogateData.TYPEASINSERVICE(false).Substring(1);
-            string ret = $"serviceset{surrogateData.NameOfData} =  TheDataAccessManagerNode->create_service<qr_core::srv::{argCap}{argCap}>(";
+            string ret = $"serviceset{surrogateData.NameOfData} =  TheDataAccessManagerNode->create_service<qr_core::srv::Sync{argCap}>(";
             ret += $"cppobj->Getid() + \"/set{surrogateData.NameOfData}\", std::bind(&{this.AONAME}NodeAO::Set{surrogateData.NameOfData}Callback, this, _1, _2));";
 
             return ret;
@@ -268,56 +391,6 @@ namespace CgenMin.MacroProcesses.QR
         }
 
 
-        protected string GenerateAllForEvery_SurrogateFunction(Func<ServiceFunction, string> functionDelegate)
-        {
-            string ret = "";
-            foreach (var item in SurrogateServiceFunctions)
-            {
-                ret += functionDelegate(item) + "\n";
-            }
-            return ret;
-        }
-
-        protected string AOFUNCTION(ServiceFunction surrogateFunction)
-        {
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction",
-                    new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
-                    new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.ARGS },
-                    new MacroVar() { MacroName = "ARGRETURN", VariableValue = surrogateFunction.ARGRETURN });
-            return ret;
-        }
-        protected string AOFUNCTION_TICKET(ServiceFunction surrogateFunction)
-        {
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunctionTicket",
-                    new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                    new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION }
-                    );
-            return ret;
-        }
-        protected string AOFUNCTION_CLIENT(ServiceFunction surrogateFunction)
-        {
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunctionClient",
-                    new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                    new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION });
-            return ret;
-        }
-        protected string AOFUNCTION_CLIENT_DECLARE(ServiceFunction surrogateFunction)
-        {
-            return $"rclcpp::Client<{this.MODULENAME}_i::srv::{surrogateFunction.NAMEOFFUNCTION}>::SharedPtr client{surrogateFunction.NAMEOFFUNCTION};";
-        }
-
-        protected string AOFUNCTION_IMP(ServiceFunction surrogateFunction)
-        {
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_Imp",
-                    new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                    new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
-                    new MacroVar() { MacroName = "ARGRETURN", VariableValue = surrogateFunction.ARGRETURN },
-                    new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.GenerateAllForEvery_Arguments(surrogateFunction.ARG, ",") },
-                    new MacroVar() { MacroName = "ARG_FILL_REQUEST_DATAS", VariableValue = surrogateFunction.GenerateAllForEvery_Arguments(surrogateFunction.ARG_FILL_REQUEST_DATA, "\n") },
-                    new MacroVar() { MacroName = "ARGSNAME", VariableValue = surrogateFunction.ARGSNAME() }
-                    );
-            return ret;
-        }
         protected string AOFUNCTION_CPPOBJ(ServiceFunction surrogateFunction)
         {
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_cppobj",
@@ -325,7 +398,7 @@ namespace CgenMin.MacroProcesses.QR
                     new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
                     new MacroVar() { MacroName = "ARGRETURN", VariableValue = surrogateFunction.ARGRETURN },
-                    new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.GenerateAllForEvery_Arguments(surrogateFunction.ARG, ",") },
+                    new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.GenerateAllForEvery_Arguments(FunctionArgsBaseExtension.ARG, ",") },
                     new MacroVar() { MacroName = "ARGSNAME", VariableValue = surrogateFunction.ARGSNAME() },
                     new MacroVar() { MacroName = "COMMA_IF_ARGSNAME", VariableValue = surrogateFunction.ARGSNAME() == "" ? "" : "," }
                     );
@@ -337,7 +410,7 @@ namespace CgenMin.MacroProcesses.QR
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_Real_Imps",
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
                     new MacroVar() { MacroName = "ARGRETURN", VariableValue = surrogateFunction.ARGRETURN },
-                    new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.GenerateAllForEvery_Arguments(surrogateFunction.ARG, ",") }
+                    new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.GenerateAllForEvery_Arguments(FunctionArgsBaseExtension.ARG, ",") }
                     );
             return ret;
         }
@@ -362,7 +435,21 @@ namespace CgenMin.MacroProcesses.QR
         //}
 
 
+        protected string PROPERTYIMPL_CPPOBJ(SurrogateData surrogateData)
+        {
+            //if this is a public set, then add the set
+            string ret = $"{surrogateData.TypeOfData} Get{surrogateData.NameOfData}() const" + "{{" + $"return this->data.{surrogateData.NameOfData};" + "}}";
+            string access = surrogateData.IsPublicSet ? "public:" : "protected:";
+            ret += "\n";
 
+            if (surrogateData.IsPublicSet == true)
+            {
+                 ret += $"{access} void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value)" + "{" + $"this->data.{surrogateData.NameOfData} = value;" + "}";
+            }
+
+            ret += "\npublic:";
+            return ret;
+        }
         public string WNPLACEHOLDERARGS()
         {
             //go through every function and get the arguments count and get the largest one
@@ -390,57 +477,64 @@ namespace CgenMin.MacroProcesses.QR
 
         protected override List<RelativeDirPathWrite> _WriteTheContentedToFiles()
         {
-            //there are many files associated with this AO. These are all the files
+            var ret = new List<RelativeDirPathWrite>();
 
-            //Here is the hierarchy of the files
-            //                          WorldBase
-            //                          /       \
-            //                         /         \      
-            //             WorldBase_cppobj       \
-            //                       /            \
-            //                      /              \
-            //                  World         WorldSurrogate  
+            //dont do any of the bottom if the AO is not from the running project
+            if (this.MODULENAME == QRInitializing.RunningProjectName)
+            {
 
-            //                        WorldInit
+                //there are many files associated with this AO. These are all the files
 
-            //                        WorldNodeAO --> World 
-            //                             |
-            //                             |
-            //                        InstanceNode
+                //Here is the hierarchy of the files
+                //                          WorldBase
+                //                          /       \
+                //                         /         \      
+                //             WorldBase_cppobj       \
+                //                       /            \
+                //                      /              \
+                //                  World         WorldSurrogate  
 
-            //here are .h files. 
-            //WorldBase.h:  WorldBase - WorldBase_cppobj
-            //      includes=> All interfaces
-            //            
-            //World.h:  World
-            //      includes=> WorldBase.h
-            //
-            //WorldSurrogate.h: WorldSurrogate - WorldInit
-            //      includes=> World.h
-            //
-            //WorldNodeAO.h: WorldNodeAO  
-            //      includes=> World.h
-            //
-            //InstanceNode.hpp: InstanceNode
-            //      includes=> WorldNodeAO.h
+                //                        WorldInit
 
-            //---------------------------------------------------------------------------------------------------
-            //World: this is the class that is just the simple cpp object. This is the one the user fills logic with.
+                //                        WorldNodeAO --> World 
+                //                             |
+                //                             |
+                //                        InstanceNode
 
-            //---------------------------------------------------------------------------------------------------
-            //WorldSurrogate: this is the class ROS will use to take place of the world object. It is a surrogate that
-            //will be used to forward messages to whereever the real WorldAO is
+                //here are .h files. 
+                //WorldBase.h:  WorldBase - WorldBase_cppobj
+                //      includes=> All interfaces
+                //            
+                //World.h:  World
+                //      includes=> WorldBase.h
+                //
+                //WorldSurrogate.h: WorldSurrogate - WorldInit
+                //      includes=> World.h
+                //
+                //WorldNodeAO.h: WorldNodeAO  
+                //      includes=> World.h
+                //
+                //InstanceNode.hpp: InstanceNode
+                //      includes=> WorldNodeAO.h
 
-            //---------------------------------------------------------------------------------------------------
-            //WorldInit: this is a node that is responsible for creating the surrogates AO when the real one is created.
-            //The real AO sends an event when it is created that WorldInit will use.
+                //---------------------------------------------------------------------------------------------------
+                //World: this is the class that is just the simple cpp object. This is the one the user fills logic with.
 
-            //---------------------------------------------------------------------------------------------------
-            //WorldNodeAO: This is the real AO object for ROS. this class will be the one to handle any ROS calls to it
-            //where it will simply forward those calls to the cpp object it has.
+                //---------------------------------------------------------------------------------------------------
+                //WorldSurrogate: this is the class ROS will use to take place of the world object. It is a surrogate that
+                //will be used to forward messages to whereever the real WorldAO is
 
-            //---------------------------------------------------------------------------------------------------
-            //InstanceNode: This is the instance of the WorldNodeAO. You can have multiple instances of nodes of type WorldnodeAO .
+                //---------------------------------------------------------------------------------------------------
+                //WorldInit: this is a node that is responsible for creating the surrogates AO when the real one is created.
+                //The real AO sends an event when it is created that WorldInit will use.
+
+                //---------------------------------------------------------------------------------------------------
+                //WorldNodeAO: This is the real AO object for ROS. this class will be the one to handle any ROS calls to it
+                //where it will simply forward those calls to the cpp object it has.
+
+                //---------------------------------------------------------------------------------------------------
+                //InstanceNode: This is the instance of the WorldNodeAO. You can have multiple instances of nodes of type WorldnodeAO .
+
 
 
 
@@ -449,11 +543,7 @@ namespace CgenMin.MacroProcesses.QR
 
             //****************************************************************************************************
             //worldBase.h
-
-            var ret = new List<RelativeDirPathWrite>();
-
-
-
+             
 
             string WorldBase = QRInitializing.TheMacro2Session.GenerateFileOut(
                 $"QR\\SurrogatePattern\\WorldBase",
@@ -465,7 +555,7 @@ namespace CgenMin.MacroProcesses.QR
           new MacroVar() { MacroName = "AOFUNCTIONS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION) },
           new MacroVar() { MacroName = "AOFUNCTION_CPPOBJS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CPPOBJ) },
 
-           new MacroVar() { MacroName = "PROPERTYIMPLS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYIMPL) }
+           new MacroVar() { MacroName = "PROPERTYIMPLS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYIMPL_CPPOBJ) }
 
 );
 
@@ -517,30 +607,7 @@ $"QR\\SurrogatePattern\\Worldcpp",
 
 
 
-            //****************************************************************************************************
-            //WorldSurrogate.h
-
-
-            string WorldSurrogate = QRInitializing.TheMacro2Session.GenerateFileOut(
-     $"QR\\SurrogatePattern\\WorldSurrogate",
-      new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = QREvent.INTERFACE_HEADERS() },
-                  new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                  new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
-
-                  new MacroVar() { MacroName = "AOFUNCTIONS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION) },
-                  new MacroVar() { MacroName = "AOFUNCTION_TICKETS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_TICKET) },
-                  new MacroVar() { MacroName = "AOFUNCTION_CLIENTS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CLIENT) },
-                new MacroVar() { MacroName = "AOFUNCTION_CLIENT_DECLARES", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CLIENT_DECLARE) },
-                new MacroVar() { MacroName = "AOFUNCTION_IMPS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_IMP) },
-
-                new MacroVar() { MacroName = "PROPERTYIMPLS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYIMPL) }
-
-      );
-
-
-            ret.Add(new RelativeDirPathWrite($"{this.ClassName}Surrogate", "h",
-            Path.Combine("rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt"), WorldSurrogate,
-              true, true));
+   
 
 
 
@@ -561,7 +628,7 @@ $"QR\\SurrogatePattern\\Worldcpp",
 
                   new MacroVar() { MacroName = "WNPLACEHOLDERARGS", VariableValue = WNPLACEHOLDERARGS() },
                   new MacroVar() { MacroName = "WNFUNCTION_SERVICES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES(SurrogateServiceFunctions) },// GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICE) },
-                  new MacroVar() { MacroName = "WNFUNCTION_SERVICES_DEFINES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES_DEFINES(SurrogateServiceFunctions, this.AONAME) },//  GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICES_DEFINE) },
+                  new MacroVar() { MacroName = "WNFUNCTION_SERVICES_DEFINES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES_DEFINES(SurrogateServiceFunctions, this.AONAME, true) },//  GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICES_DEFINE) },
                   new MacroVar() { MacroName = "WNFUNCTIONS_IMPL", VariableValue = ServiceFunction.WNFUNCTIONS_IMPLS(SurrogateServiceFunctions, this.MODULENAME) }// GenerateAllForEvery_SurrogateFunction(WNFUNCTIONS_IMPL) }
 
 
@@ -580,32 +647,33 @@ $"QR\\SurrogatePattern\\Worldcpp",
 
 
 
-            //       string ALL = QRInitializing.TheMacro2Session.GenerateFileOut(
-            //$"QR\\SurrogatePattern\\WorldTest",
-            // new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = QREvent.INTERFACE_HEADERS() },
-            //             new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-            //             new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME }, 
-            //             new MacroVar() { MacroName = "PROPERTYGETANDSETS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYGETANDSET) },
+                //       string ALL = QRInitializing.TheMacro2Session.GenerateFileOut(
+                //$"QR\\SurrogatePattern\\WorldTest",
+                // new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = QREvent.INTERFACE_HEADERS() },
+                //             new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
+                //             new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME }, 
+                //             new MacroVar() { MacroName = "PROPERTYGETANDSETS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYGETANDSET) },
 
-            //             new MacroVar() { MacroName = "AOFUNCTIONS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION) },
-            //             new MacroVar() { MacroName = "AOFUNCTION_TICKETS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_TICKET) },
-            //             new MacroVar() { MacroName = "AOFUNCTION_CLIENTS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CLIENT) },
-            //           new MacroVar() { MacroName = "AOFUNCTION_CLIENT_DECLARES", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CLIENT_DECLARE) },
-            //           new MacroVar() { MacroName = "AOFUNCTION_IMPS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_IMP) },
-            //           new MacroVar() { MacroName = "AOFUNCTION_CPPOBJS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CPPOBJ) },
-            //           new MacroVar() { MacroName = "AOFUNCTION_REAL_IMPS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_REAL_IMPS) },
+                //             new MacroVar() { MacroName = "AOFUNCTIONS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION) },
+                //             new MacroVar() { MacroName = "AOFUNCTION_TICKETS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_TICKET) },
+                //             new MacroVar() { MacroName = "AOFUNCTION_CLIENTS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CLIENT) },
+                //           new MacroVar() { MacroName = "AOFUNCTION_CLIENT_DECLARES", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CLIENT_DECLARE) },
+                //           new MacroVar() { MacroName = "AOFUNCTION_IMPS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_IMP) },
+                //           new MacroVar() { MacroName = "AOFUNCTION_CPPOBJS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_CPPOBJ) },
+                //           new MacroVar() { MacroName = "AOFUNCTION_REAL_IMPS", VariableValue = GenerateAllForEvery_SurrogateFunction(AOFUNCTION_REAL_IMPS) },
 
-            //           new MacroVar() { MacroName = "PROPERTYIMPLS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYIMPL) }
+                //           new MacroVar() { MacroName = "PROPERTYIMPLS", VariableValue = GenerateAllForEvery_SurrogateData(PROPERTYIMPL) }
 
-            // );
-
-
-            //       ret.Add(new RelativeDirPathWrite($"{this.ClassName}Test", "h",
-            //       Path.Combine("include", $"{QRInitializing.RunningProjectName}_cp"), ALL,
-            //         true, false));
+                // );
 
 
+                //       ret.Add(new RelativeDirPathWrite($"{this.ClassName}Test", "h",
+                //       Path.Combine("include", $"{QRInitializing.RunningProjectName}_cp"), ALL,
+                //         true, false));
 
+
+
+            }
 
             return ret;
         }

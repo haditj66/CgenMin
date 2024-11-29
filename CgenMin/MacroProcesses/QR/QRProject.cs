@@ -25,6 +25,10 @@ namespace CgenMin.MacroProcesses
             }
         }
 
+        public string Name { get { return this.GetType().Name; } }
+
+        public static List<QRProject> AllProjects = new List<QRProject>();
+
         public QRTarget_cpLib Target_CPPLib { get; set; }
         public QRTarget_RosLib Target_ROSLib { get; set; }
         public QRTarget_IF Target_IF { get; set; }
@@ -37,73 +41,9 @@ namespace CgenMin.MacroProcesses
         "mingw",
         "STM32F411RE"
         };
+         
 
-        //public List<string> GetAllLibrariesIDependOnFlattenedSTR() { return GetAllLibrariesIDependOnFlattened().Select(a => a.TargetName).ToList(); } //+ "_lib"
-
-        //public List<QRTarget_Lib> GetAllLibrariesIDependOnFlattened()
-        //{
-        //    //get all depending libraries
-        //    List<List<QRTarget_Lib>> AlldependingProjectsByLayers = GetAllLibrariesIDependOnAsDependencyLayers();
-        //    List<QRTarget_Lib> ret = new List<QRTarget_Lib>();
-        //    for (int i = AlldependingProjectsByLayers.Count - 1; i >= 0; i--)
-        //    {
-        //        ret.AddRange(AlldependingProjectsByLayers[i]);
-        //    }
-
-        //    //remove duplicates
-        //    ret = ret.Distinct().ToList();
-
-        //    return ret;
-        //}
-
-
-        //public List<List<QRTarget_Lib>> GetAllLibrariesIDependOnAsDependencyLayers()
-        //{
-        //    //get all depending libraries
-        //    List<List<QRTarget_Lib>> AlldependingProjectsByLayers = new List<List<QRTarget_Lib>>();
-        //    int layer = 0;
-        //    List<QRTarget_Lib> libdependLayer0 = this.LibrariesIDependOn_ForCPPLib;
-        //    AlldependingProjectsByLayers.Add(libdependLayer0);
-        //    if (libdependLayer0.Count != 0)
-        //    {
-        //        for (; ; )
-        //        {
-        //            layer++;
-
-        //            List<QRTarget_Lib> libdependLayer = new List<QRTarget_Lib>();
-        //            foreach (var proj in AlldependingProjectsByLayers[layer - 1])
-        //            {
-        //                libdependLayer.AddRange(proj.ProjIBelongTo.LibrariesIDependOn_ForCPPLib);
-        //            }
-
-        //            if (libdependLayer.Count == 0)
-        //            {
-        //                break;
-        //            }
-        //            else
-        //            {
-        //                AlldependingProjectsByLayers.Add(libdependLayer);
-        //            }
-        //        }
-        //    }
-        //    return AlldependingProjectsByLayers;
-        //}
-
-        //public List<QRTarget_Lib> _LibrariesIDependOn_ForCPPLib { get; protected set; }
-        //public List<QRTarget_Lib> LibrariesIDependOn_ForCPPLib
-        //{
-        //    get
-        //    {
-        //        _LibrariesIDependOn_ForCPPLib = _GetLibrariesIDependOn_ForCPPLib();
-        //        return _LibrariesIDependOn_ForCPPLib;
-        //    }
-        //}
-        //public List<string> LibrariesIDependOnStr { get { return LibrariesIDependOn_ForCPPLib.Select(a => a.TargetName).ToList(); } }//
-        //public List<string> LibrariesIDependOnStr_LIB { get { return LibrariesIDependOn_ForCPPLib.Select(a => a.TargetName + "_lib").ToList(); } }//
-        
-
-
-        public string DirectoryOfLibrary
+        public string DirectoryOfProject
         {
             get
             {
@@ -120,9 +60,14 @@ namespace CgenMin.MacroProcesses
             }
         }
 
-        public string Name { get { return this.GetType().Name; } }
 
-        public static List<QRProject> AllProjects = new List<QRProject>();
+
+        public static void Reset()
+        {
+            AllProjects.Clear();
+            _CurrentWorkingProject = null; 
+            AllProjects.Clear(); 
+        }
 
         public QRProject()
         {
@@ -184,6 +129,7 @@ namespace CgenMin.MacroProcesses
         protected abstract QRTarget_cpLib InitCPPLibrary();
         protected abstract QRTarget_RosLib InitROSLibrary();
         protected abstract QRTarget_IF InitIFLibrary();
+        public abstract List<TargetSettingsFile> GetTargetSetting();
 
 
         //public List<string> ListOfTests { get { return _GetListOfTests(); } }
@@ -292,49 +238,7 @@ namespace CgenMin.MacroProcesses
             return __ListOfTestsEXE;
         }
 
-
-
-
-        //public List<QRTarget_cpEXE> ListOf_cpEXE { get { return _GetListCPEXE(); } }
-        //private List<QRTarget_cpEXE> _ListOfTestsEXE = null;
-        //protected List<QRTarget_cpEXE> _GetListCPEXE()
-        //{
-        //    if (_ListOfTestsEXE == null)
-        //    {
-        //        _ListOfTestsEXE = __GetListOfCPEXE();
-
-        //    }
-        //    return _ListOfTestsEXE;
-        //}
-
-
-        //public List<QRTarget_cpEXE> __GetListOfCPEXE()
-        //{
-        //    List<QRTarget_cpEXE> __ListOfTestsEXE = new List<QRTarget_cpEXE>();
-
-        //    var type = typeof(QRProject);
-        //    var typeProcessToRun = AppDomain.CurrentDomain.GetAssemblies()
-        //  .SelectMany(s => s.GetTypes())
-        //  .Where(p => type.IsAssignableFrom(p))
-        //  .Where(p => p.Name == Name)
-        //  .FirstOrDefault();
-
-        //    var tt = typeProcessToRun.GetMethods();
-
-        //    var methodsOfAEEXETest = tt
-        //  .Where(m => m.GetCustomAttributes(typeof(QRTarget_cpEXE), false).Length > 0)
-        //  .ToArray();
-
-        //    foreach (var item in methodsOfAEEXETest)
-        //    {
-        //        var attr = (QRTarget_cpEXE)item.GetCustomAttributes(typeof(QRTarget_cpEXE), false).FirstOrDefault();
-        //        attr.MethodName = item.Name;
-        //        __ListOfTestsEXE.Add(attr);
-        //    } 
-
-        //    return __ListOfTestsEXE;
-        //}
-
+         
 
 
         protected abstract List<string> _GetAnyAdditionalIncludeDirs();
@@ -391,7 +295,7 @@ namespace CgenMin.MacroProcesses
 
                     foreach (var item in relativeDirs)
                     {
-                        listToReturn[item] = Path.Combine(this.DirectoryOfLibrary, listToReturn[item]);
+                        listToReturn[item] = Path.Combine(this.DirectoryOfProject, listToReturn[item]);
                     }
                 }
 
@@ -447,6 +351,39 @@ namespace CgenMin.MacroProcesses
         }
 
 
+
+
+        public void GenerateAllTestForModule( )
+        {
+            var type = typeof(QRProject);
+            var typeProcessToRun = AppDomain.CurrentDomain.GetAssemblies()
+          .SelectMany(s => s.GetTypes())
+          .Where(p => type.IsAssignableFrom(p))
+          .Where(p => p.Name == Name)
+          .FirstOrDefault();
+
+            List<MethodInfo> methodsToRuncpp = AppDomain.CurrentDomain.GetAssemblies()
+          .SelectMany(s => s.GetTypes())
+           .Where(p => p.IsAssignableFrom(typeProcessToRun))
+          .SelectMany(t => t.GetMethods())
+          .Where(m => m.GetCustomAttributes(typeof(QRTarget_cpEXE), false).Length > 0)
+          .ToList();
+
+            var methodsToRun = AppDomain.CurrentDomain.GetAssemblies()
+              .SelectMany(s => s.GetTypes())
+               .Where(p => p.IsAssignableFrom(typeProcessToRun))
+              .SelectMany(t => t.GetMethods())
+              .Where(m => m.GetCustomAttributes(typeof(QRTarget_RosEXE), false).Length > 0)
+              .ToList();
+
+            methodsToRun.AddRange(methodsToRuncpp);
+
+            foreach (var m in methodsToRun)
+            {
+                m.Invoke(this, null);
+            }
+             
+        }
 
         public QRConfig GenerateTestOfName(string testName)
         {

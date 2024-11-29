@@ -1,0 +1,10 @@
+    void UpdateObjCallback(const @MODULENAME@_i::msg::@AONAME@Data* msg)
+    {
+        data = *msg;
+    }
+
+    void _UpdateObjCallback(const @MODULENAME@_i::msg::@AONAME@Data::SharedPtr msg)
+    {
+        UpdateObjCallback(msg.get());
+        //        data = *);
+    }

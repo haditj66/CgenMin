@@ -160,8 +160,10 @@ public class CMDHandler
                     if (LinuxNewTerminalWorkaround)
                     {
                         string commandsFlat ="";
-                        MultipleCommands.ForEach((s)=>commandsFlat = commandsFlat + s + " ;");
+                        //MultipleCommands.ForEach((s)=>commandsFlat = commandsFlat + s + " ;");
+                        MultipleCommands.ForEach((s)=>commandsFlat = commandsFlat + s + " \n");
                         commandsFlat = commandsFlat.Remove(commandsFlat.Count()-1,1);
+                        // commandsFlat =$"gnome-terminal -- sh -c \"bash -c \\\"{commandsFlat}; exec bash\\\"\"";
                         commandsFlat =$"gnome-terminal -- sh -c \"bash -c \\\"{commandsFlat}; exec bash\\\"\"";
 
                         File.WriteAllText(pathToBatch, "");
@@ -184,6 +186,12 @@ public class CMDHandler
 
                 }
             }
+            return _ExecuteCommandFromBatch(pathToBatch, RunSeperateProcess, justCreateBatchFile);
+
+        }
+  
+        private Process _ExecuteCommandFromBatch(string pathToBatch, bool RunSeperateProcess = false, bool justCreateBatchFile = false)
+        {
 
 
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -305,7 +313,15 @@ public class CMDHandler
             return p; 
         }
 
-        public void ExecuteCommand(string command, bool SupressErrorMsg = false)
+
+      public void ExecuteCommandFromBatch(string pathToBatch,bool RunInSeperateTerminal = false)
+        {
+            //just run the bash file
+            this.ExecuteCommand($". {pathToBatch}",   false, RunInSeperateTerminal  );
+        }
+
+
+        public void ExecuteCommand(string command, bool SupressErrorMsg = false, bool RunInSeperateTerminal = false)
         {
             //if this is a cd command, handle it differently
             if (Regex.IsMatch(command, @"^\s*cd\s*"))
@@ -324,10 +340,20 @@ public class CMDHandler
             }
             else
             {
+                if(RunInSeperateTerminal)
+                {
+                    //the command will be to run a seperate window  
+                   var escapedArgs = command.Replace("\"", "\\\""); 
+                    processInfo.Arguments = $"gnome-terminal -- bash -c \"{command}\"";
+                }
+                else
+                {
+                    var escapedArgs = command.Replace("\"", "\\\""); 
+                 processInfo.Arguments = $"-c \"{command}\"";
                 
+                }
  
-                var escapedArgs = command.Replace("\"", "\\\""); 
-                processInfo.Arguments = $"-c \"{command}\"";
+                
             }    
             //processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
  
@@ -369,6 +395,7 @@ public class CMDHandler
             {
                 Output = process.StandardOutput.ReadToEnd();
                 Error = process.StandardError.ReadToEnd();
+                System.Console.WriteLine(   Error);
             }
             else
             {

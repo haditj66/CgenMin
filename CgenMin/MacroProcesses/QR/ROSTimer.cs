@@ -8,6 +8,7 @@ using System.Xml.Linq;
 
 namespace CgenMin.MacroProcesses.QR
 {
+
     public class ROSTimer
     {
         public string NameOfTimer { get; }
@@ -54,7 +55,7 @@ namespace CgenMin.MacroProcesses.QR
             get
             { 
                 //timer_ = this->create_wall_timer(  3s, std::bind(&GenericGobjAO::timer_callback, this));
-                return $"{NameOfTimer} = this->create_wall_timer(  {PeriodInMillisec.ToString()}ms, std::bind(&{AOIBelongTo.InstanceName}::{NameOfTimer}_callback, this));";
+                return $"{NameOfTimer} = this->create_wall_timer(  {PeriodInMillisec.ToString()}ms, std::bind(&{AOIBelongTo.ClassName}Node::{NameOfTimer}_callback, this));";
             }
         }
 

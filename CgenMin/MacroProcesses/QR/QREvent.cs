@@ -2,6 +2,7 @@
 using CodeGenerator.ProblemHandler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 
@@ -17,202 +18,13 @@ namespace CgenMin.MacroProcesses
         }
 
         public Type FromModule { get; }
+
+
     }
 
 
 
-    public enum FunctionArgsType
-    {
-        PrimitiveType,
-        SurrogateAO,
-        EnumType,
-        AnotherMSG //this is if the argument is of a type that is of another MSG
-    }
-
-  
-
-    public class FunctionArgs
-    {
-
-
-
-
-        public string Name { get; set; }
-        public int Argnum { get; }
-        public bool IsFromEnumArg { get; }
-        protected Type Type;
-        public string TypeName { get
-            {
-                string ret = CsharpTypeToCppType(Type.Name);
-                //if this is from a surrogate AO, then Base appended to the type name
-                if (this.FunctionArgType == FunctionArgsType.SurrogateAO)
-                {
-                    ret += "Base*";
-                }
-                return ret;
-            }
-        }
-        public FunctionArgsType _FunctionArgType;
-        public FunctionArgsType FunctionArgType
-        {
-            get
-            {
-                //figure out wether the type is either a primitive type, a surrogate AO or an enum type. a surrogate AO is a type that is derived from AOSurrogatePattern 
-                if (this.Type.IsPrimitive)
-                {
-                    this._FunctionArgType = FunctionArgsType.PrimitiveType;
-                }
-                else if (Type.IsEnum)
-                {
-                    this._FunctionArgType = FunctionArgsType.EnumType;
-
-                    //if this is an enum type, create a QREventMSG for it. but first check if it exists first
-                    QREventMSG.EnumFactory(this.Type);
-
-                }
-                //else if (this.Type.IsSubclassOf(typeof(AOSurrogatePatternBase)))
-                else if (this.Type.BaseType.Name.Contains("AOSurrogatePattern"))
-                {
-                    this._FunctionArgType = FunctionArgsType.SurrogateAO;
-                }
-                return this._FunctionArgType;
-            }
-        }
-
-        public static string CsharpTypeToCppType(string typestr)
-        {
-            string ret = typestr;
-
-            // Integer types
-            ret = ret == "Byte" ? "uint8_t" : ret;
-            ret = ret == "SByte" ? "int8_t" : ret;
-            ret = ret == "Int16" ? "int16_t" : ret;
-            ret = ret == "Int32" ? "int32_t" : ret;
-            ret = ret == "Int64" ? "int64_t" : ret;
-            ret = ret == "UInt16" ? "uint16_t" : ret;
-            ret = ret == "UInt32" ? "uint32_t" : ret;
-            ret = ret == "UInt64" ? "uint64_t" : ret;
-
-            ret = ret == "Void" ? "void" : ret;
-
-
-            // Floating-point types
-            ret = ret == "Single" ? "float" : ret;
-            ret = ret == "Double" ? "double" : ret;
-            ret = ret == "Decimal" ? "double" : ret; // C++ does not have a direct decimal type; double is commonly used instead.
-
-            // Boolean type
-            ret = ret == "Boolean" ? "bool" : ret;
-
-            // Character type
-            ret = ret == "Char" ? "char" : ret;
-
-            // String type (assuming std::string for C++)
-            ret = ret == "String" ? "std::string" : ret;
-
-            return ret;
-
-
-        }
-
-
-
-        public static string CsharpTypeToServiceType(string typestr)
-        {
-            string ret = typestr;
-
-            // Integer types
-            ret = ret == "Byte" ? "uint8" : ret;
-            ret = ret == "SByte" ? "int8" : ret;
-            ret = ret == "Int16" ? "int16" : ret;
-            ret = ret == "Int32" ? "int32" : ret;
-            ret = ret == "Int64" ? "int64" : ret;
-            ret = ret == "UInt16" ? "uint16" : ret;
-            ret = ret == "UInt32" ? "uint32" : ret;
-            ret = ret == "UInt64" ? "uint64" : ret;
-
-
-            ret = ret == "Void" ? "" : ret;
-
-            // Floating-point types
-            ret = ret == "Single" ? "float" : ret;
-            ret = ret == "Double" ? "double" : ret;
-            ret = ret == "Decimal" ? "double" : ret; // C++ does not have a direct decimal type; double is commonly used instead.
-
-            // Boolean type
-            ret = ret == "Boolean" ? "bool" : ret;
-
-            // Character type
-            ret = ret == "Char" ? "char" : ret;
-
-            // String type (assuming std::string for C++)
-            ret = ret == "String" ? "string" : ret;
-
-            return ret;
-
-
-        }
-
-        public string NAMEASINSERVICE()
-        {
-            return STR_to_NAMEASINSERVICE(this.FunctionArgType == FunctionArgsType.SurrogateAO, Name); 
-
-        }
-        public string TYPEASINSERVICE()
-        {
-            return STR_to_TYPEASINSERVICE(this.FunctionArgType == FunctionArgsType.SurrogateAO, this.Type.Name); 
-        }
-
-        public static string STR_to_NAMEASINSERVICE(bool isSurrogate, string toConvert)
-        {
-            string ret = isSurrogate ? "id" : toConvert;
-            return ret;
-        }
-
-        public static string STR_to_TYPEASINSERVICE(bool isSurrogate, string toConvert)
-        {
-            string ret = isSurrogate  ? "string" : toConvert;
-            ret = CsharpTypeToServiceType(ret);
-            return ret;
-        }
-
-
-        public string ARGNAME()
-        {
-            //if this is a surrogate AO, then return the AOObj->Getid()
-            if (this.FunctionArgType == FunctionArgsType.SurrogateAO)
-            {
-                return $"AOObj";
-            }
-            else
-            {
-                return NAMEASINSERVICE();
-            } 
-        }
-        public string ARGREQUESTFILL()
-        {
-            //if this is a surrogate AO, then return the AOObj->Getid()
-            if (this.FunctionArgType == FunctionArgsType.SurrogateAO)
-            {
-                return $"AOObj->Getid()";
-            }
-            else
-            {
-                return ARGNAME();
-            }
-        }
-
-        public FunctionArgs(Type type, string name, int argnum = 0, bool isFromEnumArg = false)
-        {
-            Type = type;
-            Name = name;
-            Argnum = argnum;
-            IsFromEnumArg = isFromEnumArg;
-            var s = FunctionArgType;
-        }
-    }
-
-
+    //^(?!.*__)(?!.*_$)[a-z][a-z0-9_]*$
     public enum QREventType
     {
         MSG,
@@ -223,14 +35,20 @@ namespace CgenMin.MacroProcesses
     public abstract class QREvent : AOWritableToAOClassContents
     {
         public QREventType QREVTType { get; private set; }
-        public FunctionArgs[] EventProperties { get; protected set; }
-        public FunctionArgs ReturnType { get; protected set; }
+        public FunctionArgsBase[] EventProperties { get; protected set; }
+        public List<FunctionArgsBase > EventPropertiesList { get { return EventProperties.ToList(); } }
+        public FunctionArgsBase ReturnType { get; protected set; }
         //public string ReturnName { get; protected set; }
         public bool IsFromEnum { get; protected set; }
         public int EventPoolSize { get; protected set; }
         public QREnum QREnumAttr { get; set; }
 
-        public static int NumOfSRVCreatedSoFar { get { return numOfSRVCreatedSoFar; } }
+        public string GetUniqueName()
+        { 
+            return $"{this.FromModuleName}:{this.InstanceName}";
+        }
+
+        public static int NumOfSRVCreatedSoFar { get { return numOfSRVCreatedSoFar; }  }
         static int numOfSRVCreatedSoFar = 0;
         static int numOfMSGsCreatedSoFar = 0;
         int eventID = 0;
@@ -239,21 +57,33 @@ namespace CgenMin.MacroProcesses
         public static List<QREvent> AllAEEvents = new List<QREvent>();
         public static List<QREvent> AllSelectedTargetEvents = new List<QREvent>();
         protected static bool isTargetStarted = false;
-        public QREvent(string ClassName, QREventType qRType, params FunctionArgs[] eventDefinition)
-            : base(QRInitializing.RunningProjectName, ClassName.First().ToString().ToUpper() + ClassName.Substring(1), AOTypeEnum.Event)
+        public QREvent(string fromModule, string ClassName, QREventType qRType, params FunctionArgsBase[] eventDefinition)
+            : base(fromModule, ClassName.First().ToString().ToUpper() + ClassName.Substring(1))
         {
             //uppercase the first letter of the class name 
-
+            AOType = AOTypeEnum.Event;
             EventProperties = eventDefinition;
             Constr(qRType);
         }
 
-        public QREvent(string ClassName, QREventType qRType, List<FunctionArgs> eventDefinition)
-            : base(QRInitializing.RunningProjectName, ClassName.First().ToString().ToUpper() + ClassName.Substring(1), AOTypeEnum.Event)
+        public QREvent(string fromModule, string ClassName, QREventType qRType, List<FunctionArgsBase> eventDefinition)
+            : base(fromModule, ClassName.First().ToString().ToUpper() + ClassName.Substring(1))
         {
             //this(ClassName,   returnType,   returnName,  eventProperties.ToArray());
+            AOType = AOTypeEnum.Event;
             EventProperties = eventDefinition.ToArray();
             Constr(qRType);
+        }
+
+        public static void Reset()
+        {
+            numOfSRVCreatedSoFar = 0;
+            numOfAOSoFarAEConfigGenerated = 0;
+            numOfMSGsCreatedSoFar = 0;
+            AllAEEvents.Clear();
+            AllSelectedTargetEvents.Clear();
+            isTargetStarted = false;
+
         }
 
         public static string INTERFACE_HEADERS()
@@ -327,20 +157,46 @@ namespace CgenMin.MacroProcesses
         {
             QREVTType = qRType;
 
+            //check that all service names are compatible with the ROS naming convention
+            var compatibleArgs = EventPropertiesList.CheckIfAllArgNamesAreCompatibleForRosService();
+            if (compatibleArgs != null)
+            {
+                if (compatibleArgs.IsFromEnumArg == false)
+                {
+                    ProblemHandle problemHandle = new ProblemHandle();
+                    problemHandle.ThereisAProblem($"Argument name '{compatibleArgs.Name}' in QREvent {this.InstanceName} is not compatible with the ROS service naming convention. No capital letters and No double underscores __");
+                }
+                else
+                {
+                    ProblemHandle problemHandle = new ProblemHandle();
+                    problemHandle.ThereisAProblem($"Argument name '{compatibleArgs.Name}' in QREvent {this.InstanceName} is not compatible with the ROS service naming convention. Since it from an enum, it needs to be all capitalized letters.");
+
+                }
+
+            }
+ 
             //dont add the updateEvt
             if (this.ClassName != "UpdateEVT")
             {
                 if (QREventType.MSG == QREVTType)
                 {
                     numOfMSGsCreatedSoFar++;
-                    sigID = numOfMSGsCreatedSoFar;
-                    AllAEEvents.Add(this);
+                    sigID = numOfMSGsCreatedSoFar; 
+                    var exists = AllAEEvents.Where(s => s.GetUniqueName() == this.GetUniqueName()).FirstOrDefault();
+                    if (exists ==null)
+                    {
+                        AllAEEvents.Add(this);
+                    }
                 }
                 else
                 {
                     numOfSRVCreatedSoFar++;
                     eventID = numOfSRVCreatedSoFar;
-                    AllAEEvents.Add(this);
+                    var exists = AllAEEvents.Where(s => s.GetUniqueName() == this.GetUniqueName()).FirstOrDefault();
+                    if (exists == null)
+                    {
+                        AllAEEvents.Add(this);
+                    }
                 }
             }
 
@@ -354,6 +210,7 @@ namespace CgenMin.MacroProcesses
         {
             //reset the list of all events
             AllSelectedTargetEvents = new List<QREvent>();
+            AllAEEvents = new List<QREvent>();
 
             //set bool that will be used to add an event to the list in the constructor
             isTargetStarted = true;
@@ -376,25 +233,7 @@ namespace CgenMin.MacroProcesses
         //    return "";
         //}
 
-        public override string GenerateMainHeaderSection_CP()
-        {
-            return "";
-        }
-
-        public override string GenerateMainInitializeSection_CP()
-        {
-            return "";
-        }
-
-        public override string GenerateMainHeaderSection_RQT()
-        {
-            return "";
-        }
-
-        public override string GenerateMainInitializeSection_RQT()
-        {
-            return "";
-        }
+    
 
         //public override string GenerateMainLinkSetupsSection()
         //{
@@ -557,13 +396,13 @@ namespace CgenMin.MacroProcesses
 
 
 
-        protected AEEventBase(string ClassName, QREventType qrType, params FunctionArgs[] eventProperties)
-            : base(ClassName, qrType, eventProperties)
+        protected AEEventBase(string fromModule, string ClassName, QREventType qrType, params FunctionArgsBase[] eventProperties)
+            : base(fromModule, ClassName, qrType, eventProperties)
         {
         }
 
-        protected AEEventBase(string ClassName, QREventType qrType, List<FunctionArgs> eventProperties)
-            : base(ClassName, qrType, eventProperties)
+        protected AEEventBase(string fromModule, string ClassName, QREventType qrType, List<FunctionArgsBase> eventProperties)
+            : base(fromModule, ClassName, qrType, eventProperties)
         {
 
         }
@@ -618,39 +457,131 @@ namespace CgenMin.MacroProcesses
     public class QREventSRV : AEEventBase
     {
 
-        public QREventSRV(string ClassName, FunctionArgs returnType, params FunctionArgs[] eventProperties)
-         : base(ClassName, QREventType.SRV, eventProperties)
+        public QREventSRV(string fromModule, string ClassName, FunctionArgsBase returnType, params FunctionArgsBase[] eventProperties)
+         : base(fromModule, ClassName, QREventType.SRV, eventProperties)
         {
             AO.atLeastOneEvt = true;
             ReturnType = returnType;
         }
 
-        public QREventSRV(string ClassName, FunctionArgs returnType, List<FunctionArgs> eventProperties)
-    : base(ClassName, QREventType.SRV, eventProperties)
+        public QREventSRV(string fromModule, string ClassName, FunctionArgsBase returnType, List<FunctionArgsBase> eventProperties)
+    : base(fromModule, ClassName, QREventType.SRV, eventProperties)
         {
             AO.atLeastOneEvt = true;
             ReturnType = returnType;
+        }
+
+        public static QREventSRV GetEventOfName(string name)
+        {
+            return (QREventSRV)AllAEEvents.Where(d => d.InstanceName == name).FirstOrDefault();
+
         }
 
     }
+
+
+    public class QREventMSGTemplate<TARG1Type> : QREventMSG
+    {
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1) : base(  fromModule, ClassName,
+            new List<FunctionArgsBase>() {
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1) 
+            })
+        { 
+        }
+    
+    }
+    public class QREventMSGTemplate<TARG1Type, TARG2Type> : QREventMSG
+    {
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1, string nameOfArg2) : base(fromModule, ClassName,
+            new List<FunctionArgsBase>() {
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1),
+                new FunctionArgsBase(typeof(TARG2Type), nameOfArg2)
+            })
+        {
+        } 
+    }
+
+    public class QREventMSGTemplate<TARG1Type, TARG2Type, TARG3Type> : QREventMSG
+    {
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1, string nameOfArg2, string nameOfArg3) : base(fromModule, ClassName,
+            new List<FunctionArgsBase>() {
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1),
+                new FunctionArgsBase(typeof(TARG2Type), nameOfArg2),
+                new FunctionArgsBase(typeof(TARG3Type), nameOfArg3)
+            })
+        {
+        }
+    }
+
+    public class QREventMSGTemplate<TARG1Type, TARG2Type, TARG3Type, TARG4Type> : QREventMSG
+    {
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1, string nameOfArg2, string nameOfArg3, string nameOfArg4) : base(fromModule, ClassName,
+            new List<FunctionArgsBase>() {
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1),
+                new FunctionArgsBase(typeof(TARG2Type), nameOfArg2),
+                new FunctionArgsBase(typeof(TARG3Type), nameOfArg3),
+                new FunctionArgsBase(typeof(TARG4Type), nameOfArg4)
+            })
+        {
+        }
+    }
+
+    public class QREventMSGTemplate<TARG1Type, TARG2Type, TARG3Type, TARG4Type, TARG5Type> : QREventMSG
+    {
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1, string nameOfArg2, string nameOfArg3, string nameOfArg4, string nameOfArg5) : base(fromModule, ClassName,
+            new List<FunctionArgsBase>() {
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1),
+                new FunctionArgsBase(typeof(TARG2Type), nameOfArg2),
+                new FunctionArgsBase(typeof(TARG3Type), nameOfArg3),
+                new FunctionArgsBase(typeof(TARG4Type), nameOfArg4),
+                new FunctionArgsBase(typeof(TARG5Type), nameOfArg5)
+            })
+        {
+        }
+    }
+
+    public class QREventMSGTemplate<TARG1Type, TARG2Type, TARG3Type, TARG4Type, TARG5Type, TARG6Type> : QREventMSG
+    {
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1, string nameOfArg2, string nameOfArg3, string nameOfArg4, string nameOfArg5, string nameOfArg6) : base(fromModule, ClassName,
+            new List<FunctionArgsBase>() {
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1),
+                new FunctionArgsBase(typeof(TARG2Type), nameOfArg2),
+                new FunctionArgsBase(typeof(TARG3Type), nameOfArg3),
+                new FunctionArgsBase(typeof(TARG4Type), nameOfArg4),
+                new FunctionArgsBase(typeof(TARG5Type), nameOfArg5),
+                new FunctionArgsBase(typeof(TARG6Type), nameOfArg6)
+            })
+        {
+        }
+    } 
+
 
     //    public class QREventMSG<TDerived> : AEEventBase<TDerived>
     //where TDerived : AEEventBase<TDerived>, new()
     public class QREventMSG : AEEventBase
     {
-        public QREventMSG(string ClassName, params FunctionArgs[] eventProperties)
-            : base(ClassName, QREventType.MSG, eventProperties)
+        public QREventMSG(string fromModule, string ClassName, params FunctionArgsBase[] eventProperties)
+            : base(fromModule, ClassName, QREventType.MSG, eventProperties)
         {
         }
 
-        public QREventMSG(string ClassName, List<FunctionArgs> eventProperties)
-            : base(ClassName, QREventType.MSG, eventProperties)
+        public QREventMSG(string fromModule, string ClassName, List<FunctionArgsBase> eventProperties)
+            : base(fromModule, ClassName, QREventType.MSG, eventProperties)
         {
         }
 
-
-        public static QREventMSG EnumFactory(Type enumtype)
+        public static QREventMSG GetEventOfName(string name)
         {
+            return (QREventMSG)AllAEEvents.Where(d => d.InstanceName == name).FirstOrDefault();
+
+        }
+
+
+        public static QREventMSG EnumFactory( Type enumtype)
+        {
+
+            //first get the name of the module that this enum is from
+            var fromModule = QRInitializing.GetModuleNameForType(enumtype);
 
 
             //get the QREnum attribute attached to this type
@@ -673,21 +604,21 @@ namespace CgenMin.MacroProcesses
 
             //grab all enum names for the enumtype
             var enumNames = enumtype.GetEnumNames();
-            List<FunctionArgs> enumNamesList = new List<FunctionArgs>();
+            List<FunctionArgsBase> enumNamesList = new List<FunctionArgsBase>();
             //in c# get a typeof uint8
 
 
-            enumNamesList.Add(new FunctionArgs(typeof(byte), "result")); 
+            enumNamesList.Add(new FunctionArgsBase(typeof(byte), "result")); 
             int count = 1;
             foreach (var item in enumNames)
             {
-                enumNamesList.Add(new FunctionArgs(typeof(byte), item, count, true));
+                enumNamesList.Add(new FunctionArgsBase(typeof(byte), item, count, true));
                 count++;
             }
 
 
 
-            var t = new QREventMSG(enumtype.Name, enumNamesList);
+            var t = new QREventMSG(fromModule,enumtype.Name, enumNamesList);
             t.IsFromEnum = true;
             t.QREnumAttr = qrenum;
             return t;
@@ -698,3 +629,4 @@ namespace CgenMin.MacroProcesses
 
 
 }
+

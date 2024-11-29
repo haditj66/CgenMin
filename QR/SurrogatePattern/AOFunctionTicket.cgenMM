@@ -1,1 +1,1 @@
-typedef Ticket<@MODULENAME@_i::srv::@NAMEOFFUNCTION@_Response::_result_type> @NAMEOFFUNCTION@Ticket_t; 
+typedef Ticket<@TICKET_RETURN_TYPE1@> @NAMEOFFUNCTION@Ticket_t; 

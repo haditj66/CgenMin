@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace CodeGenerator.MacroProcesses.AESetups
 {
+
     public class QRConfig
     {
 
 
-        public QRConfig(    )
-        {  
+        public QRConfig()
+        {
 
         }
 
@@ -32,6 +33,7 @@ namespace CodeGenerator.MacroProcesses.AESetups
             var allfields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
             var allfieldsint = allfields.Where(a => a.FieldType == typeof(int));
             var allfieldsbool = allfields.Where(a => a.FieldType == typeof(bool));
+            var allfieldsstr = allfields.Where(a => a.FieldType == typeof(string));
 
 
             string ret = "";
@@ -48,13 +50,17 @@ namespace CodeGenerator.MacroProcesses.AESetups
                 }
 
             }
+            foreach (FieldInfo f in allfieldsstr)
+            {
+                ret += $"#define {f.Name} {f.GetValue(this).ToString()}"; ret += "\n";
+            }
             return ret;
         }
 
-        public void GenerateFile(string RunningProjectDir, QRInitializing aein, string AODefines, string AEHalDefines)
+        public void GenerateFile(string RunningProjectDir, QRInitializing aein, string AODefines, string AEHalDefines, QRSetting qRSetting)
         {
-             
 
+            RUNNING_TARGET = QRInitializing.RunningTarget.TargetName;
 
             //these are objects that are considered AOs
             //--utilities (not the services! a utility is considered ONE AO despite how many services it has)
@@ -64,8 +70,8 @@ namespace CodeGenerator.MacroProcesses.AESetups
             //--simpleFSM 
             NUMOFACTIVEOBJECTS = 0;
             NUMOFACTIVEOBJECTS += AO.AllInstancesOfAO.Count(a => a.AOType == AOTypeEnum.AOSimple);
-            NUMOFACTIVEOBJECTS += AO.AllInstancesOfAO.Count(a => a.AOType == AOTypeEnum.AOSurrogatePattern); 
-            NUMOFACTIVEOBJECTS += AO.AllInstancesOfAO.Count(a => a.AOType == AOTypeEnum.LoopObject);
+            NUMOFACTIVEOBJECTS += AO.AllInstancesOfAO.Count(a => a.AOType == AOTypeEnum.AOSurrogatePattern);
+            //NUMOFACTIVEOBJECTS += AO.AllInstancesOfAO.Count(a => a.AOType == AOTypeEnum.LoopObject);
             NUMOFACTIVEOBJECTS += AO.AllInstancesOfAO.Count(a => a.AOType == AOTypeEnum.SimpleFSM);
             NUMOFACTIVEOBJECTS++;
 
@@ -74,23 +80,36 @@ namespace CodeGenerator.MacroProcesses.AESetups
 
 
             AODefines = AODefines == "" ? "\n" : AODefines;
-            AEHalDefines = AEHalDefines == "" ? "\n" : AEHalDefines; 
+            AEHalDefines = AEHalDefines == "" ? "\n" : AEHalDefines;
 
-            string aeConfigOUT = aein.GenerateFileOut("QR\\Config_cp",
+
+            string pathfiletype = QRInitializing.RunningTarget.qRTargetType == QRTargetType.rosqt_exe ?
+                "rqt" :
+                "cp";
+
+            string aeConfigOUT = aein.GenerateFileOut($"QR\\Config_{pathfiletype}",
                 new MacroVar() { MacroName = "AODefines", VariableValue = AODefines },
                 new MacroVar() { MacroName = "AESettingsDefines", VariableValue = GetFileDefineContents() },
                 new MacroVar() { MacroName = "AEHalDefines", VariableValue = AEHalDefines },
+                new MacroVar() { MacroName = "QR_SETTING", VariableValue = qRSetting.GenerateFile() },
                 new MacroVar() { MacroName = "PROJECT_NAME", VariableValue = QRInitializing.RunningProjectName }
                 );
 
             Console.WriteLine($"generating cp Config.h ");
-            aein.WriteFileContentsToFullPath(aeConfigOUT, Path.Combine(RunningProjectDir, "include",$"{QRInitializing.RunningProjectName}_cp", "Config.h"), "h", true);
+            //check for whick project type this is for
+            //QRInitializing.RunningTarget.qRTargetType == QRTargetType.rosqt_exe ? 
+            string path = QRInitializing.RunningTarget.qRTargetType == QRTargetType.rosqt_exe ?
+                Path.Combine(RunningProjectDir, "rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt", "Config.hpp") :
+                Path.Combine(RunningProjectDir, "include", $"{QRInitializing.RunningProjectName}_cp", "Config.hpp");
+
+
+            aein.WriteFileContentsToFullPath(aeConfigOUT, path, "hpp", true);
 
         }
 
 
-        
-         
+
+
 
         //AE configs
         private int AOPRIORITYLOWEST = 5;
@@ -99,16 +118,9 @@ namespace CodeGenerator.MacroProcesses.AESetups
         private int NUMOFACTIVEOBJECTS;
         private int HIGHEST_NUM_OF_EVT_INSTANCES;
 
+        private string RUNNING_TARGET;
 
-
-        private int MaxNumOfAELoops;
-         
-
-        private int configAE_USE_TDUs_AsService;
-        private int configAE_USE_U_AsService;
-        private int configAE_USE_DDSM_AsService;
     }
 }
 
 
- 

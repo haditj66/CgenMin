@@ -1,0 +1,58 @@
+
+
+//This object will subscribe to an initialization event that all REAL AO objects publish after they are created.
+//For example, for this case, a @AONAME@AO will publish an InitializedEvent triggered via a one shot timer when the AO spins.
+//Then all modules that have a surrogate of this type will get that event and sync @AONAME@DataAccess data with it.
+
+
+class @AONAME@Init
+{
+public:
+    rclcpp::Subscription<@MODULENAME@_i::msg::@AONAME@Data>::SharedPtr subscriptionInitialized;
+
+
+
+    void InitializeSurrogates()
+    {
+#ifdef AllSurrogates
+        auto nodeToUse = TheNodeForAllSurrogates;
+
+#else
+        auto nodeToUse = TheDataAccessManagerNode;
+
+#endif
+
+        subscriptionInitialized = nodeToUse->create_subscription<@MODULENAME@_i::msg::@AONAME@Data>
+                                  ("/@AONAME@Initialized", 10, std::bind(&@AONAME@Init::@AONAME@Initialized_Callback,this, _1));
+
+
+        /*    subscriptionInitialized = TheDataAccessManagerNode->create_subscription<@MODULENAME@_i::msg::@AONAME@Data>
+                ("/@AONAME@Initialized", 10, &@AONAME@Initialized_Callback);*///std::bind(@AONAME@Initialized_Callback,_1));//std::bind(&@AONAME@::@AONAME@Initialized_Callback, this,_1));
+    }
+
+private:
+
+    void @AONAME@Initialized_Callback(const @MODULENAME@_i::msg::@AONAME@Data::SharedPtr msg)
+    {
+        QR_Print("Surrogate created for AO: %s", msg->id.c_str());
+        //if this object exists already, just update the data, if it does not exist, create the object
+        @AONAME@Surrogate* o = (@AONAME@Surrogate*)@AONAME@Surrogate::GetObjectFromPool(msg->id);
+        if (o == nullptr)
+        {
+            //first create an instance of the surrogate
+            @AONAME@Surrogate* sur = new @AONAME@Surrogate(msg->id);
+            sur->_UpdateObjCallback(msg);
+            //and that's it actually, the object adds itself to the surrogate object pool.
+
+        }
+        else
+        {
+            o->_UpdateObjCallback(msg);
+
+        }
+
+        //maybe notify this AO that the AO in question has been created?
+
+    }
+
+};
