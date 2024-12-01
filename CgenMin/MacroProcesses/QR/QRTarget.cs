@@ -28,7 +28,7 @@ namespace CgenMin.MacroProcesses
 
     public class LibraryDependence
     {
-        public QRProject ProjectIDependOn { get; set; }
+        public QRModule ProjectIDependOn { get; set; }
         public QRTargetType TargetType { get; set; }
 
         public override string ToString()
@@ -45,7 +45,7 @@ namespace CgenMin.MacroProcesses
             // Use reflection to find a derived class of AEProject with the specified name
             var projectType = obj.GetType().Assembly
                                       .GetTypes()
-                                      .FirstOrDefault(t => t.IsSubclassOf(typeof(QRProject)) && t.Name == projectName);
+                                      .FirstOrDefault(t => t.IsSubclassOf(typeof(QRModule)) && t.Name == projectName);
 
             if (projectType == null)
             {
@@ -53,9 +53,9 @@ namespace CgenMin.MacroProcesses
             }
 
             // Only create the instance of the project if it is not already created
-            var projectInstance = QRProject.AllProjects
+            var projectInstance = QRModule.AllProjects
                                            .FirstOrDefault(a => a.GetType() == projectType)
-                                           ?? (QRProject)Activator.CreateInstance(projectType);
+                                           ?? (QRModule)Activator.CreateInstance(projectType);
 
             //var projectInstance = (QRProject)Activator.CreateInstance(projectType);
 
@@ -220,7 +220,7 @@ namespace CgenMin.MacroProcesses
     //[System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     public abstract class QRTarget : System.Attribute
     {
-        public QRProject ProjIBelongTo { get; set; }
+        public QRModule ProjIBelongTo { get; set; }
         public QRTargetType qRTargetType;
         public QRTargetProjectType QRTargetProjType
         {
@@ -394,7 +394,7 @@ namespace CgenMin.MacroProcesses
 
             foreach (var item in libraryDependencies)
             {
-                LibraryDependencies.Add(LibraryDependence.FromString(item, QRProject.AllProjects[0]));
+                LibraryDependencies.Add(LibraryDependence.FromString(item, QRModule.AllProjects[0]));
             }
         }
     }

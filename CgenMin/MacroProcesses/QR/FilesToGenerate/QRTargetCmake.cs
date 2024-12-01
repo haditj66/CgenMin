@@ -46,7 +46,7 @@ namespace CgenMin.MacroProcesses.QR
 
         public bool IsForCPP { get; }
 
-        public void GenerateFile(QRInitializing aein, QRProject project, string EXE_TARGET_SELECTED = "null")
+        public void GenerateFile(QRInitializing aein, QRModule project, string EXE_TARGET_SELECTED = "null")
         {
             string exeOutputSelected = GetSelectedProjName();
             exeOutputSelected = exeOutputSelected == "" ? "null" : exeOutputSelected;

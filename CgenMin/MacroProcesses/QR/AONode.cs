@@ -23,7 +23,7 @@ namespace CgenMin.MacroProcesses.QR
             
 
             //get all types of QRProject that are in the assembly of this namespace 
-            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRProject))) ).ToList();
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule))) ).ToList();
 
             //if there are more than 2 types of QRproject, then give a problem as there should only be one in one namespace
             if (types.Count > 1)

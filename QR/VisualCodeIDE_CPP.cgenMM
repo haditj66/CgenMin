@@ -1,0 +1,27 @@
+        ,{
+            "name": "@NAME@",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/@NAME@",
+            "args": [],                      // Arguments to pass to the executable, if any
+            "stopAtEntry": false,             // Set to true if you want to stop at the entry point
+            "cwd": "${workspaceFolder}",      // Set the working directory to the workspace folder
+            "environment": [],
+            "externalConsole": false,         // Set to true if you want to use an external terminal
+            "MIMode": "gdb",                  // Set to "gdb" for Linux/Mac, or "lldb" for macOS, "cppvsdbg" for Windows
+            "miDebuggerPath": "/usr/bin/gdb", // Path to GDB or LLDB; adjust if necessary
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+           // "preLaunchTask": "CMake: build",  // Automatically build before debugging, if CMake task is set up
+            "logging": {
+                "engineLogging": false,
+                "trace": true,                // Enable trace logging if needed for debugging the debugger itself
+                "traceResponse": false
+            },
+            "internalConsoleOptions": "openOnSessionStart"
+        }
