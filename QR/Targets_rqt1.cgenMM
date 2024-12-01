@@ -1,7 +1,7 @@
 ####################################
 #@NAMEOFTARGET@ EXE Target
 ####################################
-if(${EXE_TARGET_SELECTED} STREQUAL @NAMEOFTARGET@)
+#if(${EXE_TARGET_SELECTED} STREQUAL @NAMEOFTARGET@)
     
 	QR_CreateTarget_ROS2IntegrationEXE(
 	NAME_OF_TARGET @NAMEOFTARGET@
@@ -14,7 +14,7 @@ if(${EXE_TARGET_SELECTED} STREQUAL @NAMEOFTARGET@)
 	
 	@TARGETSLINK@
 	
-endif()
+#endif()
 
 
 

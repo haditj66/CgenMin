@@ -61,7 +61,7 @@ namespace CgenMin.MacroProcesses.QR
 
 
             //get all types of QRProject that are in the assembly of this namespace 
-            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRProject)))).ToList();
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule)))).ToList();
 
             //if there are more than 2 types of QRproject, then give a problem as there should only be one in one namespace
             if (types.Count > 1)
@@ -114,14 +114,14 @@ namespace CgenMin.MacroProcesses.QR
 
         }
 
-        public static List<QRProject> GetAllCurrentAEProjects()
+        public static List<QRModule> GetAllCurrentAEProjects()
         {
-            var type = typeof(QRProject);
+            var type = typeof(QRModule);
             List<Type> allAEProjectsTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => type.IsAssignableFrom(p) && type != p).ToList();
 
-            var allAEProjects = allAEProjectsTypes.Select(s => Activator.CreateInstance(s)).Cast<QRProject>().ToList();
+            var allAEProjects = allAEProjectsTypes.Select(s => Activator.CreateInstance(s)).Cast<QRModule>().ToList();
 
 
 
@@ -145,7 +145,7 @@ namespace CgenMin.MacroProcesses.QR
 
         }
 
-        public static QRProject GetProjectIfDirExists(string ofDir)
+        public static QRModule GetProjectIfDirExists(string ofDir)
         {
             var pr = GetAllCurrentAEProjects();
 
@@ -153,7 +153,7 @@ namespace CgenMin.MacroProcesses.QR
 
         }
 
-        public static QRProject GetProjectIfNameExists(string nameOfProj)
+        public static QRModule GetProjectIfNameExists(string nameOfProj)
         {
             var pr = GetAllCurrentAEProjects();
 
@@ -200,7 +200,7 @@ namespace CgenMin.MacroProcesses.QR
 
 
             //use reflection to get the class with the same RunningProjectName
-            var type = typeof(QRProject);
+            var type = typeof(QRModule);
             var typeProcessToRun = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => type.IsAssignableFrom(p))
@@ -271,7 +271,7 @@ namespace CgenMin.MacroProcesses.QR
 
             //=====================================================
             //run the selected target for the project
-            QRProject aeProject = (QRProject)Activator.CreateInstance(typeProcessToRun);
+            QRModule aeProject = (QRModule)Activator.CreateInstance(typeProcessToRun);
             aeProject.Init();
 
             QREvent.TargetStartRun();
@@ -424,6 +424,35 @@ namespace CgenMin.MacroProcesses.QR
             ////create testname.cpp file
             //Console.WriteLine($"generating {projectTest}.cpp ");
 
+            
+            string VisualCodeIDE_rqt = "";
+            foreach (var exe in aeProject.ListOfTargets_rosEXE)
+            {
+                VisualCodeIDE_rqt += QRInitializing.TheMacro2Session.GenerateFileOut(
+             $"QR\\VisualCodeIDE_RQT",
+             new MacroVar() { MacroName = "NAME", VariableValue = exe.TargetName}
+             );
+
+                VisualCodeIDE_rqt += "\n";
+            }
+            //write all text to the launch file for the rqt project 
+            CodeGenerator.Program.ReplaceTextInFiles.ReplaceAllTextInAllFilesAndDirWithNewText(
+                Path.Combine(RunningProjectDir, "rosqt", ".vscode"), "//AEROSTargetConfig3674563", VisualCodeIDE_rqt, true);
+
+            //now for the cpp project
+            string VisualCodeIDE_cp = "";
+            foreach (var exe in aeProject.ListOfTargets_cpEXE)
+            {
+                VisualCodeIDE_cp += QRInitializing.TheMacro2Session.GenerateFileOut(
+             $"QR\\VisualCodeIDE_CPP",
+             new MacroVar() { MacroName = "NAME", VariableValue = exe.TargetName }
+             );
+
+                VisualCodeIDE_cp += "\n";
+            }
+            //write all text to the launch file for the rqt project
+            CodeGenerator.Program.ReplaceTextInFiles.ReplaceAllTextInAllFilesAndDirWithNewText(
+                Path.Combine(RunningProjectDir, ".vscode"), "//AEROSTargetConfig3674563", VisualCodeIDE_cp, true);
 
 
             if (RunningTarget.qRTargetType == QRTargetType.cpp_exe)
@@ -480,7 +509,7 @@ namespace CgenMin.MacroProcesses.QR
 
             //======================================================================================================
             //generate the cmake command for all the events ===================================================
-            QRProject aeProjectToGetAllEvts = (QRProject)Activator.CreateInstance(typeProcessToRun);
+            QRModule aeProjectToGetAllEvts = (QRModule)Activator.CreateInstance(typeProcessToRun);
             aeProjectToGetAllEvts.Init();
             aeProjectToGetAllEvts.GenerateAllTestForModule();
 

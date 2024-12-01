@@ -10,11 +10,11 @@ using System.Reflection;
 
 namespace CgenMin.MacroProcesses
 {
-    public abstract class QRProject
+    public abstract class QRModule
     {
         //the project that is currently being worked on
-        private static QRProject _CurrentWorkingProject;
-        public static QRProject CurrentWorkingProject
+        private static QRModule _CurrentWorkingProject;
+        public static QRModule CurrentWorkingProject
         {
             get { return _CurrentWorkingProject; }
             set
@@ -27,7 +27,7 @@ namespace CgenMin.MacroProcesses
 
         public string Name { get { return this.GetType().Name; } }
 
-        public static List<QRProject> AllProjects = new List<QRProject>();
+        public static List<QRModule> AllProjects = new List<QRModule>();
 
         public QRTarget_cpLib Target_CPPLib { get; set; }
         public QRTarget_RosLib Target_ROSLib { get; set; }
@@ -69,7 +69,7 @@ namespace CgenMin.MacroProcesses
             AllProjects.Clear(); 
         }
 
-        public QRProject()
+        public QRModule()
         {
             AllProjects.Add(this);
 
@@ -215,7 +215,7 @@ namespace CgenMin.MacroProcesses
         {
             List<T> __ListOfTestsEXE = new List<T>();
 
-            var type = typeof(QRProject);
+            var type = typeof(QRModule);
             var typeProcessToRun = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => type.IsAssignableFrom(p))
@@ -355,7 +355,7 @@ namespace CgenMin.MacroProcesses
 
         public void GenerateAllTestForModule( )
         {
-            var type = typeof(QRProject);
+            var type = typeof(QRModule);
             var typeProcessToRun = AppDomain.CurrentDomain.GetAssemblies()
           .SelectMany(s => s.GetTypes())
           .Where(p => type.IsAssignableFrom(p))
@@ -387,7 +387,7 @@ namespace CgenMin.MacroProcesses
 
         public QRConfig GenerateTestOfName(string testName)
         {
-            var type = typeof(QRProject);
+            var type = typeof(QRModule);
             var typeProcessToRun = AppDomain.CurrentDomain.GetAssemblies()
           .SelectMany(s => s.GetTypes())
           .Where(p => type.IsAssignableFrom(p))

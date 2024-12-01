@@ -1,10 +1,10 @@
 ####################################
 #@NAMEOFTARGET@ EXE Target
 ####################################
-if(${EXE_TARGET_SELECTED} STREQUAL @NAMEOFTARGET@)
+#if(${EXE_TARGET_SELECTED} STREQUAL @NAMEOFTARGET@)
     QR_CreateTarget_CPPIntegrationEXE(NAME_OF_TARGET @NAMEOFTARGET@)
 	QR_target_link_to_CPPLibrary(MODULE_NAME ${MODULE_NAME})
 	QR_target_done() 
-endif()
+#endif()
 
 @TARGETSLINK@
