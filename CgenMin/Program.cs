@@ -1,4 +1,4 @@
-﻿//  #define TESTING
+﻿//#define TESTING
 // See https://aka.ms/new-console-template for more information
 
 
@@ -318,7 +318,7 @@ namespace CodeGenerator
 
             System.Console.WriteLine("environmentDir: " + envIronDirectory);
 
-            //UpdateTableOfContentsForDoc();
+           //UpdateTableOfContentsForDoc();
 
 #if !TESTING
             command = new string[args.Length];
@@ -1433,107 +1433,97 @@ namespace CodeGenerator
             }
         }
 
+   
+public class ReplaceTextInFiles
+    {
+        private static bool KeepReplacedText;
 
-        public class ReplaceTextInFiles
+        public static void ReplaceAllTextInAllFilesAndDirWithNewText(string rootDirectory, string oldText, string newText, bool keepReplacedText = false, params string[] directoriesToIgnore)
         {
+            // Define the text to search for and the replacement text
+            string searchText = oldText;
+            string replacementText = newText;
+            KeepReplacedText = keepReplacedText;
 
-            private static bool KeepReplacedText;
-            public static void ReplaceAllTextInAllFilesAndDirWithNewText(string rootDirectory, string oldText, string newText, bool keepReplacedText = false)
+            try
             {
-                // Define the root directory to start
-                // string rootDirectory = @"C:\Users\SyncthingServiceAcct\QR_Sync\templateprojectwev";
+                // Process all files in the directory and subdirectories
+                ProcessDirectory(rootDirectory, searchText, replacementText, new HashSet<string>(directoriesToIgnore, StringComparer.OrdinalIgnoreCase));
 
-                // Define the text to search for and the replacement text
-                string searchText = oldText;// "world2";
-                string replacementText = newText;// "templateprojectwev";
-                KeepReplacedText = keepReplacedText;
-                try
-                {
-                    // Process all files in the directory and subdirectories
-                    ProcessDirectory(rootDirectory, searchText, replacementText);
-                 
-                    Console.WriteLine("Replacement completed successfully.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                }
+                Console.WriteLine("Replacement completed successfully.");
             }
-
-            static void ProcessDirectory(string directoryPath, string searchText, string replacementText)
+            catch (Exception ex)
             {
-                // Get all files in the current directory
-                foreach (string filePath in Directory.GetFiles(directoryPath))
-                {
-                    // Process all files in the directory and subdirectories
-                    if (KeepReplacedText == false)
-                    {
-                        ProcessFile(filePath, searchText, replacementText);
-                    }
-                    else
-                    {
-                        ProcessFile_Between_Two_Words(filePath, searchText, replacementText);
-                    }
-                     
-                }
-
-                // Recursively process subdirectories
-                foreach (string subdirectoryPath in Directory.GetDirectories(directoryPath))
-                {
-                    ProcessDirectory(subdirectoryPath, searchText, replacementText);
-                }
-            }
-
-            static void ProcessFile(string filePath, string searchText, string replacementText)
-            {
-                // Read the file content
-                string replacedContent = KeepReplacedText ? searchText + "\n" + replacementText : replacementText;
-
-                string content = File.ReadAllText(filePath);
-                string updatedContent = Regex.Replace(
-                        content,
-                        $@"{searchText}",
-                        replacedContent);
-                // Replace occurrences of the search text with the replacement text (case-sensitive)
-                //string updatedContent = Regex.Replace(content, $@"\b{searchText}\b", replacementText);
-
-                // Write the updated content back to the file
-                File.WriteAllText(filePath, updatedContent);
-
-                Console.WriteLine($"Processed file: {filePath}");
-            }
-
-
-            static void ProcessFile_Between_Two_Words(string filePath, string searchText, string replacementText)
-            {
-                // Read the file content
-                string content = File.ReadAllText(filePath);
-
-                // Use Regex to replace text between occurrences of searchText
-                string updatedContent = Regex.Replace(
-                    content,
-                    $@"{Regex.Escape(searchText)}(.*?){Regex.Escape(searchText)}",
-                    match =>
-                    {
-                        // Match the content inside the delimiters
-                        string innerContent = match.Groups[1].Value;
-
-                        // Replace inner content with the replacement text, preserving delimiters
-                        return $"{searchText}\n{replacementText}\n{searchText}";
-                    },
-                    RegexOptions.Singleline);
-
-                // Write the updated content back to the file
-                File.WriteAllText(filePath, updatedContent);
-
-                Console.WriteLine($"Processed file: {filePath}");
+                Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
 
+        static void ProcessDirectory(string directoryPath, string searchText, string replacementText, HashSet<string> directoriesToIgnore)
+        {
+            // Skip directories that should be ignored
+            string directoryName = Path.GetFileName(directoryPath);
+            if (directoriesToIgnore.Contains(directoryName))
+            {
+                Console.WriteLine($"Skipping directory: {directoryPath}");
+                return;
+            }
+
+            // Get all files in the current directory
+            foreach (string filePath in Directory.GetFiles(directoryPath))
+            {
+                if (!KeepReplacedText)
+                {
+                    ProcessFile(filePath, searchText, replacementText);
+                }
+                else
+                {
+                    ProcessFile_Between_Two_Words(filePath, searchText, replacementText);
+                }
+            }
+
+            // Recursively process subdirectories
+            foreach (string subdirectoryPath in Directory.GetDirectories(directoryPath))
+            {
+                ProcessDirectory(subdirectoryPath, searchText, replacementText, directoriesToIgnore);
+            }
+        }
+
+        static void ProcessFile(string filePath, string searchText, string replacementText)
+        {
+            string replacedContent = KeepReplacedText ? $"{searchText}\n{replacementText}" : replacementText;
+
+            string content = File.ReadAllText(filePath);
+            string updatedContent = Regex.Replace(content, $@"{Regex.Escape(searchText)}", replacedContent);
+
+            File.WriteAllText(filePath, updatedContent);
+
+            Console.WriteLine($"Processed file: {filePath}");
+        }
+
+        static void ProcessFile_Between_Two_Words(string filePath, string searchText, string replacementText)
+        {
+            string content = File.ReadAllText(filePath);
+
+            string updatedContent = Regex.Replace(
+                content,
+                $@"{Regex.Escape(searchText)}(.*?){Regex.Escape(searchText)}",
+                match =>
+                {
+                    string innerContent = match.Groups[1].Value;
+                    return $"{searchText}\n{replacementText}\n{searchText}";
+                },
+                RegexOptions.Singleline);
+
+            File.WriteAllText(filePath, updatedContent);
+
+            Console.WriteLine($"Processed file: {filePath}");
+        }
+    }
 
 
 
-        private static void RunAEConfigProjectCommand(string commandToRun)
+
+    private static void RunAEConfigProjectCommand(string commandToRun)
         {
             string pathToconfexe1 = Path.Combine(QRBaseDir, @"AAAConfigProj\ConfigProjects\ConfigProjects\bin\Debug\net6.0");
             string pathToconfexe2 = Path.Combine(QRBaseDir, @"ConfigProjects\ConfigProjects\bin\Debug");
@@ -1778,7 +1768,7 @@ namespace CodeGenerator
 
         public static void UpdateTableOfContentsForDoc()
         {
-            ReplaceTextInFiles.ReplaceAllTextInAllFilesAndDirWithNewText(QRCoreBaseDir, "TableOfContentsForQRCore47896205709769", File.ReadAllText(Path.Combine(QRCoreBaseDir, "TableOfContentsForQRCore.md")), true);
+            ReplaceTextInFiles.ReplaceAllTextInAllFilesAndDirWithNewText( Path.Combine(QRCoreBaseDir, "doc"), "TableOfContentsForQRCore47896205709769", File.ReadAllText(Path.Combine(QRCoreBaseDir, "TableOfContentsForQRCore.md")), true, "images");
         }
 
 

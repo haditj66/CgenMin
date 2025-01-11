@@ -81,20 +81,38 @@
             return Args.ARGSNAME(); 
         }
 
-        public FunctionArgsBase TypeOFResponse;
+        public List<FunctionArgsBase> ResponseArgs;
         public List<FunctionArgsBase> Args { get; set; }
 
         public QREventSRV FunctionServiceEvent { get; set; }
         public string Name { get; internal set; }
 
+        public string NonQRTopicName { get; set; } = "";
+
+        //create factory method
+
+        public static ServiceFunction CreateServiceFunction(string name, List<FunctionArgsBase> typeOfResponse, List<FunctionArgsBase>  args, string topicName = "")
+        {
+            ServiceFunction serviceFunction = new ServiceFunction();
+            serviceFunction.Name = name;
+            serviceFunction.ResponseArgs = typeOfResponse;
+            serviceFunction.Args = args;
+            serviceFunction.NonQRTopicName = topicName;
+
+            //DONT CREATE A SERVICE EVENT AS THIS WILL CREATE AN UNWANTED SERVICE FILE
+            //FunctionServiceEvent = new QREventSRV(this.FromModuleName, name, new FunctionArgsBase(method.ReturnType, ""), tt);
+
+            return serviceFunction;
+        }
+
 
         public string NAMEOFFUNCTION { get { return Name; } }
-        public string ARGRETURN { get { return TypeOFResponse.TypeName; } } 
+        public string ARGRETURN { get { return ResponseArgs[0].TypeName; } } 
         public string TICKET_RETURN_TYPE1(string MODULENAME) {  return ARGRETURN == "void" ? "void" : $"{MODULENAME}_i::srv::{NAMEOFFUNCTION}_Response::_result_type"; } //@MODULENAME@_i::srv::@NAMEOFFUNCTION@_Response::_result_type
         public string TICKET_RETURN_TYPE2(string MODULENAME) { return ARGRETURN == "void" ? "void" : $"{MODULENAME}_i::srv::{NAMEOFFUNCTION}_Response::_result_type"; } //@MODULENAME@_i::srv::@NAMEOFFUNCTION@::Response::_result_type
-
- 
-
+        public string TICKET_RETURN_TYPE_multi(string MODULENAME) { 
+            return ARGRETURN == "void" ? "void" : $"std::shared_ptr<{MODULENAME}_i::srv::{NAMEOFFUNCTION}::Response>"; } //@MODULENAME@_i::srv::@NAMEOFFUNCTION@_Response::_result_type
+         
         public string ARGS
         {
             get
@@ -120,33 +138,34 @@
         //    }
         //    return ret;
         //}
-        public static string WNFUNCTION_SERVICES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions) where TServiceFunctionType : ServiceFunction
+        public static string WNFUNCTION_SERVICES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string modulename) where TServiceFunctionType : ServiceFunction
         {
             string ret = "";
             foreach (var servFun in serviceFunctions)
             {
-                ret += servFun.WNFUNCTION_SERVICE() + "\n";
+                ret += servFun.WNFUNCTION_SERVICE(modulename) + "\n";
             }
             return ret;
             //return RunForAllServiceFunctions(  serviceFunctions, "WNFUNCTION_SERVICE"); 
         }        
        
         //this is a service declaration.     rclcpp::Service<world2_i::srv::MoveObject>::SharedPtr serviceMoveObject;
-        protected string WNFUNCTION_SERVICE()
+        protected string WNFUNCTION_SERVICE(string modulename)
         {
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\WNFunction_Service",
-                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION }
+                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION },
+                     new MacroVar() { MacroName = "MODULE_NAME", VariableValue = modulename }
                     );
             return ret;
         }
 
 
-        public static string WNFUNCTION_SERVICES_DEFINES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string AONAME, bool isForSurrogateAO) where TServiceFunctionType : ServiceFunction
+        public static string WNFUNCTION_SERVICES_DEFINES<TServiceFunctionType>(List<TServiceFunctionType> serviceFunctions, string AONAME, bool isForSurrogateAO, string MODULENAME) where TServiceFunctionType : ServiceFunction
         {
             string ret = "";
             foreach (var servFun in serviceFunctions)
             { 
-                ret += servFun.WNFUNCTION_SERVICES_DEFINE(AONAME, isForSurrogateAO) + "\n";
+                ret += servFun.WNFUNCTION_SERVICES_DEFINE(AONAME, isForSurrogateAO, MODULENAME) + "\n";
             }
             return ret;
             //return RunForAllServiceFunctions(  serviceFunctions, "WNFUNCTION_SERVICES_DEFINE"); 
@@ -158,12 +177,13 @@
         //cppobj->Getid() + "/MoveObject",
         //std::bind(&WorldNodeAO::MoveObject, this, _1,_2), //
         //rmw_qos_profile_services_default_MINE, client_cb_group_);
-        protected string WNFUNCTION_SERVICES_DEFINE(string AONAME, bool isForSurrogateAO)
+        protected string WNFUNCTION_SERVICES_DEFINE(string AONAME, bool isForSurrogateAO, string MODULENAME)
         {
             string fileGen = isForSurrogateAO ? "WNFunction_Service_Define" : "WNFunction_Service_Define_NodeAO";
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut($"QR\\SurrogatePattern\\{fileGen}",
                     new MacroVar() { MacroName = "AONAME", VariableValue = AONAME },
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = this.NAMEOFFUNCTION },
+                    new MacroVar() { MacroName = "MODULENAME", VariableValue = MODULENAME },
                     new MacroVar() { MacroName = "NUMOFARGS", VariableValue = this.NUMOFARGS_UNDERSCORE() },
                     new MacroVar() { MacroName = "COMMA_IF_ARGSNAME", VariableValue = this.NUMOFARGS_UNDERSCORE() == "" ? "" : "," },
                     new MacroVar() { MacroName = "IF_PART_OF_CALLBACK_GROUP", VariableValue = this.PartOfCallBackGroup_Named == "" ? "" : ",rmw_qos_profile_services_default_MINE," },//

@@ -1,5 +1,5 @@
          service@NAMEOFFUNCTION@ =
-            ForNode->create_service<world2_i::srv::@NAMEOFFUNCTION@>(
+            ForNode->create_service<@MODULENAME@_i::srv::@NAMEOFFUNCTION@>(
             cppobj->Getid() + "/@NAMEOFFUNCTION@",
             std::bind(&@AONAME@NodeAO::@NAMEOFFUNCTION@, this, _1,_2) 
             @IF_PART_OF_CALLBACK_GROUP@ @CALLBACK_GROUP@); 

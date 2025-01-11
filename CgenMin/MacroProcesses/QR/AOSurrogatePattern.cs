@@ -627,8 +627,8 @@ $"QR\\SurrogatePattern\\Worldcpp",
                   new MacroVar() { MacroName = "PROPERTYEVTS_HEADERS", VariableValue = string.Join("\n", PROPERTYEVTS_HEADERS) },
 
                   new MacroVar() { MacroName = "WNPLACEHOLDERARGS", VariableValue = WNPLACEHOLDERARGS() },
-                  new MacroVar() { MacroName = "WNFUNCTION_SERVICES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES(SurrogateServiceFunctions) },// GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICE) },
-                  new MacroVar() { MacroName = "WNFUNCTION_SERVICES_DEFINES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES_DEFINES(SurrogateServiceFunctions, this.AONAME, true) },//  GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICES_DEFINE) },
+                  new MacroVar() { MacroName = "WNFUNCTION_SERVICES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES(SurrogateServiceFunctions, MODULENAME) },// GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICE) },
+                  new MacroVar() { MacroName = "WNFUNCTION_SERVICES_DEFINES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES_DEFINES(SurrogateServiceFunctions, this.AONAME, true, MODULENAME) },//  GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICES_DEFINE) },
                   new MacroVar() { MacroName = "WNFUNCTIONS_IMPL", VariableValue = ServiceFunction.WNFUNCTIONS_IMPLS(SurrogateServiceFunctions, this.MODULENAME) }// GenerateAllForEvery_SurrogateFunction(WNFUNCTIONS_IMPL) }
 
 

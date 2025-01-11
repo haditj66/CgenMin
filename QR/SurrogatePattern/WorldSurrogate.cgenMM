@@ -3,6 +3,8 @@
 //place all headers you need here.
 ##UserCode_header
 
+@INTERFACE_HEADERS@
+
 @DATASYNC_HEADER@
 
 @IS_INHERIT7@
