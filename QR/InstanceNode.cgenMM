@@ -37,9 +37,12 @@
 //**********************
 //SERVICE_INTERFACE_HEADERS
 @SERVICE_INTERFACE_HEADERS@
-#include "world2_i/srv/add_object_to_world.hpp"
+ 
 
-
+//==========================
+//PUB_HEADER SUB_HEADER
+@PUB_HEADER@
+@SUB_HEADER@
 
 using namespace @MODULENAME@_rqt;
  
@@ -56,10 +59,7 @@ using std::placeholders::_2;
  
 ##UserCode_section1
 
-//==========================
-//PUB_HEADER SUB_HEADER
-@PUB_HEADER@
-@SUB_HEADER@
+
 
 
 /*****************************************************************************

@@ -1,5 +1,6 @@
 ﻿using CgenMin.MacroProcesses.QR;
 using CodeGenerator.ProblemHandler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -34,6 +35,8 @@ namespace CgenMin.MacroProcesses
 
     public abstract class QREvent : AOWritableToAOClassContents
     {
+
+        public bool isNonQR = false;
         public QREventType QREVTType { get; private set; }
         public FunctionArgsBase[] EventProperties { get; protected set; }
         public List<FunctionArgsBase > EventPropertiesList { get { return EventProperties.ToList(); } }
@@ -92,31 +95,47 @@ namespace CgenMin.MacroProcesses
             string ret = "";
             foreach (var item in AllAEEvents)
             {
-                ret += item.INTERFACE_HEADER();
+                ret += item.INTERFACE_HEADER( );
                 ret += "\n";
             }
             return ret; 
         }
 
-        public string INTERFACE_HEADER()
-        {
-            string evtType =
-               QREVTType == QREventType.MSG ? $"msg" :
-               QREVTType == QREventType.SRV ? "srv" :
-               "act";
+         
 
-            return $"#include \"{QRInitializing.RunningProjectName}_i/{evtType}/{INTERFACE_HEADER_NAME()}.hpp\" " ;
+
+        public string INTERFACE_HEADER( )
+        {
+            if (this.isNonQR)
+            {
+                return ((QREventMSGNonQR)this).FullHeaderName;
+            }
+
+            return __INTERFACE_HEADER(QREVTType, this.InstanceName); 
         }
 
+        public static string __INTERFACE_HEADER(QREventType theevtType, string instanceName )
+        {
+            string evtType =
+               theevtType == QREventType.MSG ? $"msg" :
+               theevtType == QREventType.SRV ? "srv" :
+               "act";
 
+            return $"#include \"{QRInitializing.RunningProjectName}_i/{evtType}/{__INTERFACE_HEADER_NAME(instanceName)}.hpp\" ";
+        }
         public string INTERFACE_HEADER_NAME()
+        {
+            return __INTERFACE_HEADER_NAME(this.InstanceName);
+        }
+
+        public static string __INTERFACE_HEADER_NAME(string _instanceName)
         {
             // Initialize return string
             string ret = "";
             bool isFirstCharacter = true;
             bool lastWasUpper = false;
 
-            foreach (var item in this.InstanceName)
+            foreach (var item in _instanceName)
             {
                 if (isFirstCharacter)
                 {
@@ -560,6 +579,8 @@ namespace CgenMin.MacroProcesses
     //where TDerived : AEEventBase<TDerived>, new()
     public class QREventMSG : AEEventBase
     {
+         
+
         public QREventMSG(string fromModule, string ClassName, params FunctionArgsBase[] eventProperties)
             : base(fromModule, ClassName, QREventType.MSG, eventProperties)
         {
@@ -627,6 +648,30 @@ namespace CgenMin.MacroProcesses
     }
 
 
+    public class QREventMSGNonQR : QREventMSG
+    {
+        public string FullTopicName { get; set; }
+        public string FullHeaderName { get; set; }
+        public string FullMsgClassName { get; set; }
 
+        public QREventMSGNonQR(string fromModule, string fullTopicName, string fullHeaderName, string fullMsgClassName, params FunctionArgsBase[] eventProperties)
+            : base(fromModule, "NonQR", eventProperties)
+        {
+            FullHeaderName = fullHeaderName;
+            FullTopicName = fullTopicName;
+            FullMsgClassName = fullMsgClassName;
+            isNonQR = true;
+
+        }
+
+        public QREventMSGNonQR(string fromModule, string fullTopicName, string fullHeaderName, string fullMsgClassName, List<FunctionArgsBase> eventProperties)
+            : base(fromModule, "NonQR",  eventProperties)
+        {
+            FullHeaderName = fullHeaderName;
+            FullTopicName = fullTopicName;
+            FullMsgClassName = fullMsgClassName;
+            isNonQR = true;
+        }
+    }
 }
 

@@ -45,7 +45,8 @@ namespace CgenMin.MacroProcesses.QR
         }
 
         public static string SUBPUB_HEADER(ROSSubPub rosSubPub)
-        {
+        { 
+
             return rosSubPub.SUBPUB_HEADER;
         }
         
@@ -203,6 +204,10 @@ namespace CgenMin.MacroProcesses.QR
 
         public override string TopicName()
         {
+            //if (this.MyQREventMSG.isNonQR)
+            //{ 
+            //    return ((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
+            //}
             return PubToSubTo.Name;
         }
 
@@ -210,6 +215,12 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                if (this.MyQREventMSG.isNonQR)
+                {
+
+                    return  ((QREventMSGNonQR)this.MyQREventMSG).FullTopicName ;
+                }
+
                 string ret = "";
                 if (GiveInstanceNamespace)
                 {
@@ -237,6 +248,11 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                if (this.MyQREventMSG.isNonQR)
+                {
+                    return $"rclcpp::Subscription<{((QREventMSGNonQR)this.MyQREventMSG).FullMsgClassName}>::SharedPtr {Name};";
+                }
+
                 // rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_;
                 return $"rclcpp::Subscription<{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}>::SharedPtr {Name};";
             }
@@ -245,12 +261,22 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                string fullheader = "";
+                if (this.MyQREventMSG.isNonQR)
+                {
+                    fullheader = ((QREventMSGNonQR)this.MyQREventMSG).FullMsgClassName;
+                }
+                else
+                {
+                    fullheader = $"{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}";
+                }
+
 
                 // subscription_ = this->create_subscription<std_msgs::msg::String>(
                 // "topic",
                 // 10, std::bind(&WorldNode::topic_callback, this, std::placeholders::_1));
                 string ret = "";
-                ret += $"{Name} = this->create_subscription<{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}> ";
+                ret += $"{Name} = this->create_subscription<{fullheader}> ";
                 ret += $"(\"{FULLTOPICNAME_IN_CGENMM}\",";
                 ret += $"{QueueSize.ToString()}, std::bind(&{AOIBelongTo.ClassName}Node::{Name}_callback, this, std::placeholders::_1));";
                 return ret;

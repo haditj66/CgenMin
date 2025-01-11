@@ -1,7 +1,7 @@
 void @NAME@_Publish(@ARGS@)
 {
 		// Create a new message to publish
-		auto request_ = @MODULENAME@_i::msg::@MSGNAME@();  
+		auto request_ = @FULLCLASSNAME@();  
 		auto request = &request_;
 		//fill message
         @ARG_FILL_REQUEST_DATAS@ 

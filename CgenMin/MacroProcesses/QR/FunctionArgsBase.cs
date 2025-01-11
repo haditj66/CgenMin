@@ -242,11 +242,12 @@ namespace CgenMin.MacroProcesses
             ret = ret == "UInt16" ? "uint16_t" : ret;
             ret = ret == "UInt32" ? "uint32_t" : ret;
             ret = ret == "UInt64" ? "uint64_t" : ret;
-
+            
             ret = ret == "Void" ? "void" : ret;
 
 
             // Floating-point types
+            ret = ret == "float" ? "float" : ret;
             ret = ret == "Single" ? "float" : ret;
             ret = ret == "Double" ? "double" : ret;
             ret = ret == "Decimal" ? "double" : ret; // C++ does not have a direct decimal type; double is commonly used instead.
@@ -283,7 +284,8 @@ namespace CgenMin.MacroProcesses
             ret = ret == "Void" ? "" : ret;
 
             // Floating-point types
-            ret = ret == "Single" ? "float" : ret;
+            ret = ret == "Single" ? "float32" : ret;
+            ret = ret == "float" ? "float32" : ret;
             ret = ret == "Double" ? "double" : ret;
             ret = ret == "Decimal" ? "double" : ret; // C++ does not have a direct decimal type; double is commonly used instead.
 
@@ -297,9 +299,41 @@ namespace CgenMin.MacroProcesses
             ret = ret == "String" ? "string" : ret;
 
             return ret;
-
-
+             
         }
+
+        public static Type ServiceTypeToCsharpType(string typestr)
+        {
+            string ret = typestr;
+
+            // Integer types
+            ret = ret == "uint8" ? "System.Byte" : ret;
+            ret = ret == "int8" ? "System.SByte" : ret;
+            ret = ret == "int16" ? "System.Int16" : ret;
+            ret = ret == "int32" ? "System.Int32" : ret;
+            ret = ret == "int64" ? "System.Int64" : ret;
+            ret = ret == "uint16" ? "System.UInt16" : ret;
+            ret = ret == "uint32" ? "System.UInt32" : ret;
+            ret = ret == "uint64" ? "System.UInt64" : ret;
+
+            // Floating-point types
+            ret = ret == "float32" ? "System.Single" : ret;
+            ret = ret == "double" ? "System.Double" : ret;
+
+            // Boolean type
+            ret = ret == "bool" ? "System.Boolean" : ret;
+
+            // Character type
+            ret = ret == "char" ? "System.Char" : ret;
+
+            // String type
+            ret = ret == "string" ? "System.String" : ret;
+
+            return Type.GetType(ret) ?? throw new ArgumentException($"Unknown service type: {typestr}");
+        }
+         
+
+
         public static string STR_to_NAMEASINSERVICE(bool isSurrogate, string toConvert)
         {
             string ret = isSurrogate ? "id" : toConvert;

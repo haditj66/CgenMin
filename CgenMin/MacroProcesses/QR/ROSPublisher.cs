@@ -27,7 +27,7 @@ namespace CgenMin.MacroProcesses.QR
              
             if (duplicates.Count > 0 )
             {
-                 
+                return;
                 ProblemHandle problemHandle = new ProblemHandle();
                 problemHandle.ThereisAProblem($"Publisher with the name {duplicates[0].IdName} under this class  already exists but you created two of them");
             }
@@ -60,7 +60,8 @@ namespace CgenMin.MacroProcesses.QR
             var pub = new ROSPublisher(name, msg, hasInstanceNameInNameSpace, queueSize); 
             return pub;
         }
-         
+ 
+
         /// <param name="name">name if the pyublisher</param>
         /// <param name="fromClassOfName">name of the AO class that the publisher belongs to</param>
         /// <returns></returns>
@@ -85,7 +86,7 @@ namespace CgenMin.MacroProcesses.QR
             }
              
         }
-
+        
 
         protected static ROSPublisher CreateDummyPublisher(string name, string fromClassOfName)
         {
@@ -121,6 +122,12 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                if (this.MyQREventMSG.isNonQR)
+                {
+
+                    return ((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
+                }
+
                 string ret = "";
                 if (GiveInstanceNamespace)
                 {
@@ -138,14 +145,25 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
-                string ret = "";
-                if (GiveInstanceNamespace)
+                string topicName = "";
+
+                if (this.MyQREventMSG.isNonQR)
                 {
-                    ret = $"this->id + \"/{AOIBelongTo.ClassName}/{TopicName()}\"";
+                    topicName = ((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
                 }
                 else
                 {
-                    ret = $"\"{AOIBelongTo.ClassName}/{TopicName()}\"";
+                    topicName = $"/{AOIBelongTo.ClassName}/{TopicName()}";
+                }
+
+                string ret = "";
+                if (GiveInstanceNamespace)
+                {
+                    ret = $"this->id + \"{topicName}\"";
+                }
+                else
+                {
+                    ret = $"\"{topicName}\"";
                 }
                 return ret;
             }
@@ -158,6 +176,11 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                if (this.MyQREventMSG.isNonQR)
+                {
+                    return $"rclcpp::Publisher<{((QREventMSGNonQR)this.MyQREventMSG).FullMsgClassName}>::SharedPtr {Name};";
+                }
+
                 //rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
                 return $"rclcpp::Publisher<{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}>::SharedPtr {Name};";
             }
@@ -165,9 +188,20 @@ namespace CgenMin.MacroProcesses.QR
         public string PUBLISHER_DEFINE
         {
             get
-            { 
+            {
+                string fullheader = "";
+                if (this.MyQREventMSG.isNonQR)
+                {
+                    fullheader = ((QREventMSGNonQR)this.MyQREventMSG).FullMsgClassName; 
+                }
+                else
+                {
+                    fullheader = $"{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}";
+
+                }
+
                 //publisher_ = this->create_publisher<std_msgs::msg::String>("output_topic", 10);
-                return $"{Name} = this->create_publisher<{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}>({FULLTOPICNAME_IN_CGENMM}, {QueueSize});";
+                return $"{Name} = this->create_publisher<{fullheader}>({FULLTOPICNAME_IN_CGENMM}, {QueueSize});";
             }
         }
 
@@ -175,7 +209,12 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                string FULLCLASSNAME = this.MyQREventMSG.isNonQR ?
+                    (((QREventMSGNonQR)this.MyQREventMSG).FullMsgClassName) : 
+                    $"{QRInitializing.RunningProjectName}_i::msg::{MyQREventMSG.InstanceName}";
+
                 string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\PubsSubs\\PublisherFunction",
+                   new MacroVar() { MacroName = "FULLCLASSNAME", VariableValue = FULLCLASSNAME },
                    new MacroVar() { MacroName = "MODULENAME", VariableValue = QRInitializing.RunningProjectName },
                    new MacroVar() { MacroName = "NAME", VariableValue = this.Name },
                    new MacroVar() { MacroName = "MSGNAME", VariableValue = MyQREventMSG.InstanceName },

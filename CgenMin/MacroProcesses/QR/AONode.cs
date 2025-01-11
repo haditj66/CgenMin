@@ -2,7 +2,9 @@
 using CommandLine.Text;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace CgenMin.MacroProcesses.QR
@@ -13,6 +15,42 @@ namespace CgenMin.MacroProcesses.QR
         protected string MODULENAME;
         protected string AONAME;
 
+        public bool IsNonQR { get; protected set; } = false;
+
+
+        protected AONodeBase(string className, string instanceNameOfTDU) : base("", instanceNameOfTDU)
+        {
+            //get the namespace where this comes from
+            var t = this.GetType();
+            var ns = t.Namespace;
+
+
+            //get all types of QRProject that are in the assembly of this namespace 
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule)))).ToList();
+
+            //if there are more than 2 types of QRproject, then give a problem as there should only be one in one namespace
+            if (types.Count > 1)
+            {
+                ProblemHandle problemHandle = new ProblemHandle();
+                problemHandle.ThereisAProblem($"There are more than one type of QRProject in the namespace {ns}. There should only be one type of QRProject in one namespace");
+            }
+
+            //if the types[0].Name is NonQRAONode, then name it the name the user passed in 
+            //if (types[0].Name == "NonQRAONode")
+            if (types.Count == 0)
+            {
+                this.FromModuleName = className;
+                this.MODULENAME = className;
+
+            }
+            else
+            {
+                this.FromModuleName = types[0].Name;
+                this.MODULENAME = types[0].Name;
+            }
+
+
+        }
 
 
         protected AONodeBase(string instanceNameOfTDU  ) : base("", instanceNameOfTDU )
@@ -31,8 +69,21 @@ namespace CgenMin.MacroProcesses.QR
                 ProblemHandle problemHandle = new ProblemHandle();
                 problemHandle.ThereisAProblem($"There are more than one type of QRProject in the namespace {ns}. There should only be one type of QRProject in one namespace");
             }
-            this.FromModuleName = types[0].Name;
-            this.MODULENAME = types[0].Name;
+
+            //if the types[0].Name is NonQRAONode, then name it the name the user passed in 
+            //if (types[0].Name == "NonQRAONode")
+            if (types.Count == 0)
+            {
+                this.FromModuleName = ((NonQRAONode)this).CName;
+                this.MODULENAME = ((NonQRAONode)this).CName;
+
+            }
+            else
+            {
+                this.FromModuleName = types[0].Name;
+                this.MODULENAME = types[0].Name;
+            }
+            
 
         }
 
@@ -52,13 +103,38 @@ namespace CgenMin.MacroProcesses.QR
         }
 
 
-        public static List<ServiceFunction> ServiceFunctions { get; private set; }
+        public static List<ServiceFunction> ServiceFunctions { get; protected set; }
         public static List<SurrogateServiceFunction> SurrogateServiceFunctions { get; private set; }
+
+
+        protected AONode(string className, string instanceName) : base(className, instanceName)// AOTypeEnum.AOSurrogatePattern)
+        {
+            AOType = GetAOType();
+
+            var t = this.GetType();
+            var ns = t.Namespace;
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule)))).ToList();
+
+            //if (types[0].Name != "NonQRAONode")
+            if (types.Count != 0)
+            {
+                _Init();
+            }
+        }
 
         protected AONode(string instanceName) : base(instanceName)// AOTypeEnum.AOSurrogatePattern)
         {
             AOType = GetAOType();
-            _Init();
+
+            var t = this.GetType();
+            var ns = t.Namespace;
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule)))).ToList();
+
+            //if (types[0].Name != "NonQRAONode")
+            if (types.Count != 0)
+            {
+                _Init();
+            }
         } 
 
 
@@ -97,6 +173,14 @@ namespace CgenMin.MacroProcesses.QR
         protected List<TServiceFunctionType> GetAllServiceFunctions<TServiceFunctionType>() where TServiceFunctionType : ServiceFunction
         {
             List<TServiceFunctionType> ret = new List<TServiceFunctionType>();
+            //if the class is type NonQRAONode then return an empty list
+            //if (this.GetType() == typeof(NonQRAONode))
+            //{
+            //    ((NonQRAONode)this).;
+            //    return ret;
+            //}
+
+
 
             //===============
             //getting all the functions marked as ServiceFunction
@@ -128,7 +212,7 @@ namespace CgenMin.MacroProcesses.QR
 
 
                         //fill in all properties of the surrogate function
-                        surrogateFunctionInstance.TypeOFResponse = new FunctionArgsBase(method.ReturnType, method.ReturnType.Name);
+                        surrogateFunctionInstance.ResponseArgs.Add( new FunctionArgsBase(method.ReturnType, method.ReturnType.Name));
 
 
                         surrogateFunctionInstance.Args = method.GetParameters().Select(p =>
@@ -160,7 +244,7 @@ namespace CgenMin.MacroProcesses.QR
             return ret;
         } 
 
-        private void _Init()
+        protected void _Init()
         { 
                 this.AONAME = this.ClassName; 
             
@@ -285,21 +369,28 @@ namespace CgenMin.MacroProcesses.QR
         }
         protected string AOFUNCTION_TICKET(ServiceFunction surrogateFunction)
         {
+            string retType = surrogateFunction.ResponseArgs.Count > 1 ? surrogateFunction.TICKET_RETURN_TYPE_multi(this.MODULENAME)  :
+                surrogateFunction.TICKET_RETURN_TYPE1(this.MODULENAME);
+
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunctionTicket",
-                    new MacroVar() { MacroName = "TICKET_RETURN_TYPE1", VariableValue = surrogateFunction.TICKET_RETURN_TYPE1(this.MODULENAME) },
+                    new MacroVar() { MacroName = "TICKET_RETURN_TYPE1", VariableValue = retType },
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION }
                     );
             return ret;
         }
         protected string AOFUNCTION_CLIENT(ServiceFunction surrogateFunction)
         {
+            string TOPICNAME = surrogateFunction.NonQRTopicName == "" ?  surrogateFunction.NAMEOFFUNCTION : surrogateFunction.NonQRTopicName;
+
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunctionClient",
                     new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
+                    new MacroVar() { MacroName = "TOPICNAME", VariableValue = TOPICNAME },
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION });
             return ret;
         }
         protected string AOFUNCTION_CLIENT_DECLARE(ServiceFunction surrogateFunction)
-        {
+        { 
+
             return $"rclcpp::Client<{this.MODULENAME}_i::srv::{surrogateFunction.NAMEOFFUNCTION}>::SharedPtr client{surrogateFunction.NAMEOFFUNCTION};";
         }
 
@@ -307,7 +398,11 @@ namespace CgenMin.MacroProcesses.QR
         {
             string isOverride = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ? "override" : "";
 
-            string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_Imp",
+            string ret = "";
+            //if the surrogateFunction has a multiple return args, use the other implementation
+            if (surrogateFunction.ResponseArgs.Count > 1)
+            {
+                ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_Imp_MultiArgs",
                     new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
                     new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
                     new MacroVar() { MacroName = "ARGRETURN", VariableValue = surrogateFunction.ARGRETURN },
@@ -318,6 +413,22 @@ namespace CgenMin.MacroProcesses.QR
                     new MacroVar() { MacroName = "ARGSNAME", VariableValue = surrogateFunction.ARGSNAME() },
                     new MacroVar() { MacroName = "ISOVERRIDE", VariableValue = isOverride }
                     );
+            }
+            else
+            { 
+                ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_Imp",
+                      new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
+                      new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
+                      new MacroVar() { MacroName = "ARGRETURN", VariableValue = surrogateFunction.ARGRETURN },
+                      new MacroVar() { MacroName = "TICKET_RETURN_TYPE1", VariableValue = surrogateFunction.TICKET_RETURN_TYPE1(this.MODULENAME) },
+                      new MacroVar() { MacroName = "TICKET_RETURN_TYPE2", VariableValue = surrogateFunction.TICKET_RETURN_TYPE2(this.MODULENAME) },
+                      new MacroVar() { MacroName = "ARGS", VariableValue = surrogateFunction.Args.GenerateAllForEvery_Arguments(FunctionArgsBaseExtension.ARG, ",") },//  .GenerateAllForEvery_Arguments(surrogateFunction.ARG, ",") },
+                      new MacroVar() { MacroName = "ARG_FILL_REQUEST_DATAS", VariableValue = surrogateFunction.Args.GenerateAllForEvery_Arguments(FunctionArgsBaseExtension.ARG_FILL_REQUEST_DATA, "\n") },// surrogateFunction.GenerateAllForEvery_Arguments(surrogateFunction.ARG_FILL_REQUEST_DATA, "\n") },
+                      new MacroVar() { MacroName = "ARGSNAME", VariableValue = surrogateFunction.ARGSNAME() },
+                      new MacroVar() { MacroName = "ISOVERRIDE", VariableValue = isOverride }
+                      );
+            }
+
             return ret;
         }
 
@@ -471,6 +582,9 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
                 WorldSurrogate_Init = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ?
                     WorldSurrogate_Init :
                     "";
+
+                WorldSurrogate_Init = this.IsNonQR == true ? "" : WorldSurrogate_Init;
+
                 WorldSurrogate_UpdateCallback = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ?
                     WorldSurrogate_UpdateCallback :
                     "";
@@ -503,10 +617,23 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
                 string IS_INHERIT6 = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ? $"" : "//";
                 string IS_INHERIT7 = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ? $"" : "#include \"QR_Core.h\"";
 
+                string allInterfaceHeaders = QREvent.INTERFACE_HEADERS();
+                if (this.IsNonQR == true)
+                {
+                    allInterfaceHeaders = "";
+                    foreach (var item in ServiceFunctions)
+                    {
+                        allInterfaceHeaders += QREvent.__INTERFACE_HEADER(QREventType.SRV, item.NAMEOFFUNCTION); 
+                        allInterfaceHeaders += "\n";
+                    } 
+                
+                }
 
-                string WorldSurrogate = QRInitializing.TheMacro2Session.GenerateFileOut(
+
+
+                    string WorldSurrogate = QRInitializing.TheMacro2Session.GenerateFileOut(
          $"QR\\SurrogatePattern\\WorldSurrogate",
-          new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = QREvent.INTERFACE_HEADERS() },
+          new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = allInterfaceHeaders },
                       new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
                       new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
 
@@ -534,10 +661,18 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
 
           );
 
+                //if this is a nonQR, then change all instances of MODULENAME_i to the name of the 
+                if ( this.IsNonQR == true)
+                {
+                    WorldSurrogate = WorldSurrogate.Replace($"{this.MODULENAME}_i", this.AONAME);
+                }
+
                 //if this is not a surrogate and does not have any service functions, then dont write this file
                 if (this.GetAOType() == AOTypeEnum.AOSurrogatePattern || ServiceFunctions.Count > 0)
                 {
-                    ret.Add(new RelativeDirPathWrite($"{this.ClassName}Surrogate", "h",
+                    string clname = this.IsNonQR == false ? $"{this.ClassName}Surrogate" : $"{this.AONAME}Surrogate";
+
+                    ret.Add(new RelativeDirPathWrite(clname, "h",
                         Path.Combine("rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt"), WorldSurrogate,
                           true, true));
                 }
@@ -545,64 +680,72 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
 
 
 
+
+
                 //****************************************************************************************************
                 //InstanceNode.h
 
-                //#include "world2_rqt/WorldNodeAO.h"
-                string ISSURROGATE_HEADER = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"#include \"{MODULENAME}_rqt/{AONAME}NodeAO.h\"" : "";
 
-                string InstanceNode = QRInitializing.TheMacro2Session.GenerateFileOut(
-         $"QR\\InstanceNode",
-                      new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                      new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
+                //if this is a NonQRAONode, then dont write the rest of the files
+                if (this.IsNonQR == false)
+                {
+                    //#include "world2_rqt/WorldNodeAO.h"
+                    string ISSURROGATE_HEADER = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"#include \"{MODULENAME}_rqt/{AONAME}NodeAO.h\"" : "";
 
-                      new MacroVar() { MacroName = "SERVICE_INTERFACE_HEADERS", VariableValue = QREvent.INTERFACE_HEADERS() },
+                    string InstanceNode = QRInitializing.TheMacro2Session.GenerateFileOut(
+             $"QR\\InstanceNode",
+                          new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
+                          new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
 
-                      new MacroVar() { MacroName = "ISSURROGATE_HEADER", VariableValue = ISSURROGATE_HEADER },
-                      new MacroVar() { MacroName = "ISSURROGATE_INHERIT1", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $", public {this.AONAME}NodeAO" : "" },
-                      new MacroVar() { MacroName = "ISSURROGATE_INHERIT2", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"" : "std::string id;" },
-                      new MacroVar() { MacroName = "ISSURROGATE_INHERIT3", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"" : "id = this->get_name();" },
-                      new MacroVar() { MacroName = "ISSURROGATE_FORNODE_DEC", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"" : "rclcpp::Node* ForNode;" },
+                          new MacroVar() { MacroName = "SERVICE_INTERFACE_HEADERS", VariableValue = QREvent.INTERFACE_HEADERS() },
 
-                      new MacroVar() { MacroName = "INSTANCENAME", VariableValue = this.InstanceName },
+                          new MacroVar() { MacroName = "ISSURROGATE_HEADER", VariableValue = ISSURROGATE_HEADER },
+                          new MacroVar() { MacroName = "ISSURROGATE_INHERIT1", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $", public {this.AONAME}NodeAO" : "" },
+                          new MacroVar() { MacroName = "ISSURROGATE_INHERIT2", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"" : "std::string id;" },
+                          new MacroVar() { MacroName = "ISSURROGATE_INHERIT3", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"" : "id = this->get_name();" },
+                          new MacroVar() { MacroName = "ISSURROGATE_FORNODE_DEC", VariableValue = this.AOType == AOTypeEnum.AOSurrogatePattern ? $"" : "rclcpp::Node* ForNode;" },
 
-
-                      // dont do this for surrogate types as they already have this done in the NodeAO.h file.
-                      new MacroVar() { MacroName = "WNFUNCTION_SERVICES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES(ServiceFunctions) },// GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICE) },
-                      new MacroVar() { MacroName = "WNFUNCTION_SERVICES_DEFINES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES_DEFINES(ServiceFunctions, this.AONAME, this.AOType == AOTypeEnum.AOSurrogatePattern) },//  GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICES_DEFINE) },
-                      new MacroVar() { MacroName = "WNFUNCTIONS_IMPL", VariableValue = ServiceFunction.WNFUNCTIONS_IMPLS(ServiceFunctions, this.MODULENAME) },
-
-                      //timer stuff
-                      new MacroVar() { MacroName = "TIMER_DECLARES", VariableValue = ROSTimer.TIMER_DECLARES(ROSTimers) },
-                      new MacroVar() { MacroName = "TIMER_DEFINES", VariableValue = ROSTimer.TIMER_DEFINES(ROSTimers) },
-                      new MacroVar() { MacroName = "TIMER_FUNC_IMPS", VariableValue = ROSTimer.TIMER_FUNC_IMPS(ROSTimers) },
-
-                      //subpub stuff
-                      new MacroVar() { MacroName = "PUB_HEADER", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBPUB_HEADER, "\n") },
-                      new MacroVar() { MacroName = "SUB_HEADER", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBPUB_HEADER, "\n") },
-                      new MacroVar() { MacroName = "PUBLISHER_DECLARE", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_DECLARE, "\n") },
-                      new MacroVar() { MacroName = "SUBSCRIBER_DECLARE", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_DECLARE, "\n") },
-                      new MacroVar() { MacroName = "PUBLISHER_DEFINE", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_DEFINE, "\n") },
-                      new MacroVar() { MacroName = "SUBSCRIBER_DEFINE", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_DEFINE, "\n") },
-                      new MacroVar() { MacroName = "PUBLISHER_FUNCTION", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_FUNCTION, "\n") },
-                      new MacroVar() { MacroName = "SUBSCRIBER_FUNCTION_CALLBACK", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_FUNCTION_CALLBACK, "\n") }
-
-                );
-
-                string InstanceNodecpp = QRInitializing.TheMacro2Session.GenerateFileOut(
-       $"QR\\InstanceNode_cpp",
-                    new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                    new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME }
-              );
+                          new MacroVar() { MacroName = "INSTANCENAME", VariableValue = this.InstanceName },
 
 
-                ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "hpp",
-                Path.Combine("rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt"), InstanceNode,
-                  true, true));
+                          // dont do this for surrogate types as they already have this done in the NodeAO.h file.
+                          new MacroVar() { MacroName = "WNFUNCTION_SERVICES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES(ServiceFunctions, MODULENAME) },// GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICE) },
+                          new MacroVar() { MacroName = "WNFUNCTION_SERVICES_DEFINES", VariableValue = ServiceFunction.WNFUNCTION_SERVICES_DEFINES(ServiceFunctions, this.AONAME, this.AOType == AOTypeEnum.AOSurrogatePattern, MODULENAME) },//  GenerateAllForEvery_SurrogateFunction(WNFUNCTION_SERVICES_DEFINE) },
+                          new MacroVar() { MacroName = "WNFUNCTIONS_IMPL", VariableValue = ServiceFunction.WNFUNCTIONS_IMPLS(ServiceFunctions, this.MODULENAME) },
 
-                ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "cpp",
-          Path.Combine("rosqt", "src"), InstanceNodecpp,
-            true, true));
+                          //timer stuff
+                          new MacroVar() { MacroName = "TIMER_DECLARES", VariableValue = ROSTimer.TIMER_DECLARES(ROSTimers) },
+                          new MacroVar() { MacroName = "TIMER_DEFINES", VariableValue = ROSTimer.TIMER_DEFINES(ROSTimers) },
+                          new MacroVar() { MacroName = "TIMER_FUNC_IMPS", VariableValue = ROSTimer.TIMER_FUNC_IMPS(ROSTimers) },
+
+                          //subpub stuff
+                          new MacroVar() { MacroName = "PUB_HEADER", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBPUB_HEADER, "\n") },
+                          new MacroVar() { MacroName = "SUB_HEADER", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBPUB_HEADER, "\n") },
+                          new MacroVar() { MacroName = "PUBLISHER_DECLARE", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_DECLARE, "\n") },
+                          new MacroVar() { MacroName = "SUBSCRIBER_DECLARE", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_DECLARE, "\n") },
+                          new MacroVar() { MacroName = "PUBLISHER_DEFINE", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_DEFINE, "\n") },
+                          new MacroVar() { MacroName = "SUBSCRIBER_DEFINE", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_DEFINE, "\n") },
+                          new MacroVar() { MacroName = "PUBLISHER_FUNCTION", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_FUNCTION, "\n") },
+                          new MacroVar() { MacroName = "SUBSCRIBER_FUNCTION_CALLBACK", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_FUNCTION_CALLBACK, "\n") }
+
+                    );
+
+                    string InstanceNodecpp = QRInitializing.TheMacro2Session.GenerateFileOut(
+           $"QR\\InstanceNode_cpp",
+                        new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
+                        new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME }
+                  );
+
+                     
+                 ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "hpp",
+                    Path.Combine("rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt"), InstanceNode,
+                      true, true));
+
+                 ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "cpp",
+                    Path.Combine("rosqt", "src"), InstanceNodecpp,
+                    true, true));
+
+                }
 
 
             }
@@ -632,7 +775,12 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
         public virtual string AO_MAINHEADER_RQT()
         {
             //#include "world2_rqt/TestSimpleNode.h"
-            string ret = $"#include \"{MODULENAME}_rqt/{AONAME}Node.hpp\"";
+            string ret = "";
+            if (IsNonQR == false)
+            {
+                  ret = $"#include \"{MODULENAME}_rqt/{AONAME}Node.hpp\"";
+            }
+            
             return ret;
         }
         public virtual string AO_DECLARES_CP()
@@ -660,7 +808,11 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
             //auto World1_nodeobj = QR_Core::CreateNode<world2_rqt::WorldNode>(&exec, "World1");
             //World1_nodeobj->Init(World1_cppobj);
             string ret = "";
-            ret += $"auto {InstanceName}_nodeobj = QR_Core::CreateNode <{MODULENAME}_rqt::{AONAME}Node> (&exec, \"{InstanceName}\");\n";
+            if (IsNonQR == false)
+            {
+                ret += $"auto {InstanceName}_nodeobj = QR_Core::CreateNode <{MODULENAME}_rqt::{AONAME}Node> (&exec, \"{InstanceName}\");\n"; 
+            }
+
             return ret;
         }
 

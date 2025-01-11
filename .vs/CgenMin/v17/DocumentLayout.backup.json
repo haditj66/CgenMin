@@ -3,72 +3,68 @@
   "WorkspaceRootPath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrinitializing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrinitializing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\aosurrogatepattern.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\aosurrogatepattern.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\filestogenerate\\qrtargetcmake.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\filestogenerate\\qrtargetcmake.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\aonode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\aonode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\functionargsbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\functionargsbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\filetemplates\\filetemplatebase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\filetemplates\\filetemplatebase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\aefsm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\aefsm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\rospublisher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\rospublisher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrtarget.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrtarget.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\filestogenerate\\qrsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\filestogenerate\\qrsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\rospublisher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\rospublisher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\rostimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\rostimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\rossubscriber.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\rossubscriber.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\aonode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\aonode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\aosurrogatepattern.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\aosurrogatepattern.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrinitializing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrinitializing.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\servicefunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\servicefunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\qrmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\qrmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\functionargsbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\functionargsbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\filestogenerate\\qrconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\filestogenerate\\qrconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\filetemplates\\generalmacotemplate\\generalmacro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\filetemplates\\generalmacotemplate\\generalmacro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\filestogenerate\\qrtargetcmake.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\filestogenerate\\qrtargetcmake.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\filetemplates\\filetemplatebase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\filetemplates\\filetemplatebase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\filestogenerate\\qrsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\filestogenerate\\qrsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\macroprocesses\\qr\\rostimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|solutionrelative:cgenmin\\macroprocesses\\qr\\rostimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C5F26F73-027D-4ADB-BF83-BEE9688B97BE}|CgenMin\\CgenMin.csproj|c:\\users\\syncthingserviceacct\\qr_sync\\cgenmin\\cgenmin\\extensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -89,176 +85,187 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 252,
-          "SelectedChildIndex": 0,
+          "DockedWidth": 127,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "QRInitializing.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRInitializing.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QRInitializing.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRInitializing.cs",
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRInitializing.cs",
-              "ViewState": "AgIAAKQBAAAAAAAAAAAowLIBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAMgBAAAAAAAAAAAAAO4BAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-11T01:41:28.869Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "QRModule.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRModule.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QRModule.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRModule.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRModule.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAWwEwAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T06:10:18.284Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "FunctionArgsBase.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
-              "ViewState": "AgIAAPIAAAAAAAAAAAAWwOcAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T18:06:03.02Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 2,
               "Title": "QREvent.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QREvent.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QREvent.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QREvent.cs",
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QREvent.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAewFQAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAACkAAAAAAAAAAAAIwHcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T05:53:39.946Z"
+              "WhenOpened": "2024-11-25T05:53:39.946Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "AEFSM.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AEFSM.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\AEFSM.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AEFSM.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\AEFSM.cs",
-              "ViewState": "AgIAABIBAAAAAAAAAAD4vycBAABDAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T18:36:09.2Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "AONode.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AONode.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\AONode.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AONode.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\AONode.cs",
-              "ViewState": "AgIAAHcBAAAAAAAAAAArwJ4BAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-11T05:22:15.322Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 1,
               "Title": "QRTarget.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
-              "ViewState": "AgIAABwBAAAAAAAAAAApwDwBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAALkAAAAAAAAAAAAAAOMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T10:53:28.958Z"
+              "WhenOpened": "2024-11-25T10:53:28.958Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 7,
+              "Title": "ServiceFunction.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ServiceFunction.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\ServiceFunction.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ServiceFunction.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ServiceFunction.cs",
+              "ViewState": "AgIAAFkAAAAAAAAAAIAwwGoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-14T07:29:32.261Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FunctionArgsBase.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
+              "ViewState": "AgIAAGgBAAAAAAAAAAAQwLUAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-21T18:06:03.02Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "QRModule.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRModule.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QRModule.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRModule.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRModule.cs",
+              "ViewState": "AgIAAKYAAAAAAAAAAAAAALsAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-25T06:10:18.284Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "QRConfig.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRConfig.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRConfig.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRConfig.cs",
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T01:51:31.021Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "GeneralMacro.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\FileTemplates\\GeneralMacoTemplate\\GeneralMacro.cs",
-              "RelativeDocumentMoniker": "CgenMin\\FileTemplates\\GeneralMacoTemplate\\GeneralMacro.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\FileTemplates\\GeneralMacoTemplate\\GeneralMacro.cs",
-              "RelativeToolTip": "CgenMin\\FileTemplates\\GeneralMacoTemplate\\GeneralMacro.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T02:56:02.917Z"
+              "WhenOpened": "2024-10-13T01:51:31.021Z",
+              "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedWidth": 148,
-          "SelectedChildIndex": 1,
+          "DockedWidth": 273,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AOSurrogatePattern.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
-              "ViewState": "AgIAADACAAAAAAAAAAAAADcCAAACAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "AONode.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AONode.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\AONode.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AONode.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\AONode.cs",
+              "ViewState": "AgIAAKwCAAAAAAAAAAAlwNUCAACuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-30T10:03:16.532Z"
+              "WhenOpened": "2024-11-11T05:22:15.322Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 10,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\Program.cs",
               "RelativeDocumentMoniker": "CgenMin\\Program.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\Program.cs",
               "RelativeToolTip": "CgenMin\\Program.cs",
-              "ViewState": "AgIAABIBAAAAAAAAAAAAAAwAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAACUBAAAAAAAAAAAmwD4BAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-11T01:00:37.185Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "FileTemplateBase.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\FileTemplates\\FileTemplateBase.cs",
-              "RelativeDocumentMoniker": "CgenMin\\FileTemplates\\FileTemplateBase.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\FileTemplates\\FileTemplateBase.cs",
-              "RelativeToolTip": "CgenMin\\FileTemplates\\FileTemplateBase.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAiwCgAAABHAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "AOSurrogatePattern.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\AOSurrogatePattern.cs",
+              "ViewState": "AgIAAFsCAAAAAAAAAAAgwGwCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.179Z"
+              "WhenOpened": "2024-10-30T10:03:16.532Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ROSPublisher.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
+              "ViewState": "AgIAALYAAAAAAAAAAAAawNgAAABeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T16:38:01.822Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "ROSSubscriber.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAnwJ4AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T16:41:33.039Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "QRTargetCmake.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRTargetCmake.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRTargetCmake.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRTargetCmake.cs",
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRTargetCmake.cs",
-              "ViewState": "AgIAAIAAAAAAAAAAAIAwwKIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAE0AAAAAAAAAAIAwwGYAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T02:17:48.002Z"
+              "WhenOpened": "2024-10-21T02:17:48.002Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "QRSetting.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRSetting.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRSetting.cs",
@@ -266,23 +273,25 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRSetting.cs",
               "ViewState": "AgIAAJYAAAAAAAAAAAAQwK0AAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-14T16:46:35.748Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "ROSPublisher.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
-              "ViewState": "AgIAAGIAAAAAAAAAAAAuwGwAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T16:38:01.822Z"
+              "WhenOpened": "2024-11-14T16:46:35.748Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "FileTemplateBase.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\FileTemplates\\FileTemplateBase.cs",
+              "RelativeDocumentMoniker": "CgenMin\\FileTemplates\\FileTemplateBase.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\FileTemplates\\FileTemplateBase.cs",
+              "RelativeToolTip": "CgenMin\\FileTemplates\\FileTemplateBase.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAA2wCgAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-11T01:00:37.179Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "ROSTimer.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSTimer.cs",
               "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\ROSTimer.cs",
@@ -290,23 +299,12 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSTimer.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-13T09:36:09.059Z"
+              "WhenOpened": "2024-11-13T09:36:09.059Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "ROSSubscriber.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
-              "ViewState": "AgIAAJ0AAAAAAAAAAAAAwHEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T16:41:33.039Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 18,
               "Title": "LibrariesForCheckedOutGit.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\ProblemHandler\\LibrariesForCheckedOutGit.cs",
               "RelativeDocumentMoniker": "CgenMin\\ProblemHandler\\LibrariesForCheckedOutGit.cs",
@@ -314,11 +312,12 @@
               "RelativeToolTip": "CgenMin\\ProblemHandler\\LibrariesForCheckedOutGit.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.177Z"
+              "WhenOpened": "2024-10-11T01:00:37.177Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 17,
               "Title": "RemoveProjectCleanup.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\ProblemHandler\\RemoveProjectCleanup.cs",
               "RelativeDocumentMoniker": "CgenMin\\ProblemHandler\\RemoveProjectCleanup.cs",
@@ -326,11 +325,12 @@
               "RelativeToolTip": "CgenMin\\ProblemHandler\\RemoveProjectCleanup.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.175Z"
+              "WhenOpened": "2024-10-11T01:00:37.175Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 16,
               "Title": "Extensions.cs",
               "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\Extensions.cs",
               "RelativeDocumentMoniker": "CgenMin\\Extensions.cs",
@@ -338,7 +338,8 @@
               "RelativeToolTip": "CgenMin\\Extensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.069Z"
+              "WhenOpened": "2024-10-11T01:00:37.069Z",
+              "EditorCaption": ""
             }
           ]
         }
