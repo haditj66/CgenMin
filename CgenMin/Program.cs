@@ -1,4 +1,4 @@
-﻿//#define TESTING
+﻿ //#define TESTING
 // See https://aka.ms/new-console-template for more information
 
 
@@ -81,7 +81,7 @@ namespace CodeGenerator
 
         }
 
-        [Verb("QR_launch", HelpText = "create a new QR project")]
+        [Verb("QR_launch", HelpText = "Launch a qr project passing in the launch script name. Launch scripts are located in rosqt/Launches")]
         public class QR_launchOptions
         {
             [Value(0, HelpText = "name of the launch script you want to run")]
@@ -105,7 +105,7 @@ namespace CodeGenerator
 
 
 
-        [Verb("QR_select", HelpText = "QR utility to selecting integration tests, and code generating AOs")]
+        [Verb("QR_select", HelpText = "DEPRECATED.. I think")]// "QR utility to selecting integration tests, and code generating AOs")]
         public class qrselectOptions
         {
             //[Value(0, HelpText = "name of the QR project to select")]
@@ -120,7 +120,7 @@ namespace CodeGenerator
 
         
         //make another verb that will be called QR_generate
-        [Verb("QR_generate", HelpText = "generate a qr project in your current environment directory")]
+        [Verb("QR_generate", HelpText = "generate a qr project of the directory you are in. It will generate based off the config file. \ncgen QR_generate <typeOfTheProject> <selectedTargetName>")]
         public class QR_generateOptions
         {
             [Value(0, HelpText = "type of project you are selecting for. Can be cpp or rqt")]
@@ -268,14 +268,14 @@ namespace CodeGenerator
 
         // static string[] command = "QR_launch ".Split(' '); 
         // static string[] command = "QR_launch TestLaunchFile".Split(' '); 
-        static string[] command = "QR_generate".Split(' ');
+        //static string[] command = "QR_generate".Split(' ');
         //static string[] command = "macro2 MyMacroProcessDer".Split(' '); 
         //static string[] command = "QR_run world my_exe_for_my_node WorldNode".Split(' '); 
 
 
         // static string[] command = "QRinit tutthree".Split(' ');
         //static string[] command = "QRinit sometest  -s opt/ros/jazzy".Split(' ');
-        //static string[] command = "QRinit askjdbkjfb".Split(' ');
+        static string[] command = "QRinit askjdbkjfb".Split(' ');
 
 #else
         static string[] command;
@@ -1066,10 +1066,11 @@ namespace CodeGenerator
 
             //----------------------------------------------------------------------------------------
             Console.WriteLine("adding config file to the project.");
-            //get the path to the config project QR_Sync\AAAConfigProj\ConfigProjects\ConfigProjects
-            string pathToConfigProject = Path.Combine(QRBaseDir, "AAAConfigProj", "ConfigProjects", "ConfigProjects", "ConfigProjects.csproj");
+            //get the path to the config project QR_Sync\AEROSConfigProject\ConfigProjects\ConfigProjects
+            string pathToConfigProject = Path.Combine(QRBaseDir, "AEROSConfigProject", "ConfigProjects", "ConfigProjects", "ConfigProjects.csproj");
             CsProjModifier.AddCompileItem(pathToConfigProject, $"..\\..\\..\\{opts.newModuleName}\\config\\{opts.newModuleName}.cs", $"{opts.newModuleName}.cs");
-
+            CsProjModifier.AddCompileRemoveItem(pathToConfigProject, opts.newModuleName);
+            CsProjModifier.CreateSymbolicLinkForModule(pathToConfigProject, opts.newModuleName);
 
 
             Console.WriteLine("Done===========================================");
@@ -1431,6 +1432,102 @@ namespace CodeGenerator
                 csproj.Save(csprojFilePath);
                 Console.WriteLine($"Added new Compile item to {csprojFilePath}");
             }
+            public static void AddCompileRemoveItem(string csprojFilePath, string moduleName)
+            {
+                try
+                {
+                    // Load the .csproj file
+                    XDocument csproj = XDocument.Load(csprojFilePath);
+
+                    // Find the first <ItemGroup> containing <Compile> elements
+                    XElement? compileItemGroup = csproj
+                        .Element("Project")?
+                        .Elements("ItemGroup")
+                        .FirstOrDefault(group => group.Elements("Compile").Any());
+
+                    if (compileItemGroup == null)
+                    {
+                        Console.WriteLine("No <ItemGroup> with <Compile> elements found.");
+                        return;
+                    }
+
+                    // Create the new <Compile Remove="moduleName.cs" /> element
+                    XElement removeElement = new XElement("Compile",
+                        new XAttribute("Remove", $"{moduleName}.cs")
+                    );
+
+                    // Add it to the same <ItemGroup>
+                    compileItemGroup.Add(removeElement);
+
+                    // Save changes
+                    csproj.Save(csprojFilePath);
+                    Console.WriteLine($"Added <Compile Remove=\"{moduleName}.cs\" /> to {csprojFilePath}");
+
+                    // 🐧 On Linux: create the symbolic link if it doesn't exist
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        string projectDir = Path.GetDirectoryName(csprojFilePath)!;
+                        string targetPath = Path.GetFullPath(Path.Combine(projectDir, $"../../../{moduleName}/config/{moduleName}.cs"));
+                        string linkPath = Path.Combine(projectDir, $"{moduleName}.cs");
+
+                        if (!File.Exists(linkPath))
+                        {
+                            Console.WriteLine($"Creating symbolic link: {linkPath} → {targetPath}");
+                            System.Diagnostics.Process.Start("ln", $"-s \"{targetPath}\" \"{linkPath}\"")?.WaitForExit();
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Symlink already exists: {linkPath}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERROR] Failed to add Compile Remove for {moduleName}: {ex.Message}");
+                }
+            }
+
+            public static void CreateSymbolicLinkForModule(string csprojFilePath, string moduleName)
+{
+    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+        Console.WriteLine("Skipping symbolic link creation — only supported on Linux.");
+        return;
+    }
+
+    try
+    {
+        string projectDir = Path.GetDirectoryName(csprojFilePath)!;
+        string linkPath = Path.Combine(projectDir, $"{moduleName}.cs");
+        string targetPath = Path.GetFullPath(Path.Combine(projectDir, $"../../../{moduleName}/config/{moduleName}.cs"));
+
+        // If link already exists but is broken, delete and recreate it
+        if (File.Exists(linkPath))
+        {
+            string resolvedTarget = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(linkPath)!, Path.GetFileName(linkPath)));
+            if (!File.Exists(resolvedTarget))
+            {
+                Console.WriteLine($"Broken symlink detected. Recreating {linkPath}");
+                File.Delete(linkPath);
+            }
+            else
+            {
+                Console.WriteLine($"Symlink already valid: {linkPath}");
+                return;
+            }
+        }
+
+        Console.WriteLine($"Creating symbolic link: {linkPath} → {targetPath}");
+        var process = System.Diagnostics.Process.Start("ln", $"-s \"{targetPath}\" \"{linkPath}\"");
+        process?.WaitForExit();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[ERROR] Failed to create symlink for {moduleName}: {ex.Message}");
+    }
+}
+
+
         }
 
    
@@ -1525,7 +1622,7 @@ public class ReplaceTextInFiles
 
     private static void RunAEConfigProjectCommand(string commandToRun)
         {
-            string pathToconfexe1 = Path.Combine(QRBaseDir, @"AAAConfigProj\ConfigProjects\ConfigProjects\bin\Debug\net6.0");
+            string pathToconfexe1 = Path.Combine(QRBaseDir, @"AEROSConfigProject\ConfigProjects\ConfigProjects\bin\Debug\net6.0");
             string pathToconfexe2 = Path.Combine(QRBaseDir, @"ConfigProjects\ConfigProjects\bin\Debug");
             string pathToconfexe3 = Path.Combine(QRBaseDir, @"ConfigProjects\bin\Debug");
             string pathToconfexe = Directory.Exists(pathToconfexe1) ? pathToconfexe1 : Directory.Exists(pathToconfexe2) ?  pathToconfexe2 : pathToconfexe1;
@@ -1704,13 +1801,13 @@ public class ReplaceTextInFiles
             bashContents += $"cd -\n";
             // bashContents += $"ros2 run {moduleName}_rqt {exeName}  {settings}"; 
             // bashContents += $"gnome-terminal -- bash -c\n"; 
-            bashContents += $"gnome-terminal -- bash -c \"ros2 run {moduleName}_rqt {exeName}  {settings}; exec bash\"\n";
+            bashContents += $"gnome-terminal -- bash -i -c \"ros2 run {moduleName}_rqt {exeName}  {settings}; exec bash\"\n";
             return bashContents;
             cmdh.SetMultipleCommands($"source ~/.bashrc");
             cmdh.SetMultipleCommands($"cd {rosqtPathOfModule}");
             cmdh.SetMultipleCommands($"oursource");
             // cmdh.SetMultipleCommands($"cd -"); 
-            cmdh.SetMultipleCommands($"gnome-terminal -- bash -c \"ros2 run {moduleName}_rqt {exeName}  {settings}; exec bash\"");
+            cmdh.SetMultipleCommands($"gnome-terminal -- bash -i -c \"ros2 run {moduleName}_rqt {exeName}  {settings}; exec bash\"");
 
             bool keeptrying = true;
             int count = 0;

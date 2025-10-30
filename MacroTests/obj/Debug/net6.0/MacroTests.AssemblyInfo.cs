@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MacroTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97660d942837f915f8978ad04f0eebb11fa6bacd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+688cdbf73f8888d78f51caa2c16d8542f1718885")]
 [assembly: System.Reflection.AssemblyProductAttribute("MacroTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MacroTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

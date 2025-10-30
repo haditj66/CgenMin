@@ -86,8 +86,25 @@
       "DocumentGroups": [
         {
           "DockedWidth": 127,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "QRTarget.cs",
+              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
+              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
+              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
+              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
+              "ViewState": "AgIAALkAAAAAAAAAAAAAANUAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-25T10:53:28.958Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 7,
@@ -111,21 +128,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QREvent.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAIwHcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T05:53:39.946Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "QRTarget.cs",
-              "DocumentMoniker": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
-              "RelativeDocumentMoniker": "CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
-              "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
-              "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRTarget.cs",
-              "ViewState": "AgIAALkAAAAAAAAAAAAAAMQAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T10:53:28.958Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-25T05:53:39.946Z"
             },
             {
               "$type": "Document",
@@ -137,8 +140,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ServiceFunction.cs",
               "ViewState": "AgIAAFkAAAAAAAAAAIAwwGoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-14T07:29:32.261Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-14T07:29:32.261Z"
             },
             {
               "$type": "Document",
@@ -150,8 +152,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FunctionArgsBase.cs",
               "ViewState": "AgIAAGgBAAAAAAAAAAAQwLUAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T18:06:03.02Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T18:06:03.02Z"
             },
             {
               "$type": "Document",
@@ -163,8 +164,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\QRModule.cs",
               "ViewState": "AgIAAKYAAAAAAAAAAAAAALsAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T06:10:18.284Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-25T06:10:18.284Z"
             },
             {
               "$type": "Document",
@@ -176,8 +176,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRConfig.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-13T01:51:31.021Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-13T01:51:31.021Z"
             }
           ]
         },
@@ -206,7 +205,7 @@
               "RelativeDocumentMoniker": "CgenMin\\Program.cs",
               "ToolTip": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\Program.cs",
               "RelativeToolTip": "CgenMin\\Program.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAAAD4BAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-11T01:00:37.185Z",
               "EditorCaption": ""
@@ -234,8 +233,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSPublisher.cs",
               "ViewState": "AgIAALYAAAAAAAAAAAAawNgAAABeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T16:38:01.822Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-20T16:38:01.822Z"
             },
             {
               "$type": "Document",
@@ -247,8 +245,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSSubscriber.cs",
               "ViewState": "AgIAAIUAAAAAAAAAAAAnwJ4AAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T16:41:33.039Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-20T16:41:33.039Z"
             },
             {
               "$type": "Document",
@@ -260,8 +257,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\FilesToGenerate\\QRTargetCmake.cs",
               "ViewState": "AgIAAE0AAAAAAAAAAIAwwGYAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T02:17:48.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T02:17:48.002Z"
             },
             {
               "$type": "Document",
@@ -286,8 +282,7 @@
               "RelativeToolTip": "CgenMin\\FileTemplates\\FileTemplateBase.cs",
               "ViewState": "AgIAAB0AAAAAAAAAAAA2wCgAAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.179Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T01:00:37.179Z"
             },
             {
               "$type": "Document",
@@ -299,8 +294,7 @@
               "RelativeToolTip": "CgenMin\\MacroProcesses\\QR\\ROSTimer.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-13T09:36:09.059Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-13T09:36:09.059Z"
             },
             {
               "$type": "Document",
@@ -312,8 +306,7 @@
               "RelativeToolTip": "CgenMin\\ProblemHandler\\LibrariesForCheckedOutGit.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T01:00:37.177Z"
             },
             {
               "$type": "Document",
@@ -325,8 +318,7 @@
               "RelativeToolTip": "CgenMin\\ProblemHandler\\RemoveProjectCleanup.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.175Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T01:00:37.175Z"
             },
             {
               "$type": "Document",
@@ -338,8 +330,7 @@
               "RelativeToolTip": "CgenMin\\Extensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T01:00:37.069Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T01:00:37.069Z"
             }
           ]
         }
