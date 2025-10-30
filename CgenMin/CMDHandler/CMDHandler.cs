@@ -164,7 +164,7 @@ public class CMDHandler
                         MultipleCommands.ForEach((s)=>commandsFlat = commandsFlat + s + " \n");
                         commandsFlat = commandsFlat.Remove(commandsFlat.Count()-1,1);
                         // commandsFlat =$"gnome-terminal -- sh -c \"bash -c \\\"{commandsFlat}; exec bash\\\"\"";
-                        commandsFlat =$"gnome-terminal -- sh -c \"bash -c \\\"{commandsFlat}; exec bash\\\"\"";
+                        commandsFlat =$"gnome-terminal -- sh -c \"bash -i -c \\\"{commandsFlat}; exec bash\\\"\"";
 
                         File.WriteAllText(pathToBatch, "");
                         File.WriteAllText(pathToBatch, commandsFlat);
@@ -344,7 +344,7 @@ public class CMDHandler
                 {
                     //the command will be to run a seperate window  
                    var escapedArgs = command.Replace("\"", "\\\""); 
-                    processInfo.Arguments = $"gnome-terminal -- bash -c \"{command}\"";
+                    processInfo.Arguments = $"gnome-terminal -- bash -i -c \"{command}\"";
                 }
                 else
                 {
