@@ -81,7 +81,7 @@
             return Args.ARGSNAME(); 
         }
 
-        public List<FunctionArgsBase> ResponseArgs;
+        public List<FunctionArgsBase> ResponseArgs = new List<FunctionArgsBase>();
         public List<FunctionArgsBase> Args { get; set; }
 
         public QREventSRV FunctionServiceEvent { get; set; }

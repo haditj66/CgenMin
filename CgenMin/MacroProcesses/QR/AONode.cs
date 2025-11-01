@@ -209,8 +209,7 @@ namespace CgenMin.MacroProcesses.QR
                         //fill in all properties of the surrogate function
                         surrogateFunctionInstance.Args = new List<FunctionArgsBase>();
                         surrogateFunctionInstance.Name = method.Name;
-
-
+ 
                         //fill in all properties of the surrogate function
                         surrogateFunctionInstance.ResponseArgs.Add( new FunctionArgsBase(method.ReturnType, method.ReturnType.Name));
 
