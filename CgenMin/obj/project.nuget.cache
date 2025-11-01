@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "9BpCD+gbJPw=",
+  "dgSpecHash": "utYGAsu+ZKz4xprFifxxHG3vpHDaQYNcKgt9xlIsVIRvCZjgnfIAiegGatnGZUeVZyaaCHLK8IPCtMDjU2i0Kw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\SyncthingServiceAcct\\QR_Sync\\CgenMin\\CgenMin\\CgenMin.csproj",
+  "projectFilePath": "/home/hadi/QR_Sync/CgenMin/CgenMin/CgenMin.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\hadi\\.nuget\\packages\\commandlineparser\\2.9.1\\commandlineparser.2.9.1.nupkg.sha512",
-    "C:\\Users\\hadi\\.nuget\\packages\\stateless\\5.16.0\\stateless.5.16.0.nupkg.sha512"
+    "/home/hadi/.nuget/packages/commandlineparser/2.9.1/commandlineparser.2.9.1.nupkg.sha512",
+    "/home/hadi/.nuget/packages/stateless/5.16.0/stateless.5.16.0.nupkg.sha512"
   ],
   "logs": []
 }

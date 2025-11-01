@@ -1,4 +1,4 @@
-﻿ //#define TESTING
+﻿//#define TESTING
 // See https://aka.ms/new-console-template for more information
 
 
@@ -118,7 +118,7 @@ namespace CodeGenerator
             public string SettingFileName { get; set; }
         }
 
-        
+       
         //make another verb that will be called QR_generate
         [Verb("QR_generate", HelpText = "generate a qr project of the directory you are in. It will generate based off the config file. \ncgen QR_generate <typeOfTheProject> <selectedTargetName>")]
         public class QR_generateOptions
@@ -160,7 +160,7 @@ namespace CodeGenerator
                 if (!IsInitQRBaseDir)
                 {
 
-                    
+                   
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
                         _QRBaseDir = Path.Combine(SyncThingBaseDir, @"QR_Sync");
@@ -226,7 +226,7 @@ namespace CodeGenerator
 
 
                         //change the environment directory to the directory of where syncthing is.
-                        _envIronDirectory = Path.Combine(SyncThingBaseDir, _envIronDirectory);// $"{QRBaseDir}\\{envIronDirectory}"; 
+                        _envIronDirectory = Path.Combine(SyncThingBaseDir, _envIronDirectory);// $"{QRBaseDir}\\{envIronDirectory}";
                     }
                     else{
                         if (_envIronDirectory.StartsWith("/"))
@@ -247,7 +247,8 @@ namespace CodeGenerator
         //        public static string _envIronDirectory = @"/home/user/QR_Sync/CgenMin";//@"C:\QR_sync";
         //public static string _envIronDirectory = @"/home/user/QR_Sync";//@"C:\QR_sync";
         //public static string _envIronDirectory = @"/home/luci/QR_Sync/World/rosqt/Launches";
-        public static string _envIronDirectory = @"/home/hadi/QR_Sync/world2"; 
+        //public static string _envIronDirectory = @"/home/hadi/QR_Sync/world2";
+        public static string _envIronDirectory = @"/home/hadi/QR_Sync/testtest";
 
         //public static string _envIronDirectory = @"/home/user/QR_Sync/CgenMin/CgenMin/cmakeTest";
         // public static string _envIronDirectory = @"/home/user/QR_Sync/World/rosqt/Launches";
@@ -261,21 +262,21 @@ namespace CodeGenerator
 
 
         //static string[] command = "QRinit tutthree".Split(' ');
-        // static string[] command = "macro".Split(' '); 
-        //static string[] command = "QR_launch TestLaunchFile".Split(' '); 
+        // static string[] command = "macro".Split(' ');
+        //static string[] command = "QR_launch TestLaunchFile".Split(' ');
 
-        //static string[] command = "QRinit World QTUI".Split(' '); 
+        //static string[] command = "QRinit World QTUI".Split(' ');
 
-        // static string[] command = "QR_launch ".Split(' '); 
-        // static string[] command = "QR_launch TestLaunchFile".Split(' '); 
-        //static string[] command = "QR_generate".Split(' ');
-        //static string[] command = "macro2 MyMacroProcessDer".Split(' '); 
-        //static string[] command = "QR_run world my_exe_for_my_node WorldNode".Split(' '); 
+        // static string[] command = "QR_launch ".Split(' ');
+        // static string[] command = "QR_launch TestLaunchFile".Split(' ');
+        static string[] command = "QR_generate -c defaultTest".Split(' ');
+        //static string[] command = "macro2 MyMacroProcessDer".Split(' ');
+        //static string[] command = "QR_run world my_exe_for_my_node WorldNode".Split(' ');
 
 
         // static string[] command = "QRinit tutthree".Split(' ');
         //static string[] command = "QRinit sometest  -s opt/ros/jazzy".Split(' ');
-        static string[] command = "QRinit askjdbkjfb".Split(' ');
+        //static string[] command = "QRinit askjdbkjfb".Split(' ');
 
 #else
         static string[] command;
@@ -298,7 +299,7 @@ namespace CodeGenerator
 
             //I need to change the cgenCmakeConfigFunctions.cmake file located at
             // /home/Environment.UserName/QR_Sync/CgenMin/CgenMin/CgenCmakeConfigFunctions.cmake
-            // there is a line of code there that hardcodes the path to this executable directory. I need to change that. 
+            // there is a line of code there that hardcodes the path to this executable directory. I need to change that.
             // string fileContents = File.ReadAllText(@"/home/"+ Environment.UserName + @"/QR_Sync/CgenMin/CgenMin/CgenCmakeConfigFunctions.cmake");
 
             // Match m = Regex.Match(fileContents, @"execute_process\(COMMAND  dotnet \/home\/(.*)\/QR_Sync\/CgenMin\/CgenMin\/bin\/Debug\/net6.0\/CgenMin.dll macro" );
@@ -353,7 +354,7 @@ namespace CodeGenerator
 
 
             if (command != null && command.Count() > 0)
-#endif 
+#endif
             {
                 RunParser();
             }
@@ -437,7 +438,7 @@ namespace CodeGenerator
             }
 
 
-            //the commands that can be run are 
+            //the commands that can be run are
             //QR_run <module-name> <setting-file-name>
             //WaitForMilliseconds <num-of-seconds>
             //WaitForUserApproval
@@ -878,7 +879,7 @@ namespace CodeGenerator
 
 
             //----------------------------------------------------------------------------------------
-            //-cd IF 
+            //-cd IF
             Console.WriteLine("deleting the build, install_win, and install_lin folders in the IF folder");
             DeleteDirectoryIfExists_RemoveReadonly(pathToBaseMod + @"/rosqt/IF/build");
             DeleteDirectoryIfExists_RemoveReadonly(pathToBaseMod + @"/rosqt/IF/install_win");
@@ -965,7 +966,7 @@ namespace CodeGenerator
 
             //----------------------------------------------------------------------------------------
             Console.WriteLine("--- switching to the rosqt portion of your module");
-            //pathToBaseMod = pathToBaseMod + "/rosqt"; 
+            //pathToBaseMod = pathToBaseMod + "/rosqt";
 
 
             //----------------------------------------------------------------------------------------
@@ -1025,7 +1026,7 @@ namespace CodeGenerator
                 SetCommandsToSourceQRCore(cmdvs);
                 //go to the IF directory to build
                 cmdvs.SetMultipleCommands(@"cd " + IFPathOfModule);
-                //source the Interface project 
+                //source the Interface project
                 SetCommandsToSource(cmdvs);
                 //go back to the cpp project
                 cmdvs.SetMultipleCommands(@"cd ../..");
@@ -1199,7 +1200,8 @@ namespace CodeGenerator
 
 
         static ParserResult<object> QR_generate(QR_generateOptions opts)
-        { 
+        {
+
 
             RunAEConfigProjectCommand($"QR_generate {_envIronDirectory} {opts.typeOfTheProject} {opts.selectedTargetName}");
 
@@ -1233,8 +1235,8 @@ namespace CodeGenerator
 
         //    string PathToThis = pathToProject;
         //    //root======================================================
-        //    //AEConfigProject.cmake 
-        //    //AEConfigProjectUser.cmake     (blank) 
+        //    //AEConfigProject.cmake
+        //    //AEConfigProjectUser.cmake     (blank)
         //    //IntegTestPipeline.h           (blank)
         //    //main.cpp
         //    string AEConfigProject = Path.Combine(PathToThis, "AEConfigProject.cmake");
@@ -1284,7 +1286,7 @@ namespace CodeGenerator
         //    //AEConfig.h            (blank)
         //    //EventsForProject.h    (blank)
         //    //EventsForProject.cpp  (blank)
-        //    //UserBSPConfig.cpp   
+        //    //UserBSPConfig.cpp  
         //    string AEConfig = Path.Combine(PathToThis, "AEConfig.h");
         //    string EventsForProjecth = Path.Combine(PathToThis, "EventsForProject.h");
         //    string EventsForProjectcpp = Path.Combine(PathToThis, "EventsForProject.cpp");
@@ -1327,7 +1329,7 @@ namespace CodeGenerator
 
         //    //root/CGensaveFiles/cmakeGui/{ProjectName}_{boardTarget}/Debug======================================================
         //    //cgenCmakeCache.cmake      (blank)
-        //    //IntegrationTestMacros.h   
+        //    //IntegrationTestMacros.h  
         //    List<string> tdepends = new List<string>();
         //    if (projAlreadyExists != null)
         //    {
@@ -1370,7 +1372,7 @@ namespace CodeGenerator
 
 
         //=================================================
-        //get the project name from the directory you are in 
+        //get the project name from the directory you are in
         //do this by getting the name of the folder that is one above the one called QR_Sync
         //for example if directory is  C:\Users\SyncthingServiceAcct\QR_Sync\world\rosqt\include\world_rqt
         //then answer would be world
@@ -1402,90 +1404,87 @@ namespace CodeGenerator
 
         public class CsProjModifier
         {
-            public static void AddCompileItem(string csprojFilePath, string includePath, string linkPath)
+           public static void AddCompileItem(string csprojFilePath, string includePath, string linkPath)
+{
+    // Load the .csproj file
+    XDocument csproj = XDocument.Load(csprojFilePath);
+
+    // Find the first <ItemGroup> containing <Compile> elements
+    XElement? compileItemGroup = csproj
+        .Element("Project")?
+        .Elements("ItemGroup")
+        .FirstOrDefault(group => group.Elements("Compile").Any());
+
+    if (compileItemGroup == null)
+    {
+        Console.WriteLine("No <ItemGroup> with <Compile> elements found.");
+        return;
+    }
+
+    // Create the new <Compile Include="..." Link="..." Condition="Exists(...)" /> element
+    XElement newCompileItem = new XElement("Compile",
+        new XAttribute("Include", includePath),
+        new XAttribute("Link", linkPath),
+        new XAttribute("Condition", $"Exists('{includePath.Replace("\\", "/")}')")
+    );
+
+    compileItemGroup.Add(newCompileItem);
+
+    csproj.Save(csprojFilePath);
+    Console.WriteLine($"✅ Added <Compile Include> with Exists() condition for {linkPath}");
+}
+
+public static void AddCompileRemoveItem(string csprojFilePath, string moduleName)
+{
+    try
+    {
+        XDocument csproj = XDocument.Load(csprojFilePath);
+
+        XElement? compileItemGroup = csproj
+            .Element("Project")?
+            .Elements("ItemGroup")
+            .FirstOrDefault(group => group.Elements("Compile").Any());
+
+        if (compileItemGroup == null)
+        {
+            Console.WriteLine("No <ItemGroup> with <Compile> elements found.");
+            return;
+        }
+
+        // <Compile Remove="moduleName.cs" Condition="!Exists('moduleName.cs')" />
+        XElement removeElement = new XElement("Compile",
+            new XAttribute("Remove", $"{moduleName}.cs"),
+            new XAttribute("Condition", $"!Exists('{moduleName}.cs')")
+        );
+
+        compileItemGroup.Add(removeElement);
+
+        csproj.Save(csprojFilePath);
+        Console.WriteLine($"✅ Added <Compile Remove> with !Exists() condition for {moduleName}.cs");
+
+        // 🐧 On Linux: create the symbolic link if it doesn't exist
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            string projectDir = Path.GetDirectoryName(csprojFilePath)!;
+            string targetPath = Path.GetFullPath(Path.Combine(projectDir, $"../../../{moduleName}/config/{moduleName}.cs"));
+            string linkPath = Path.Combine(projectDir, $"{moduleName}.cs");
+
+            if (!File.Exists(linkPath))
             {
-                // Load the .csproj file
-                XDocument csproj = XDocument.Load(csprojFilePath);
-
-                // Find the first <ItemGroup> containing <Compile> elements
-                XElement? compileItemGroup = csproj
-                    .Element("Project")?
-                    .Elements("ItemGroup")
-                    .FirstOrDefault(group => group.Elements("Compile").Any());
-
-                if (compileItemGroup == null)
-                {
-                    Console.WriteLine("No <ItemGroup> with <Compile> elements found.");
-                    return;
-                }
-
-                // Create the new <Compile> element
-                XElement newCompileItem = new XElement("Compile",
-                    new XAttribute("Include", includePath),
-                    new XAttribute("Link", linkPath)
-                );
-
-                // Add the new <Compile> element to the <ItemGroup>
-                compileItemGroup.Add(newCompileItem);
-
-                // Save the updated .csproj file
-                csproj.Save(csprojFilePath);
-                Console.WriteLine($"Added new Compile item to {csprojFilePath}");
+                Console.WriteLine($"🔗 Creating symbolic link: {linkPath} → {targetPath}");
+                System.Diagnostics.Process.Start("ln", $"-s \"{targetPath}\" \"{linkPath}\"")?.WaitForExit();
             }
-            public static void AddCompileRemoveItem(string csprojFilePath, string moduleName)
+            else
             {
-                try
-                {
-                    // Load the .csproj file
-                    XDocument csproj = XDocument.Load(csprojFilePath);
-
-                    // Find the first <ItemGroup> containing <Compile> elements
-                    XElement? compileItemGroup = csproj
-                        .Element("Project")?
-                        .Elements("ItemGroup")
-                        .FirstOrDefault(group => group.Elements("Compile").Any());
-
-                    if (compileItemGroup == null)
-                    {
-                        Console.WriteLine("No <ItemGroup> with <Compile> elements found.");
-                        return;
-                    }
-
-                    // Create the new <Compile Remove="moduleName.cs" /> element
-                    XElement removeElement = new XElement("Compile",
-                        new XAttribute("Remove", $"{moduleName}.cs")
-                    );
-
-                    // Add it to the same <ItemGroup>
-                    compileItemGroup.Add(removeElement);
-
-                    // Save changes
-                    csproj.Save(csprojFilePath);
-                    Console.WriteLine($"Added <Compile Remove=\"{moduleName}.cs\" /> to {csprojFilePath}");
-
-                    // 🐧 On Linux: create the symbolic link if it doesn't exist
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        string projectDir = Path.GetDirectoryName(csprojFilePath)!;
-                        string targetPath = Path.GetFullPath(Path.Combine(projectDir, $"../../../{moduleName}/config/{moduleName}.cs"));
-                        string linkPath = Path.Combine(projectDir, $"{moduleName}.cs");
-
-                        if (!File.Exists(linkPath))
-                        {
-                            Console.WriteLine($"Creating symbolic link: {linkPath} → {targetPath}");
-                            System.Diagnostics.Process.Start("ln", $"-s \"{targetPath}\" \"{linkPath}\"")?.WaitForExit();
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Symlink already exists: {linkPath}");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[ERROR] Failed to add Compile Remove for {moduleName}: {ex.Message}");
-                }
+                Console.WriteLine($"ℹ️ Symlink already exists: {linkPath}");
             }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[ERROR] Failed to add Compile Remove for {moduleName}: {ex.Message}");
+    }
+}
 
             public static void CreateSymbolicLinkForModule(string csprojFilePath, string moduleName)
 {
@@ -1640,7 +1639,7 @@ public class ReplaceTextInFiles
             {
                 //all backslashes to forward slashes in pathToconfexe
                 pathToconfexe = pathToconfexe.Replace(@"\", "/");
-                 cMDHandler = new CMDHandler(pathToconfexe, pathToconfexe, true); 
+                 cMDHandler = new CMDHandler(pathToconfexe, pathToconfexe, true);
 
                 cMDHandler.ExecuteCommand($"dotnet ConfigProjects.dll {commandToRun}");
             }
@@ -1702,9 +1701,9 @@ public class ReplaceTextInFiles
         //{
 
         //    //if the envIronDirectory  variable ends in "rqt" then it is a rqt project, otherwise it is a cpp project
-        //    string ProjectType = envIronDirectory.EndsWith("rosqt") ? QRProjectType.rqt : 
+        //    string ProjectType = envIronDirectory.EndsWith("rosqt") ? QRProjectType.rqt :
         //        envIronDirectory.EndsWith("IF") ? "if" :
-        //        "cpp"; 
+        //        "cpp";
         //    return ProjectType;
         //}
 
@@ -1799,14 +1798,14 @@ public class ReplaceTextInFiles
             bashContents += $"cd {rosqtPathOfModule}\n";
             bashContents += $"oursource\n";
             bashContents += $"cd -\n";
-            // bashContents += $"ros2 run {moduleName}_rqt {exeName}  {settings}"; 
-            // bashContents += $"gnome-terminal -- bash -c\n"; 
+            // bashContents += $"ros2 run {moduleName}_rqt {exeName}  {settings}";
+            // bashContents += $"gnome-terminal -- bash -c\n";
             bashContents += $"gnome-terminal -- bash -i -c \"ros2 run {moduleName}_rqt {exeName}  {settings}; exec bash\"\n";
             return bashContents;
             cmdh.SetMultipleCommands($"source ~/.bashrc");
             cmdh.SetMultipleCommands($"cd {rosqtPathOfModule}");
             cmdh.SetMultipleCommands($"oursource");
-            // cmdh.SetMultipleCommands($"cd -"); 
+            // cmdh.SetMultipleCommands($"cd -");
             cmdh.SetMultipleCommands($"gnome-terminal -- bash -i -c \"ros2 run {moduleName}_rqt {exeName}  {settings}; exec bash\"");
 
             bool keeptrying = true;
@@ -1841,7 +1840,7 @@ public class ReplaceTextInFiles
             // cmdh.SetMultipleCommands("source ~/.bashrc");
             // cmdh.SetMultipleCommands($"cd {rosqtPathOfModule}");
             // cmdh.SetMultipleCommands("oursource");
-            // cmdh.SetMultipleCommands($"ros2 run {moduleName}_rqt {exeName}  {settings}"); 
+            // cmdh.SetMultipleCommands($"ros2 run {moduleName}_rqt {exeName}  {settings}");
 
             // //cmdh.SetMultipleCommands("read -p \"Press enter to continue\"");
             // string pathToBatch = Path.Combine(rosqtPathOfModule, "Launches", "Bash");
@@ -1879,5 +1878,4 @@ public class ReplaceTextInFiles
     }
 
 }
-
 
