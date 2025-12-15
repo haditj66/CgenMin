@@ -103,7 +103,7 @@ namespace CodeGenerator.FileTemplates
             catch (Exception e)
             {
                 ProblemHandle problem = new ProblemHandle();
-                problem.ThereisAProblem("the file " + pathToGeneratedFile + "is not able to be accessed yet. make sure it is not open and is created");
+                problem.ThereisAProblem("JUST RUN THE COMMAND AGAIN. ITS NOT A REAL PROBLEM. \n the file " + pathToGeneratedFile + "is not able to be accessed yet. make sure it is not open and is created");
             }
 
              

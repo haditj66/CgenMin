@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v6.0": {
       "CgenMin/1.0.0": {
         "dependencies": {
-          "CommandLineParser": "2.9.1"
+          "CommandLineParser": "2.9.1",
+          "Stateless": "5.16.0"
         },
         "runtime": {
           "CgenMin.dll": {}
@@ -19,6 +20,14 @@
           "lib/netstandard2.0/CommandLine.dll": {
             "assemblyVersion": "2.9.1.0",
             "fileVersion": "2.9.1.0"
+          }
+        }
+      },
+      "Stateless/5.16.0": {
+        "runtime": {
+          "lib/netstandard2.0/Stateless.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "5.16.0.0"
           }
         }
       }
@@ -36,6 +45,13 @@
       "sha512": "sha512-OE0sl1/sQ37bjVsPKKtwQlWDgqaxWgtme3xZz7JssWUzg5JpMIyHgCTY9MVMxOg48fJ1AgGT3tgdH5m/kQ5xhA==",
       "path": "commandlineparser/2.9.1",
       "hashPath": "commandlineparser.2.9.1.nupkg.sha512"
+    },
+    "Stateless/5.16.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oGMd62r6wdj7LDOl7oOD2wJdjjK1Zum5UnV4lTDLdKiJAfAGF1SRaBKpX1TtmP1QKocPy4+94zazSZfHcowZCw==",
+      "path": "stateless/5.16.0",
+      "hashPath": "stateless.5.16.0.nupkg.sha512"
     }
   }
 }

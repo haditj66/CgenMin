@@ -12,6 +12,7 @@ namespace CgenMin.MacroProcesses
         PrimitiveType,
         SurrogateAO,
         EnumType,
+        UNKOWNTYPE,
         AnotherMSG //this is if the argument is of a type that is of another MSG
     }
 
@@ -45,8 +46,24 @@ namespace CgenMin.MacroProcesses
         public FunctionArgs(string name, int argnum = 0, bool isFromEnumArg = false) : base(typeof(T), name, argnum, isFromEnumArg)
         {
             _Type = typeof(T);
+            //if the type is QREventMSG or NonQrMessage, then a problem saying that the wrong constructor is used
+            if (typeof(T) == typeof(QREventMSG) || typeof(T) == typeof(QREventMSGNonQR))
+            {
+                ProblemHandle problemHandle = new ProblemHandle();
+                problemHandle.ThereisAProblem($"FunctionArgs<{typeof(T).Name}> constructor cannot be used for QREventMSG or NonQrMessage types. Please use the appropriate constructor.");
+            }
         }
 
+        public FunctionArgs(QREventMSG TheMSG, string name) : base(typeof(T),name, 0, false)
+        {
+            qREventMSG = TheMSG;
+            _Type = typeof(QREventMSG);
+        }        
+        public FunctionArgs(QREventMSGNonQR TheMSG, string name) : base(typeof(T),name, 0, false)
+        {
+            nonQrMessage = TheMSG;
+            _Type = typeof(QREventMSGNonQR);
+        } 
 
     }
 
@@ -82,16 +99,19 @@ namespace CgenMin.MacroProcesses
         }
 
         public static FunctionArgsBase CheckIfAllArgNamesAreCompatibleForRosService(this List<FunctionArgsBase> Args )
-        {
-
-           
-
+        { 
 
             //^(?!.*__)(?!.*_$)[a-z][a-z0-9_]*$
             string pattern = @"^(?!.*__)(?!.*_$)[a-z][a-z0-9_]*$";
             Regex regex = new Regex(pattern);
 
-            foreach (var arg in Args)
+            //get Args that are not typeof(QREventMSGNonQR) or typeof(QREventMSG)  
+            var argsToCheck = Args.Where(a => 
+            !(a.GetCSType == typeof(QREventMSGNonQR))).ToList();
+            argsToCheck = argsToCheck.Where(a => 
+            !(a.GetCSType == typeof(QREventMSG))).ToList();
+            
+            foreach (var arg in argsToCheck)
             { 
                 string nameAsInService = arg.NAMEASINSERVICE(); 
                 //if it is from an enum, then the name needs to all be capital letters.  
@@ -174,24 +194,74 @@ namespace CgenMin.MacroProcesses
         public string Name { get; set; }
         public int Argnum { get; }
         public bool IsFromEnumArg { get; }
+        public string UNKOWNTYPE { get; }
+
+        public int MyProperty { get; set; }
 
         protected Type _Type;
-
-       
-
-        public FunctionArgsBase(Type type, string name, int argnum = 0, bool isFromEnumArg = false)
+        public Type GetCSType
         {
+            get
+            {
+                return _Type;
+            }
+        }
+
+        public QREventMSG QREventMSG_  { 
+            get
+            {
+                return qREventMSG;
+            }
+        }
+        public QREventMSGNonQR QREventMSGNonQR_  { 
+            get
+            {
+                return nonQrMessage;
+            }
+        }
+        protected QREventMSG qREventMSG = null;
+        protected QREventMSGNonQR nonQrMessage = null;
+
+
+
+
+        public FunctionArgsBase(Type type, string name, int argnum = 0, bool isFromEnumArg = false )
+        {
+
             _Type = type;
             Name = name;
             Argnum = argnum;
-            IsFromEnumArg = isFromEnumArg;
-            var s = FunctionArgType;
+            IsFromEnumArg = isFromEnumArg; 
+            // var s = FunctionArgType;  
+        }
+        public FunctionArgsBase( string UNKOWNTYPE )
+        {
+
+            _Type = null;
+            Name = "pointertodata";
+            Argnum = 0;
+            IsFromEnumArg = false;
+            this.UNKOWNTYPE = UNKOWNTYPE;
+            // var s = FunctionArgType;
         }
 
         public string TypeName
         {
             get
             {
+                if (_Type == null)
+                {
+                    return UNKOWNTYPE + "*";
+                }
+                if(this.qREventMSG != null)
+                {
+                    return this.qREventMSG.FULLCLASSNAME;
+                }
+                if(this.nonQrMessage != null)
+                {
+                    return this.nonQrMessage.FullMsgClassName;
+                }
+          
                 string ret = CsharpTypeToCppType(_Type.Name);
                 //if this is from a surrogate AO, then Base appended to the type name
                 if (this.FunctionArgType == FunctionArgsType.SurrogateAO)
@@ -207,8 +277,12 @@ namespace CgenMin.MacroProcesses
         {
             get
             {
+                if (this._Type == null)
+                {
+                    this._FunctionArgType = FunctionArgsType.UNKOWNTYPE; 
+                }
                 //figure out wether the type is either a primitive type, a surrogate AO or an enum type. a surrogate AO is a type that is derived from AOSurrogatePattern 
-                if (this._Type.IsPrimitive)
+                else if (this._Type.IsPrimitive)
                 {
                     this._FunctionArgType = FunctionArgsType.PrimitiveType;
                 }
@@ -329,8 +403,11 @@ namespace CgenMin.MacroProcesses
             // String type
             ret = ret == "string" ? "System.String" : ret;
 
-            return Type.GetType(ret) ?? throw new ArgumentException($"Unknown service type: {typestr}");
+            //if none of the above, then return null
+                
+              return Type.GetType(ret) ?? null;
         }
+         
          
 
 
@@ -349,7 +426,43 @@ namespace CgenMin.MacroProcesses
         }
         public string TYPEASINSERVICE()
         {
-            return STR_to_TYPEASINSERVICE(this.FunctionArgType == FunctionArgsType.SurrogateAO, this._Type.Name);
+ 
+ 
+            string typename = "";
+            if (this._Type == null)
+            {
+                typename = this.UNKOWNTYPE;
+            }
+            //if this is a QREventMSGNonQR type and it is a ROS message, then return the package name and then type
+            else if (this._Type == typeof(QREventMSGNonQR))
+            {
+                var nonqrmsg = (QREventMSGNonQR)this.QREventMSGNonQR_;
+                if (nonqrmsg.IsRosMessage)
+                {
+                    return $"{this.QREventMSGNonQR_.FromModuleName}/{this.QREventMSGNonQR_.FileNameOfService}";
+                }
+                else //if this is a just a QREventMSGNonQR type, then return the class name and that module name
+                {
+                   
+                    return $"{this.QREventMSGNonQR_.FromModuleName}/{this.QREventMSGNonQR_.FileNameOfService}";
+                }
+            }
+            //if this is a QREventMSG type, then return the class name 
+            else if (this._Type == typeof(QREventMSG))
+            {
+                //but if this is from a different module, then return the module name and then the class name
+                if (this.QREventMSG_.FromModuleName != QRInitializing.RunningProjectName)
+                {
+                    return $"{this.QREventMSG_.FromModuleName}_i/{this.QREventMSG_.InstanceName}";
+                }
+
+                return this.QREventMSG_.InstanceName;
+            }
+            else
+            {
+                typename = this._Type.Name;
+            }
+            return STR_to_TYPEASINSERVICE(this.FunctionArgType == FunctionArgsType.SurrogateAO, typename);
         }
 
 

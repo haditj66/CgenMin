@@ -3,6 +3,7 @@ using CgenMin.MacroProcesses.QR;
 using CodeGenerator.MacroProcesses.AESetups;
 using CodeGenerator.ProblemHandler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -127,22 +128,33 @@ namespace CgenMin.MacroProcesses
             NameOfTopic = nameOfTopic;
         }
     }
-    public class NonQrMessage
-    {
-        public string FileNameOfService;
-        public string FullTopicName;
-        public string FullHeaderName;
-        public string FullMsgClassName;
 
-        public NonQrMessage(string fileNameOfService, string fullTopicName, string fullHeaderName, string fullMsgClassName)
-        {
-            FileNameOfService = fileNameOfService;
-            FullTopicName = fullTopicName;
-            FullHeaderName = fullHeaderName;
-            FullMsgClassName = fullMsgClassName;
+
+
+    public class RosTarget : QRTarget_NonQR
+    {
+        public RosTarget(string rosInterfaceName, List<QREventMSGNonQR> messages)
+            : base(
+                  fromModuleName: "ROS_" + rosInterfaceName,
+                  targetName: rosInterfaceName,                                  // ROS package = target name
+                  pathRelativeToQR_Sync: null,                              // irrelevant for system ROS packages
+                  relativePathToSRV: Path.Combine("/" + CodeGenerator.Program.GetPathToRosDir, "share", rosInterfaceName, "srv"),            // auto-detect /opt/ros/... path
+                  relativePathToMSG: Path.Combine("/" + CodeGenerator.Program.GetPathToRosDir, "share", rosInterfaceName, "msg"),            // auto-detect /opt/ros/... pathc
+                  nameServiceFileToTurnToServiceFunction: null,                // NO SERVICES
+                  nameMessageFileToTurnToQrEvent: messages                     // ONLY MESSAGES
+            )
+        { 
+            //go through all messages and mark them as Ros messages
+            foreach (var msg in messages)
+            {
+                msg.IsRosMessage = true;
+                msg.FromModuleName = rosInterfaceName;
+            }
+
+
+
         }
     }
-
 
 
     //[System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
@@ -170,16 +182,85 @@ namespace CgenMin.MacroProcesses
         /// <param name="nameServiceFileToTurnToServiceFunction">service files names you want to turn into service functions inside a simple AO</param>
         public QRTarget_NonQR(string fromModuleName, string targetName, string pathRelativeToQR_Sync, string relativePathToSRV = "", string relativePathToMSG = "",
             List<NonQrServiceFunction> nameServiceFileToTurnToServiceFunction = null,
-            List<NonQrMessage> nameMessageFileToTurnToQrEvent = null)
+            List<QREventMSGNonQR> nameMessageFileToTurnToQrEvent = null) : base("")
         //, List<string> nameMessageFileToTurnPublisher = null, List<string> nameMessageFileToTurnSubscriber = null) : base("")
         {
+
+            //go through all messages, and make sure they are instantiated. if not throw a problem 
+            foreach (var msg in nameMessageFileToTurnToQrEvent)
+            {
+                if (msg.ClassName == "")
+                {
+                    ProblemHandle problemHandle = new ProblemHandle();
+                    problemHandle.ThereisAProblem($"The QREventMSGNonQR message '{msg.InstanceName}' used in NonQR Target '{targetName}' is not instantiated. Please instantiate it before using it in the NonQR Target.");
+                }
+            }
+
+
+            //go through EventPropertiesList and see if any of the args are from other events from ROS packages
+            foreach (var arg in nameMessageFileToTurnToQrEvent.SelectMany(evt => evt.EventPropertiesList))
+            {
+                if (arg.GetCSType == typeof(QREventMSGNonQR))
+                {
+                    //add it to a list of strings that show which 
+
+                    //check if the event is from a different module or from a ros package
+                    var evtArg = (QREventMSGNonQR)arg.QREventMSGNonQR_;
+                    if (evtArg.FromModuleName != fromModuleName)
+                    {
+                        ProblemHandle problemHandle = new ProblemHandle();
+                        problemHandle.ThereisAProblem($"Hadi you did not add the feature to be able to include msg files from other modules yet as part of interfaces in other modules. Do that where this message is");
+                        //System.Console.WriteLine($"WARNING!!!!----------------------\n QREventMSGNonQR argument '{arg.Name}' in QREvent {this.InstanceName} is from another module '{evtArg.FromModuleName}'. QREventMSGNonQR arguments must be from the same module as the QREvent they are used in.");
+                    } 
+                    evtArg.FromModuleName = fromModuleName;
+                }
+            }
+            
+
+
+
+            // //get all the Ros packages that this event depends on 
+            // nameMessageFileToTurnToQrEvent.SelectMany(evt => evt.EventPropertiesList).ForEach(arg =>
+            // {
+            //     if (arg.GetCSType == typeof(QREventMSGNonQR))
+            //     {
+            //         var nonqrmsg = (QREventMSGNonQR)arg.QREventMSGNonQR_;
+            //         if (nonqrmsg.IsRosMessage)
+            //         {
+            //             interfacePkgDepends.Add(nonqrmsg.RosPackageName);
+            //         }
+            //     }
+            // });
+
+
+
+
+
 
             TargetName = fromModuleName;
             NameOfNonQRTarget = targetName;
             this.qRTargetType = QRTargetType.NonQR;
-            BaseProjectPath = Path.Combine(CodeGenerator.Program.QRBaseDir, pathRelativeToQR_Sync);
-            PathToSRV = Path.Combine(CodeGenerator.Program.QRBaseDir, relativePathToSRV);
-            PathToMSG = Path.Combine(CodeGenerator.Program.QRBaseDir, relativePathToMSG);
+            if (pathRelativeToQR_Sync == null || pathRelativeToQR_Sync == "")
+            {
+                if (targetName.StartsWith("ROS_"))
+                {
+                    BaseProjectPath = CodeGenerator.Program.GetPathToRosDir;
+                }
+                else
+                {
+                    BaseProjectPath = CodeGenerator.Program.QRBaseDir;
+                }
+
+                PathToSRV = relativePathToSRV;
+                PathToMSG = relativePathToMSG;
+            }
+            else
+            {
+                BaseProjectPath = Path.Combine(CodeGenerator.Program.QRBaseDir, pathRelativeToQR_Sync);
+                PathToSRV = Path.Combine(CodeGenerator.Program.QRBaseDir, relativePathToSRV);
+                PathToMSG = Path.Combine(CodeGenerator.Program.QRBaseDir, relativePathToMSG);
+            }
+
 
 
             nonQRAONode = new NonQRAONode(TargetName, this.NameOfNonQRTarget, "instanceName", new List<ROSPublisher>(), new List<ROSSubscriber>());
@@ -198,7 +279,7 @@ namespace CgenMin.MacroProcesses
                     if (!files.Any(f => Path.GetFileNameWithoutExtension(f) == filen.FileNameOfService))
                     {
                         ProblemHandle problemHandled = new ProblemHandle();
-                        problemHandled.ThereisAProblem($"The file {filen.FileNameOfService} does not exist in the path {PathToSRV}");
+                        problemHandled.ThereisAProblem($"The file {filen.FileNameOfService} does not exist in the path {PathToMSG}");
                     }
 
                     string f = Path.Combine(PathToMSG, Path.GetFileNameWithoutExtension(filen.FileNameOfService) + ".msg");
@@ -206,6 +287,7 @@ namespace CgenMin.MacroProcesses
                     var fileContents = File.ReadAllLines(f);
                     List<FunctionArgsBase> requestArgs = new List<FunctionArgsBase>();
 
+                    bool hasUnknownType = false;
                     foreach (var line in fileContents)
                     {
 
@@ -217,14 +299,34 @@ namespace CgenMin.MacroProcesses
                             Type type = FunctionArgsBase.ServiceTypeToCsharpType(parts[0]);
                             var namearg = parts[1];
                             var arg = new FunctionArgsBase(type, namearg);
+                            if (type == null)
+                            {
+                                hasUnknownType = true;
+                                break;
+                                //break out of the loop 
+                            }
+
                             requestArgs.Add(arg);
-                        } 
+                        }
 
                     }
-                    QREventMSGNonQR qREventMSG = new QREventMSGNonQR(targetName, filen.FullTopicName, filen.FullHeaderName, filen.FullMsgClassName, requestArgs);
-                    var pub = ROSPublisher.CreatePublisher(filen.FileNameOfService, qREventMSG, false);
 
-                    pub.SetAOIBelongTo(nonQRAONode);
+                    //if there is an unkown type in this interface, then go ahead and assume that the interface cannot be decoded and instead have everythign be passed as pointer to whole data structure
+                    //step one is to remove all the existing args
+                    if (hasUnknownType)
+                    {
+                        requestArgs.Clear();
+                        //pass in the name of the namespace of the message as the UNKOWNTYPE. for example sensor_msgs::msg::PointCloud2
+                        requestArgs.Add(new FunctionArgsBase(filen.FullMsgClassName));
+
+                    }
+
+
+
+                    QREventMSGNonQR qREventMSG = new QREventMSGNonQR(targetName, filen.FullTopicName, filen.FullHeaderName, filen.FullMsgClassName, requestArgs);
+                    //var pub = ROSPublisher.CreatePublisher(filen.FileNameOfService, qREventMSG, false);
+
+                    //pub.SetAOIBelongTo(nonQRAONode);
 
                 }
             }
@@ -360,7 +462,7 @@ namespace CgenMin.MacroProcesses
 
         }
 
-        NonQRAONode nonQRAONode; 
+        NonQRAONode nonQRAONode;
         public NonQRAONode Get_NonQRAONode(string instanceName)
         {
             nonQRAONode.InstanceName = instanceName;

@@ -1,4 +1,6 @@
-﻿namespace CgenMin.MacroProcesses.QR
+﻿
+
+namespace CgenMin.MacroProcesses.QR
 {
 
 
@@ -35,12 +37,18 @@
     [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     public class ServiceFunction : System.Attribute
     {
+
+                public string FromModule { get; set; }
+        public string QREventMSG { get; set; }
+            internal QREventMSG ResolvedEvent;
+
         public bool IsSurrogateFunction { get{ return ServiceType == ServiceTypeEnum.Surrogate; }   }
 
         public ServiceTypeEnum ServiceType;
 
         public string PartOfCallBackGroup_Named {   get; protected set; }
 
+ 
         public ServiceFunction(string partOfCallBackGroup_Named = "")
         {
             

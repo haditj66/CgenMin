@@ -1,0 +1,6 @@
+void @NAME@_Publish(const @FULLCLASSNAME@& msg )
+{
+    // publish the referenced @FULLCLASSNAME@ message
+    @NAME@->publish(msg );
+}
+ 

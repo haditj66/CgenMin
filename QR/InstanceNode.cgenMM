@@ -136,6 +136,7 @@ public:
 	//PUBLISHER_FUNCTION
 	//=====================================
 	@PUBLISHER_FUNCTION@
+	@PUBLISHER_FUNCTION2@
 		
 	//=====================================
 	//SUBSCRIBER_FUNCTION_CALLBACK

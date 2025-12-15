@@ -2,6 +2,7 @@ using CodeGenerator.cgenXMLSaves.SaveFiles;
 using CodeGenerator.FileTemplates;
 using CodeGenerator.FileTemplates.GeneralMacoTemplate;
 using CodeGenerator.FileTemplatesMacros;
+using NUnit.Framework;
 using System.Reflection;
 
 namespace MacroTests

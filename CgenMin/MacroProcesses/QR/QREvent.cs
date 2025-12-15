@@ -2,6 +2,7 @@
 using CodeGenerator.ProblemHandler;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata;
@@ -38,8 +39,8 @@ namespace CgenMin.MacroProcesses
 
         public bool isNonQR = false;
         public QREventType QREVTType { get; private set; }
-        public FunctionArgsBase[] EventProperties { get; protected set; }
-        public List<FunctionArgsBase > EventPropertiesList { get { return EventProperties.ToList(); } }
+        public FunctionArgsBase[] EventProperties { get;   set; }
+        public List<FunctionArgsBase> EventPropertiesList { get { return EventProperties.ToList(); } }
         public FunctionArgsBase ReturnType { get; protected set; }
         //public string ReturnName { get; protected set; }
         public bool IsFromEnum { get; protected set; }
@@ -47,11 +48,11 @@ namespace CgenMin.MacroProcesses
         public QREnum QREnumAttr { get; set; }
 
         public string GetUniqueName()
-        { 
+        {
             return $"{this.FromModuleName}:{this.InstanceName}";
         }
 
-        public static int NumOfSRVCreatedSoFar { get { return numOfSRVCreatedSoFar; }  }
+        public static int NumOfSRVCreatedSoFar { get { return numOfSRVCreatedSoFar; } }
         static int numOfSRVCreatedSoFar = 0;
         static int numOfMSGsCreatedSoFar = 0;
         int eventID = 0;
@@ -63,6 +64,9 @@ namespace CgenMin.MacroProcesses
         public QREvent(string fromModule, string ClassName, QREventType qRType, params FunctionArgsBase[] eventDefinition)
             : base(fromModule, ClassName.First().ToString().ToUpper() + ClassName.Substring(1))
         {
+          
+
+
             //uppercase the first letter of the class name 
             AOType = AOTypeEnum.Event;
             EventProperties = eventDefinition;
@@ -72,6 +76,8 @@ namespace CgenMin.MacroProcesses
         public QREvent(string fromModule, string ClassName, QREventType qRType, List<FunctionArgsBase> eventDefinition)
             : base(fromModule, ClassName.First().ToString().ToUpper() + ClassName.Substring(1))
         {
+    
+
             //this(ClassName,   returnType,   returnName,  eventProperties.ToArray());
             AOType = AOTypeEnum.Event;
             EventProperties = eventDefinition.ToArray();
@@ -89,91 +95,88 @@ namespace CgenMin.MacroProcesses
 
         }
 
+
+
+
         public static string INTERFACE_HEADERS()
         {
             // for every event in AllAEEvents, get the INTERFACE_HEADER 
             string ret = "";
             foreach (var item in AllAEEvents)
             {
-                ret += item.INTERFACE_HEADER( );
+                ret += item.INTERFACE_HEADER();
                 ret += "\n";
             }
-            return ret; 
+            return ret;
         }
 
-         
 
 
-        public string INTERFACE_HEADER( )
+
+        public string INTERFACE_HEADER()
         {
             if (this.isNonQR)
             {
                 return ((QREventMSGNonQR)this).FullHeaderName;
             }
+             
 
-            return __INTERFACE_HEADER(QREVTType, this.InstanceName); 
+            return __INTERFACE_HEADER(QREVTType, this.InstanceName, this.FromModuleName);
         }
 
-        public static string __INTERFACE_HEADER(QREventType theevtType, string instanceName )
+        public static string __INTERFACE_HEADER(QREventType theevtType, string instanceName, string moduleName )
         {
             string evtType =
                theevtType == QREventType.MSG ? $"msg" :
                theevtType == QREventType.SRV ? "srv" :
                "act";
 
-            return $"#include \"{QRInitializing.RunningProjectName}_i/{evtType}/{__INTERFACE_HEADER_NAME(instanceName)}.hpp\" ";
+               
+
+            return $"#include \"{moduleName}_i/{evtType}/{__INTERFACE_HEADER_NAME(instanceName)}.hpp\" ";
         }
         public string INTERFACE_HEADER_NAME()
         {
             return __INTERFACE_HEADER_NAME(this.InstanceName);
         }
 
-        public static string __INTERFACE_HEADER_NAME(string _instanceName)
+ public static string __INTERFACE_HEADER_NAME(string name)
+{
+    if (string.IsNullOrEmpty(name))
+        return name;
+
+    var sb = new System.Text.StringBuilder();
+    sb.Append(char.ToLower(name[0]));
+
+    for (int i = 1; i < name.Length; i++)
+    {
+        char curr = name[i];
+        char prev = name[i - 1];
+
+        bool currUpper = char.IsUpper(curr);
+        bool prevUpper = char.IsUpper(prev);
+
+        // If current is uppercase and (previous is lowercase OR next is lowercase)
+        // then this starts a new word → add underscore.
+        if (currUpper && (!prevUpper || (i + 1 < name.Length && char.IsLower(name[i + 1]))))
         {
-            // Initialize return string
-            string ret = "";
-            bool isFirstCharacter = true;
-            bool lastWasUpper = false;
-
-            foreach (var item in _instanceName)
-            {
-                if (isFirstCharacter)
-                {
-                    // Convert the first character to lowercase if it's uppercase, without adding an underscore
-                    ret += char.ToLower(item);
-                    isFirstCharacter = false;
-                    lastWasUpper = char.IsUpper(item);
-                }
-                else
-                {
-                    if (char.IsUpper(item))
-                    {
-                        // If the last character was not uppercase, add an underscore
-                        if (!lastWasUpper)
-                        {
-                            ret += "_";
-                        }
-
-                        // Add the lowercase version of the current character
-                        ret += char.ToLower(item);
-                        lastWasUpper = true;
-                    }
-                    else
-                    {
-                        // If the current character is lowercase, reset lastWasUpper and add it as-is
-                        ret += item;
-                        lastWasUpper = false;
-                    }
-                }
-            }
-
-            return ret;
+            sb.Append("_");
         }
+
+        sb.Append(char.ToLower(curr));
+    }
+
+    return sb.ToString();
+}
+
+
 
 
 
         private void Constr(QREventType qRType)
         {
+
+
             QREVTType = qRType;
 
             //check that all service names are compatible with the ROS naming convention
@@ -193,16 +196,16 @@ namespace CgenMin.MacroProcesses
                 }
 
             }
- 
+
             //dont add the updateEvt
             if (this.ClassName != "UpdateEVT")
             {
                 if (QREventType.MSG == QREVTType)
                 {
                     numOfMSGsCreatedSoFar++;
-                    sigID = numOfMSGsCreatedSoFar; 
+                    sigID = numOfMSGsCreatedSoFar;
                     var exists = AllAEEvents.Where(s => s.GetUniqueName() == this.GetUniqueName()).FirstOrDefault();
-                    if (exists ==null)
+                    if (exists == null)
                     {
                         AllAEEvents.Add(this);
                     }
@@ -223,6 +226,65 @@ namespace CgenMin.MacroProcesses
             {
                 AllSelectedTargetEvents.Add(this);
             }
+
+
+
+            //if this message has functino args that are other messages, make sure all those mesages have been initializes first.
+            //if not, throw a problem 
+            foreach (var arg in EventPropertiesList)
+            {
+                bool uninitializedMsgArg = false;
+                if (arg.GetCSType == typeof(QREventMSG))
+                {
+                    uninitializedMsgArg = arg.QREventMSG_ == null ? true : false;
+                }
+                else if (arg.GetCSType == typeof(QREventMSGNonQR))
+                {
+                    uninitializedMsgArg = arg.QREventMSGNonQR_ == null ? true : false;
+                }
+                if (uninitializedMsgArg)
+                {
+                    ProblemHandle problemHandle = new ProblemHandle();
+                    problemHandle.ThereisAProblem($"QREventMSG or QREventMSGNonQR argument '{arg.Name}' in QREvent {this.InstanceName} has not been initialized. Please make sure to initialize all QREventMSG and QREventMSGNonQR arguments before using them in a QREvent.");
+                }
+
+            }
+
+            //go through EventPropertiesList and see if any of the args are from other events from ROS packages
+            foreach (var arg in EventPropertiesList)
+            {
+                if (arg.GetCSType == typeof(QREventMSG))
+                {
+                    //check that the event is from another module
+                    var evtArg = (QREventMSG)arg.QREventMSG_;
+                    if (evtArg.FromModuleName != this.FromModuleName)
+                    {
+                        //ProblemHandle problemHandle = new ProblemHandle();
+                        //problemHandle.ThereisAProblem($"QREventMSG argument '{arg.Name}' in QREvent {this.InstanceName} is from another module '{evtArg.FromModuleName}'. QREventMSG arguments must be from the same module as the QREvent they are used in.");
+                        //System.Console.WriteLine($"WARNING!!!!----------------------\n QREventMSG argument '{arg.Name}' in QREvent {this.InstanceName} is from another module '{evtArg.FromModuleName}'. QREventMSG arguments must be from the same module as the QREvent they are used in.");
+                    }
+                }
+
+            }
+
+
+            //                     nameMessageFileToTurnToQrEvent
+            // .SelectMany(evt => evt.EventPropertiesList)
+            // this.EventPropertiesList.ForEach(arg =>
+            // {
+            //     if (arg.GetCSType == typeof(QREventMSGNonQR))
+            //     {
+            //         var nonqrmsg = (QREventMSGNonQR)arg.QREventMSGNonQR_;
+            //         if (nonqrmsg.IsRosMessage)
+            //         {
+            //             nonqrmsg.interfacePkgDepends.Add(nonqrmsg.RosPackageName);
+            //         }
+            //     }
+            // });
+
+
+
+
         }
 
         public static void TargetStartRun()
@@ -252,7 +314,7 @@ namespace CgenMin.MacroProcesses
         //    return "";
         //}
 
-    
+
 
         //public override string GenerateMainLinkSetupsSection()
         //{
@@ -301,6 +363,54 @@ namespace CgenMin.MacroProcesses
 
 
         static bool onlyWriteFilesOnce = false;
+        private List<string> interfacePkgDepends = new List<string>();
+        public List<string> GetGetinterfacePkgDependsFromRosPkgs()
+        {
+            this.EventPropertiesList.ForEach(arg =>
+            {
+                if (arg.GetCSType == typeof(QREventMSGNonQR))
+                {
+                    var nonqrmsg = (QREventMSGNonQR)arg.QREventMSGNonQR_;
+                    if (nonqrmsg.IsRosMessage)
+                    {
+                        interfacePkgDepends.Add(nonqrmsg.FromModuleName);
+                    }
+                }
+            });
+            return interfacePkgDepends;
+        }
+
+        public List<string> GetGetinterfacePkgDependsFromOtherQRModules()
+        {
+            string ret = "";
+            foreach (var arg in EventPropertiesList)
+            {
+                if (arg.GetCSType == typeof(QREventMSG))
+                {
+                    var evtArg = (QREventMSG)arg.QREventMSG_;
+                    if (evtArg.FromModuleName != this.FromModuleName)
+                    {
+                        ret += evtArg.FromModuleName + "_i";
+                        ret += "\n";
+                    }
+                }
+                else if (arg.GetCSType == typeof(QREventMSGNonQR))
+                {
+                    var evtArg = (QREventMSGNonQR)arg.QREventMSGNonQR_;
+                    if (evtArg.FromModuleName != this.FromModuleName)
+                    {
+                        ret += evtArg.FromModuleName ;
+                        ret += "\n";
+                    }
+                }
+            }
+            //make it into a list of distinct names
+            var distinctNames = ret.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+
+            return distinctNames.ToList();
+        }
+        
+
         protected override List<RelativeDirPathWrite> _WriteTheContentedToFiles()
         {
 
@@ -312,7 +422,7 @@ namespace CgenMin.MacroProcesses
                 {
                     return null;
                 }
-                
+
             }
 
 
@@ -325,7 +435,7 @@ namespace CgenMin.MacroProcesses
             {
                 string toAdd = EventProperties[i].TYPEASINSERVICE() + " " + EventProperties[i].NAMEASINSERVICE();
                 toAdd = EventProperties[i].IsFromEnumArg ? toAdd + "=" + EventProperties[i].Argnum.ToString() : toAdd;
-                concatenatedProperties.Add(toAdd); 
+                concatenatedProperties.Add(toAdd);
 
             }
 
@@ -397,11 +507,25 @@ namespace CgenMin.MacroProcesses
 
         public string GenerateCmakeCommand()
         {
-             return QRInitializing.TheMacro2Session.GenerateFileOut("QR\\InterfaceCmakeCommand",
-                new MacroVar() { MacroName = "NAME_OF_MESSAGE", VariableValue = this.InstanceName },
-                new MacroVar() { MacroName = "EVT_TYPE", VariableValue = this.QREVTType == QREventType.MSG ? "message" : this.QREVTType == QREventType.SRV ? "service" : "action" },
-                new MacroVar() { MacroName = "INTERFACE_PKG_DEPENDS", VariableValue = "builtin_interfaces std_msgs" }
-                );
+            string deps = "";
+            string deps2 = "";
+            if (GetGetinterfacePkgDependsFromRosPkgs().Count > 0)
+            {
+                deps = string.Join(" ", GetGetinterfacePkgDependsFromRosPkgs().Distinct());
+            }
+            if (GetGetinterfacePkgDependsFromOtherQRModules().Count > 0)
+            {
+                deps2 = string.Join(" ", GetGetinterfacePkgDependsFromOtherQRModules().Distinct());
+            } 
+            string depsAll = (deps + " " + deps2).Trim();
+             
+
+
+            return QRInitializing.TheMacro2Session.GenerateFileOut("QR\\InterfaceCmakeCommand",
+               new MacroVar() { MacroName = "NAME_OF_MESSAGE", VariableValue = this.InstanceName },
+               new MacroVar() { MacroName = "EVT_TYPE", VariableValue = this.QREVTType == QREventType.MSG ? "message" : this.QREVTType == QREventType.SRV ? "service" : "action" },
+               new MacroVar() { MacroName = "INTERFACE_PKG_DEPENDS", VariableValue = "builtin_interfaces std_msgs " + depsAll }
+               );
         }
     }
 
@@ -454,7 +578,7 @@ namespace CgenMin.MacroProcesses
 
         }
 
- 
+
 
         //public static TDerived Instance
         //{
@@ -501,13 +625,13 @@ namespace CgenMin.MacroProcesses
 
     public class QREventMSGTemplate<TARG1Type> : QREventMSG
     {
-        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1) : base(  fromModule, ClassName,
+        public QREventMSGTemplate(string fromModule, string ClassName, string nameOfArg1) : base(fromModule, ClassName,
             new List<FunctionArgsBase>() {
-                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1) 
+                new FunctionArgsBase(typeof(TARG1Type), nameOfArg1)
             })
-        { 
+        {
         }
-    
+
     }
     public class QREventMSGTemplate<TARG1Type, TARG2Type> : QREventMSG
     {
@@ -517,7 +641,7 @@ namespace CgenMin.MacroProcesses
                 new FunctionArgsBase(typeof(TARG2Type), nameOfArg2)
             })
         {
-        } 
+        }
     }
 
     public class QREventMSGTemplate<TARG1Type, TARG2Type, TARG3Type> : QREventMSG
@@ -572,14 +696,14 @@ namespace CgenMin.MacroProcesses
             })
         {
         }
-    } 
+    }
 
 
     //    public class QREventMSG<TDerived> : AEEventBase<TDerived>
     //where TDerived : AEEventBase<TDerived>, new()
     public class QREventMSG : AEEventBase
     {
-         
+
 
         public QREventMSG(string fromModule, string ClassName, params FunctionArgsBase[] eventProperties)
             : base(fromModule, ClassName, QREventType.MSG, eventProperties)
@@ -596,9 +720,22 @@ namespace CgenMin.MacroProcesses
             return (QREventMSG)AllAEEvents.Where(d => d.InstanceName == name).FirstOrDefault();
 
         }
+        protected string FullClassNameFromNonQR = "";
+
+public string FULLCLASSNAME
+        {
+            get
+            {
+                return this.isNonQR ?
+                    FullClassNameFromNonQR :
+                    $"{this.FromModuleName}_i::msg::{InstanceName}";
+            }
+        } 
+        
 
 
-        public static QREventMSG EnumFactory( Type enumtype)
+
+        public static QREventMSG EnumFactory(Type enumtype)
         {
 
             //first get the name of the module that this enum is from
@@ -611,7 +748,7 @@ namespace CgenMin.MacroProcesses
             {
                 ProblemHandle prob = new ProblemHandle();
                 prob.ThereisAProblem($"The enum type {enumtype.Name} does not have a QREnum attribute attached to it. This is required for this to be a ROS MSG");
-                
+
             }
 
             //get the class name, if there was already a class with this name, then return that class 
@@ -629,7 +766,7 @@ namespace CgenMin.MacroProcesses
             //in c# get a typeof uint8
 
 
-            enumNamesList.Add(new FunctionArgsBase(typeof(byte), "result")); 
+            enumNamesList.Add(new FunctionArgsBase(typeof(byte), "result"));
             int count = 1;
             foreach (var item in enumNames)
             {
@@ -639,38 +776,60 @@ namespace CgenMin.MacroProcesses
 
 
 
-            var t = new QREventMSG(fromModule,enumtype.Name, enumNamesList);
+            var t = new QREventMSG(fromModule, enumtype.Name, enumNamesList);
             t.IsFromEnum = true;
             t.QREnumAttr = qrenum;
             return t;
         }
 
     }
+    //    public class NonQrMessage
+    //     {
+    //         public string FileNameOfService;
+    //         public string FullTopicName;
+    //         public string FullHeaderName;
+    //         public string FullMsgClassName;
+
+    //         public NonQrMessage(string fileNameOfService, string fullTopicName, string fullHeaderName, string fullMsgClassName)
+    //         {
+    //             FileNameOfService = fileNameOfService;
+    //             FullTopicName = fullTopicName;
+    //             FullHeaderName = fullHeaderName;
+    //             FullMsgClassName = fullMsgClassName;
+    //         }
+    //     }
 
 
     public class QREventMSGNonQR : QREventMSG
     {
+
+        public string FileNameOfService;
         public string FullTopicName { get; set; }
         public string FullHeaderName { get; set; }
         public string FullMsgClassName { get; set; }
+        public bool IsRosMessage { get; internal set; } = false;
+        public string FromModuleName { get; internal set; } = "";
 
-        public QREventMSGNonQR(string fromModule, string fullTopicName, string fullHeaderName, string fullMsgClassName, params FunctionArgsBase[] eventProperties)
-            : base(fromModule, "NonQR", eventProperties)
+        public QREventMSGNonQR(string FileNameOfService, string fullTopicName, string fullHeaderName, string fullMsgClassName, params FunctionArgsBase[] eventProperties)
+            : base("NonQR", "NonQR", eventProperties)
         {
+            this.FileNameOfService = FileNameOfService;
             FullHeaderName = fullHeaderName;
             FullTopicName = fullTopicName;
             FullMsgClassName = fullMsgClassName;
             isNonQR = true;
-
+            FullClassNameFromNonQR = fullMsgClassName;
         }
 
-        public QREventMSGNonQR(string fromModule, string fullTopicName, string fullHeaderName, string fullMsgClassName, List<FunctionArgsBase> eventProperties)
-            : base(fromModule, "NonQR",  eventProperties)
+        public QREventMSGNonQR(string FileNameOfService, string fullTopicName, string fullHeaderName, string fullMsgClassName, List<FunctionArgsBase> eventProperties)
+            : base("NonQR", "NonQR", eventProperties)
         {
+            this.FileNameOfService = FileNameOfService;
             FullHeaderName = fullHeaderName;
             FullTopicName = fullTopicName;
             FullMsgClassName = fullMsgClassName;
             isNonQR = true;
+            FullClassNameFromNonQR = fullMsgClassName;
         }
     }
 }
