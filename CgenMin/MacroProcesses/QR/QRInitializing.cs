@@ -18,6 +18,7 @@ namespace CgenMin.MacroProcesses.QR
         public static string RunningProjectName;
         public static QRTarget RunningTarget;
         public static string RunningProjectDir;
+        public static bool IsGettingServices = false;//{ get; private set; }
 
         public static bool DependingLib = false;
 
@@ -522,14 +523,39 @@ namespace CgenMin.MacroProcesses.QR
                     allEVTcmake += "\n\n" + evtsTarg.GenerateCmakeCommand();
                 }
 
-            } 
+            }
 
+            //get all ros package dependencies
+            string allPkgDepends = "";
+            foreach (var evtsTarg in QREvent.AllAEEvents)
+            {
+                //if the type iof the event is qrnonmessage 
+                if (evtsTarg.GetType() == typeof(QREventMSGNonQR))
+                {
+
+                    QREventMSGNonQR evtsTargNonQR = (QREventMSGNonQR)evtsTarg;
+                    if (evtsTargNonQR.IsRosMessage == true)
+                    {
+                        allPkgDepends += $"\n find_package({evtsTargNonQR.FromModuleName} REQUIRED)";
+                    }
+                }
+                       // get all interface arguments from other modules 
+                foreach (var arg in evtsTarg.GetGetinterfacePkgDependsFromOtherQRModules())
+                { 
+                        allPkgDepends += $"\n find_package({arg} REQUIRED)"; 
+                }
+              
+            }
+
+            
+     
 
             this.WriteFileContents_FromCGENMMFile_ToFullPath(
                 "QR\\InterfaceTargets",
                 Path.Combine(QRInitializing.RunningProjectDir, "rosqt", "IF", $"InterfaceTargets.cmake"),
                 true, false,
-                 new MacroVar() { MacroName = "EMPTY", VariableValue = allEVTcmake }
+                 new MacroVar() { MacroName = "EMPTY", VariableValue = allEVTcmake },
+                 new MacroVar() { MacroName = "ROS_PACKAGE_DEPENDENCIES", VariableValue = allPkgDepends }
                  );
 
             //WriteFileContentsToFullPath(this.GenerateFileOut("AERTOS\\TargetCreation",

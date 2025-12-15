@@ -91,7 +91,8 @@ namespace CgenMin.MacroProcesses
 
         public static void WriteAllFileContents()
         {
-            foreach (var item in AllAOWritableToAOClassContents)
+                var snapshot = AllAOWritableToAOClassContents.ToList();
+            foreach (var item in snapshot)
             {
                 item.WriteTheContentedToFiles();
             }

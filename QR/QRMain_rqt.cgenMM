@@ -1,10 +1,6 @@
 
 //===============================
 @AO_DESCRIPTIONS@
-//AO: world 
-//instances: world 
-//type: surrogate pattern 
-//isSurrogate: false
 //===============================
 
 #include "rclcpp/rclcpp.hpp"

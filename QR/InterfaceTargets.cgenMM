@@ -1,3 +1,5 @@
+@ROS_PACKAGE_DEPENDENCIES@
+
 QR_initialize_interfaces()
 
 

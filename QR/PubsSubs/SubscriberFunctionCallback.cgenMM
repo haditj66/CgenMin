@@ -1,4 +1,4 @@
-void @NAME@_callback(const @MODULENAME@_i::msg::@MSGNAME@::SharedPtr msg)
+void @NAME@_callback(const @MODULENAME@::msg::@MSGNAME@::SharedPtr msg)
 {   
-	##UserCode_imp
+	##UserCode_imp@NAME@
 }

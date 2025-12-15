@@ -24,7 +24,7 @@ namespace CgenMin.MacroProcesses
         ///name of var to be replaced in file
         public string MacroName;
         ///value to replace
-        public string VariableValue;
+        public string VariableValue; 
     }
 
 

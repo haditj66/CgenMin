@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace CgenMin.MacroProcesses.QR
@@ -53,15 +54,15 @@ namespace CgenMin.MacroProcesses.QR
         }
 
 
-        protected AONodeBase(string instanceNameOfTDU  ) : base("", instanceNameOfTDU )
+        protected AONodeBase(string instanceNameOfTDU) : base("", instanceNameOfTDU)
         {
             //get the namespace where this comes from
             var t = this.GetType();
-            var ns = t.Namespace; 
-            
+            var ns = t.Namespace;
+
 
             //get all types of QRProject that are in the assembly of this namespace 
-            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule))) ).ToList();
+            var types = t.Assembly.GetTypes().Where(t => (t.Namespace == ns && t.IsSubclassOf(typeof(QRModule)))).ToList();
 
             //if there are more than 2 types of QRproject, then give a problem as there should only be one in one namespace
             if (types.Count > 1)
@@ -83,7 +84,7 @@ namespace CgenMin.MacroProcesses.QR
                 this.FromModuleName = types[0].Name;
                 this.MODULENAME = types[0].Name;
             }
-            
+
 
         }
 
@@ -135,7 +136,7 @@ namespace CgenMin.MacroProcesses.QR
             {
                 _Init();
             }
-        } 
+        }
 
 
         public abstract List<ROSTimer> SetAllTimers();
@@ -155,7 +156,7 @@ namespace CgenMin.MacroProcesses.QR
         public static List<ROSPublisher> ROSPublishers { get { return _ROSPublishers; } }
         public void AddROSPublisher(ROSPublisher rOSpub)
         {
-            rOSpub.SetAOIBelongTo(this) ;
+            rOSpub.SetAOIBelongTo(this);
             _ROSPublishers.Add(rOSpub);
 
             //resolve all publishers. this is done to replace any dummy publishers needed to have been created from subscribners referencing publishers not created yet.
@@ -163,11 +164,15 @@ namespace CgenMin.MacroProcesses.QR
         }
         public static List<ROSSubscriber> _ROSSubscribers = new List<ROSSubscriber>();
         public static List<ROSSubscriber> ROSSubscribers { get { return _ROSSubscribers; } }
+
+
+
         public void AddROSSubscriber(ROSSubscriber rOSsub)
         {
             rOSsub.SetAOIBelongTo(this);
             _ROSSubscribers.Add(rOSsub);
         }
+
 
 
         protected List<TServiceFunctionType> GetAllServiceFunctions<TServiceFunctionType>() where TServiceFunctionType : ServiceFunction
@@ -199,6 +204,160 @@ namespace CgenMin.MacroProcesses.QR
                         var surrogateFunctionInstance = method.GetCustomAttributes(typeof(TServiceFunctionType), false)[0] as TServiceFunctionType;
 
 
+
+
+                        // // =========================================
+                        // // Resolve QREventMSG reference via reflection
+                        // // =========================================
+                        // if (!string.IsNullOrEmpty(surrogateFunctionInstance.QREventMSG))
+                        // {
+                        //     if (string.IsNullOrEmpty(surrogateFunctionInstance.FromModule))
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"ServiceFunction '{method.Name}' specifies QREventMSG but no FromModule"
+                        //         );
+                        //     }
+
+                        //     // find QRModule type
+                        //     var moduleType = AppDomain.CurrentDomain.GetAssemblies()
+                        //         .SelectMany(a => a.GetTypes())
+                        //         .FirstOrDefault(t =>
+                        //             typeof(QRModule).IsAssignableFrom(t) &&
+                        //             t.Name == surrogateFunctionInstance.FromModule
+                        //         );
+
+                        //     if (moduleType == null)
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"ServiceFunction '{method.Name}' references unknown module '{surrogateFunctionInstance.FromModule}'"
+                        //         );
+                        //     }
+
+                        //     // find static field on module
+                        //     var field = moduleType.GetField(
+                        //         surrogateFunctionInstance.QREventMSG,
+                        //         BindingFlags.Public | BindingFlags.Static
+                        //     );
+
+                        //     if (field == null)
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"ServiceFunction '{method.Name}' references missing static field '{surrogateFunctionInstance.QREventMSG}' on module '{moduleType.Name}'"
+                        //         );
+                        //     }
+
+                        //     // validate type
+                        //     if (!typeof(QREventMSG).IsAssignableFrom(field.FieldType))
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"ServiceFunction '{method.Name}' field '{field.Name}' is not QREventMSG or QREventMSGNonQR"
+                        //         );
+                        //     }
+
+                        //     // get actual instance
+                        //     var evt = field.GetValue(null) as QREventMSG;
+
+                        //     if (evt == null)
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"ServiceFunction '{method.Name}' QREvent '{field.Name}' is null. Make sure it is initialized in the module constructor."
+                        //         );
+                        //     }
+
+                        //     surrogateFunctionInstance.ResolvedEvent = evt;
+                        // }
+
+
+
+
+
+                        // // ===============================
+                        // // SERVICE INPUTS
+                        // // ===============================
+                        // var inputArgs = new List<FunctionArgsBase>();
+
+                        // foreach (var p in method.GetParameters())
+                        // {
+                        //     if (typeof(QREventMSG).IsAssignableFrom(p.ParameterType))
+                        //     {
+                        //         inputArgs.Add(new FunctionArgsBase(
+                        //             typeof(QREventMSG),
+                        //             p.Name,
+                        //             p.Position
+                        //         ));
+                        //     }
+                        //     else
+                        //     {
+                        //         inputArgs.Add(new FunctionArgsBase(
+                        //             p.ParameterType,
+                        //             p.Name,
+                        //             p.Position
+                        //         ));
+                        //     }
+                        // }
+
+                        // // ===============================
+                        // // SERVICE OUTPUT
+                        // // ===============================
+                        // FunctionArgsBase outputArg;
+
+                        // if (typeof(QREventMSG).IsAssignableFrom(method.ReturnType))
+                        // {
+                        //     QREventMSG outEvent = null;
+
+                        //     var result = method.Invoke(this, new object[] { null });
+
+                        //     if (result is QREventMSG evt)
+                        //     {
+                        //         outEvent = evt;
+                        //     }
+                        //     else
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"Service {method.Name} must return a QREventMSG"
+                        //         );
+                        //     }
+
+                        //     if (outEvent == null)
+                        //     {
+                        //         new ProblemHandle().ThereisAProblem(
+                        //             $"Service {method.Name} returned null QREventMSG. Make sure it is initialized."
+                        //         );
+                        //     }
+
+                        //     outputArg = new FunctionArgsBase(
+                        //         typeof(QREventMSG),
+                        //         outEvent.InstanceName
+                        //     );
+                        // }
+                        // else
+                        // {
+                        //     outputArg = new FunctionArgsBase(
+                        //         method.ReturnType,
+                        //         method.ReturnType.Name
+                        //     );
+                        // }
+
+                        // // ===============================
+                        // // CREATE SERVICE EVENT
+                        // // ===============================
+                        // surrogateFunctionInstance.FunctionServiceEvent =
+                        //     new QREventSRV(
+                        //         this.FromModuleName,
+                        //         method.Name,
+                        //         outputArg,
+                        //         inputArgs
+                        //     );
+
+                        // // ===============================
+                        // // METADATA
+                        // // ===============================
+                        // surrogateFunctionInstance.Name = method.Name;
+                        // surrogateFunctionInstance.Args = inputArgs;
+                        // surrogateFunctionInstance.ResponseArgs.Clear();
+                        // surrogateFunctionInstance.ResponseArgs.Add(outputArg);
+
+
                         //if this is a surrogate function, but the Node is not a surrogate node, then give a problem
                         if (((surrogateFunctionInstance.IsSurrogateFunction) && (this.AOType != AOTypeEnum.AOSurrogatePattern)))
                         {
@@ -206,63 +365,101 @@ namespace CgenMin.MacroProcesses.QR
                             problemHandle.ThereisAProblem($"The function {method.Name} is marked as a surrogate function, but the AO {this.AONAME} you put this on is not a SurrogatePattern AO");
                         }
 
-                        //fill in all properties of the surrogate function
-                        surrogateFunctionInstance.Args = new List<FunctionArgsBase>();
-                        surrogateFunctionInstance.Name = method.Name;
- 
-                        //fill in all properties of the surrogate function
-                        surrogateFunctionInstance.ResponseArgs.Add( new FunctionArgsBase(method.ReturnType, method.ReturnType.Name));
 
 
-                        surrogateFunctionInstance.Args = method.GetParameters().Select(p =>
+                        if (method.ReturnType == typeof(QREventSRV))
                         {
-                            //if parameter is of type AOSurrogatePattern
-                            return new FunctionArgsBase(p.ParameterType, p.Name, p.Position);
+                            QREventSRV srvEvent = method.Invoke(this, null) as QREventSRV;
+                            surrogateFunctionInstance.FunctionServiceEvent = srvEvent;
+
+                            surrogateFunctionInstance.Args = new List<FunctionArgsBase>();
+                            surrogateFunctionInstance.Name = method.Name;
+                            surrogateFunctionInstance.ResponseArgs.Add(srvEvent.ReturnType);
+                            // srvEvent.EventProperties =  
+                            surrogateFunctionInstance.Args = srvEvent.EventPropertiesList.Select(p =>
+                            {
+                                //if parameter is of type AOSurrogatePattern
+                                return p;
+                            }
+                            ).ToList();
+
+                            surrogateFunctionInstance.FunctionServiceEvent = srvEvent;
 
 
                         }
-                        ).ToList();
+                        else
+                        {
+                            //fill in all properties of the surrogate function
+                            surrogateFunctionInstance.Args = new List<FunctionArgsBase>();
+                            surrogateFunctionInstance.Name = method.Name;
+
+                            //fill in all properties of the surrogate function
+                            surrogateFunctionInstance.ResponseArgs.Add(new FunctionArgsBase(method.ReturnType, method.ReturnType.Name));
+
+
+                            surrogateFunctionInstance.Args = method.GetParameters().Select(p =>
+                            {
+                                //if parameter is of type AOSurrogatePattern
+                                return new FunctionArgsBase(p.ParameterType, p.Name, p.Position);
+
+
+                            }
+                            ).ToList();
 
 
 
 
-                        //create a service event for the function
-                        List<FunctionArgsBase> tt = method.GetParameters().Select(p => new FunctionArgsBase(p.ParameterType, p.Name)).ToList();
-                        //List<string> ttt = method.GetParameters().Select(p => p.ParameterType.Name).ToList();
-                        ////alternate tt and ttt into a single list
-                        //tt = ttt.SelectMany((x, i) => new List<string> { x, tt[i] }).ToList();
-                        surrogateFunctionInstance.FunctionServiceEvent = new QREventSRV(this.FromModuleName, method.Name, new FunctionArgsBase(method.ReturnType, ""), tt);
+                            //create a service event for the function
+                            List<FunctionArgsBase> tt = method.GetParameters().Select(p => new FunctionArgsBase(p.ParameterType, p.Name)).ToList();
+                            //List<string> ttt = method.GetParameters().Select(p => p.ParameterType.Name).ToList();
+                            ////alternate tt and ttt into a single list
+                            //tt = ttt.SelectMany((x, i) => new List<string> { x, tt[i] }).ToList();
+
+                            surrogateFunctionInstance.FunctionServiceEvent = new QREventSRV(this.FromModuleName, method.Name, new FunctionArgsBase(method.ReturnType, ""), tt);
+
+                        }
+
+
+
+
+
+
+
+
+
+
+
 
                         //add this to the list of surrogate functions
                         ret.Add(surrogateFunctionInstance);
-                    } 
+                    }
 
                 }
             }
 
             return ret;
-        } 
+        }
 
         protected void _Init()
-        { 
-                this.AONAME = this.ClassName; 
-            
+        {
+            this.AONAME = this.ClassName;
 
 
-                //if the instance name is the same as the class name, then give a problem
-                if (this.InstanceName == this.ClassName )
-                {
-                    ProblemHandle problemHandle = new ProblemHandle();
-                    problemHandle.ThereisAProblem($" The instance name {this.InstanceName} is the same as the class name {this.ClassName}. This is not allowed");
-                }
-                if (this.InstanceName == this.MODULENAME)
-                {
-                    ProblemHandle problemHandle = new ProblemHandle();
-                    problemHandle.ThereisAProblem($" The instance name {this.InstanceName} is the same as the MODULENAME name {this.MODULENAME}. This is not allowed");
-                }
+
+            //if the instance name is the same as the class name, then give a problem
+            if (this.InstanceName == this.ClassName)
+            {
+                ProblemHandle problemHandle = new ProblemHandle();
+                problemHandle.ThereisAProblem($" The instance name {this.InstanceName} is the same as the class name {this.ClassName}. This is not allowed");
+            }
+            if (this.InstanceName == this.MODULENAME)
+            {
+                ProblemHandle problemHandle = new ProblemHandle();
+                problemHandle.ThereisAProblem($" The instance name {this.InstanceName} is the same as the MODULENAME name {this.MODULENAME}. This is not allowed");
+            }
             if (!isInited)
             {
-                 
+
                 foreach (var timer in SetAllTimers())
                 {
                     this.AddROSTimer(timer);
@@ -284,14 +481,14 @@ namespace CgenMin.MacroProcesses.QR
 
                 //make sure there are no more dummies at all as publishers. dummies indicated publishers that are trying to be subscribed to but are never
                 //created. in any project.
-                if (_ROSPublishers.Where(d=> d.isdummy).ToList().Count > 0)
+                if (_ROSPublishers.Where(d => d.isdummy).ToList().Count > 0)
                 {
                     var ttt = _ROSPublishers.Where(d => d.isdummy).FirstOrDefault();
                     ProblemHandle problemHandle = new ProblemHandle();
                     problemHandle.ThereisAProblem($"The publisher {ttt.IdName} was never created but there is a subscriber that is trying to subscribe tho that  topic. ");
-                     
+
                 }
-                
+
 
 
                 //Get all the SurrogateDatas. These are the properties that are marked with SurrogateData
@@ -300,16 +497,17 @@ namespace CgenMin.MacroProcesses.QR
 
                 ServiceFunctions = new List<ServiceFunction>();
                 SurrogateServiceFunctions = new List<SurrogateServiceFunction>();
-
+                QRInitializing.IsGettingServices = true;
                 ServiceFunctions = GetAllServiceFunctions<ServiceFunction>();
+                QRInitializing.IsGettingServices = false;
                 SurrogateServiceFunctions = GetAllServiceFunctions<SurrogateServiceFunction>();
 
 
                 isInited = true;
             }
         }
-         
-         
+
+
 
         public override string GetFullTemplateArgs()
         {
@@ -332,7 +530,7 @@ namespace CgenMin.MacroProcesses.QR
         }
 
         protected override List<RelativeDirPathWrite> _WriteTheContentedToFiles()
-        {  
+        {
             return _WriteTheContentedToFiles_NodeBASE();
         }
 
@@ -368,7 +566,7 @@ namespace CgenMin.MacroProcesses.QR
         }
         protected string AOFUNCTION_TICKET(ServiceFunction surrogateFunction)
         {
-            string retType = surrogateFunction.ResponseArgs.Count > 1 ? surrogateFunction.TICKET_RETURN_TYPE_multi(this.MODULENAME)  :
+            string retType = surrogateFunction.ResponseArgs.Count > 1 ? surrogateFunction.TICKET_RETURN_TYPE_multi(this.MODULENAME) :
                 surrogateFunction.TICKET_RETURN_TYPE1(this.MODULENAME);
 
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunctionTicket",
@@ -379,7 +577,7 @@ namespace CgenMin.MacroProcesses.QR
         }
         protected string AOFUNCTION_CLIENT(ServiceFunction surrogateFunction)
         {
-            string TOPICNAME = surrogateFunction.NonQRTopicName == "" ?  surrogateFunction.NAMEOFFUNCTION : surrogateFunction.NonQRTopicName;
+            string TOPICNAME = surrogateFunction.NonQRTopicName == "" ? surrogateFunction.NAMEOFFUNCTION : surrogateFunction.NonQRTopicName;
 
             string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunctionClient",
                     new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
@@ -388,7 +586,7 @@ namespace CgenMin.MacroProcesses.QR
             return ret;
         }
         protected string AOFUNCTION_CLIENT_DECLARE(ServiceFunction surrogateFunction)
-        { 
+        {
 
             return $"rclcpp::Client<{this.MODULENAME}_i::srv::{surrogateFunction.NAMEOFFUNCTION}>::SharedPtr client{surrogateFunction.NAMEOFFUNCTION};";
         }
@@ -414,7 +612,7 @@ namespace CgenMin.MacroProcesses.QR
                     );
             }
             else
-            { 
+            {
                 ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\SurrogatePattern\\AOFunction_Imp",
                       new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
                       new MacroVar() { MacroName = "NAMEOFFUNCTION", VariableValue = surrogateFunction.NAMEOFFUNCTION },
@@ -453,7 +651,7 @@ namespace CgenMin.MacroProcesses.QR
 
             if (surrogateData.IsPublicSet == true)
             {
-               // ret += $"{access} void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value)" + "{" + $"this->data.{surrogateData.NameOfData} = value;" + "}";
+                // ret += $"{access} void Set{surrogateData.NameOfData}({surrogateData.TypeOfData} value)" + "{" + $"this->data.{surrogateData.NameOfData} = value;" + "}";
             }
 
             ret += "\npublic:";
@@ -472,31 +670,31 @@ namespace CgenMin.MacroProcesses.QR
                     $"#include \"qr_core/msg/void_{typedata}_changed.hpp\"\n" +
                     $"#include \"qr_core/srv/sync_{typedata}.hpp\"";
                 ret = ret.ToLower();
-                
+
                 isDATASYNC_HEADERCalledOnce = true;
                 return ret;
             }
-            
+
             return "";
-        }        
+        }
         protected string DATASYNC_DECL(SurrogateData surrogateData)
         {
             if (surrogateData.IsPublicSet == true)
-            { 
-            string typedata = surrogateData.TYPEASINSERVICE(false);
+            {
+                string typedata = surrogateData.TYPEASINSERVICE(false);
 
-            //rclcpp::Client<qr_core::srv::SyncInt64>::SharedPtr clientsetposx;
-            //    DataSyncing<int64_t,
-            //   qr_core::srv::SyncInt64,
-            //   qr_core::msg::VoidInt64Changed>* posx_datasync;
-            //    TicketFuture<std::shared_future<rclcpp::Client<qr_core::srv::SyncInt64>::SharedResponse>, void>* TicketFor_Setposx;
-            string ret = $"DataSyncing<{surrogateData.TypeOfData},\n" +
-                $"qr_core::srv::Sync{typedata},\n" +
-                $"qr_core::msg::Void{typedata}Changed>* {surrogateData.NameOfData}_datasync;\n" +
-                $"TicketFuture<std::shared_future<rclcpp::Client<qr_core::srv::Sync{typedata}>::SharedResponse>, void>* TicketFor_Set{surrogateData.NameOfData};";
+                //rclcpp::Client<qr_core::srv::SyncInt64>::SharedPtr clientsetposx;
+                //    DataSyncing<int64_t,
+                //   qr_core::srv::SyncInt64,
+                //   qr_core::msg::VoidInt64Changed>* posx_datasync;
+                //    TicketFuture<std::shared_future<rclcpp::Client<qr_core::srv::SyncInt64>::SharedResponse>, void>* TicketFor_Setposx;
+                string ret = $"DataSyncing<{surrogateData.TypeOfData},\n" +
+                    $"qr_core::srv::Sync{typedata},\n" +
+                    $"qr_core::msg::Void{typedata}Changed>* {surrogateData.NameOfData}_datasync;\n" +
+                    $"TicketFuture<std::shared_future<rclcpp::Client<qr_core::srv::Sync{typedata}>::SharedResponse>, void>* TicketFor_Set{surrogateData.NameOfData};";
 
-            ret += $"rclcpp::Client<qr_core::srv::Sync{typedata}>::SharedPtr clientset{surrogateData.NameOfData};";
-            return ret;
+                ret += $"rclcpp::Client<qr_core::srv::Sync{typedata}>::SharedPtr clientset{surrogateData.NameOfData};";
+                return ret;
 
             }
             return "";
@@ -529,24 +727,24 @@ namespace CgenMin.MacroProcesses.QR
             string Set = "";
             if (surrogateData.IsPublicSet)
             {
-                 Set = QRInitializing.TheMacro2Session.GenerateFileOut(
-    $"QR\\SurrogatePattern\\WorldSurrogate_DataSyncImpSet",
-     new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData },
-                 new MacroVar() { MacroName = "TYPEOFDATA", VariableValue = surrogateData.TypeOfData },
-                 new MacroVar() { MacroName = "TYPEOFDATASERV", VariableValue = surrogateData.TYPEASINSERVICE(false) }
-     );
-            } 
-           
+                Set = QRInitializing.TheMacro2Session.GenerateFileOut(
+   $"QR\\SurrogatePattern\\WorldSurrogate_DataSyncImpSet",
+    new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData },
+                new MacroVar() { MacroName = "TYPEOFDATA", VariableValue = surrogateData.TypeOfData },
+                new MacroVar() { MacroName = "TYPEOFDATASERV", VariableValue = surrogateData.TYPEASINSERVICE(false) }
+    );
+            }
+
             string Get = QRInitializing.TheMacro2Session.GenerateFileOut(
 $"QR\\SurrogatePattern\\WorldSurrogate_DataSyncImpGet",
-new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData } 
+new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
 );
             string ret = Set + "\n" + Get;
 
             return ret;
         }
-          
-         
+
+
 
 
         protected List<RelativeDirPathWrite> _WriteTheContentedToFiles_NodeBASE()
@@ -594,8 +792,8 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
 
                 string DATASYNC_HEADERS = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ?
                    GenerateAllForEvery_SurrogateData(DATASYNC_HEADER) :
-                  "";                
-                
+                  "";
+
                 string DATASYNC_DECLS = this.GetAOType() == AOTypeEnum.AOSurrogatePattern ?
                    GenerateAllForEvery_SurrogateData(DATASYNC_DECL) :
                   "";
@@ -622,46 +820,46 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
                     allInterfaceHeaders = "";
                     foreach (var item in ServiceFunctions)
                     {
-                        allInterfaceHeaders += QREvent.__INTERFACE_HEADER(QREventType.SRV, item.NAMEOFFUNCTION); 
+                        allInterfaceHeaders += QREvent.__INTERFACE_HEADER(QREventType.SRV, item.NAMEOFFUNCTION, item.FunctionServiceEvent.FromModuleName);
                         allInterfaceHeaders += "\n";
-                    } 
-                
+                    }
+
                 }
 
 
 
-                    string WorldSurrogate = QRInitializing.TheMacro2Session.GenerateFileOut(
-         $"QR\\SurrogatePattern\\WorldSurrogate",
-          new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = allInterfaceHeaders },
-                      new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
-                      new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
+                string WorldSurrogate = QRInitializing.TheMacro2Session.GenerateFileOut(
+     $"QR\\SurrogatePattern\\WorldSurrogate",
+      new MacroVar() { MacroName = "INTERFACE_HEADERS", VariableValue = allInterfaceHeaders },
+                  new MacroVar() { MacroName = "MODULENAME", VariableValue = this.MODULENAME },
+                  new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME },
 
-                      new MacroVar() { MacroName = "IS_INHERIT1", VariableValue = IS_INHERIT1 },
-                      new MacroVar() { MacroName = "IS_INHERIT2", VariableValue = IS_INHERIT2 },
-                      new MacroVar() { MacroName = "IS_INHERIT3", VariableValue = IS_INHERIT3 },
-                      new MacroVar() { MacroName = "IS_INHERIT4", VariableValue = IS_INHERIT4 },
-                      new MacroVar() { MacroName = "IS_INHERIT5", VariableValue = IS_INHERIT5 },
-                      new MacroVar() { MacroName = "IS_INHERIT6", VariableValue = IS_INHERIT6 },
-                      new MacroVar() { MacroName = "IS_INHERIT7", VariableValue = IS_INHERIT7 },
+                  new MacroVar() { MacroName = "IS_INHERIT1", VariableValue = IS_INHERIT1 },
+                  new MacroVar() { MacroName = "IS_INHERIT2", VariableValue = IS_INHERIT2 },
+                  new MacroVar() { MacroName = "IS_INHERIT3", VariableValue = IS_INHERIT3 },
+                  new MacroVar() { MacroName = "IS_INHERIT4", VariableValue = IS_INHERIT4 },
+                  new MacroVar() { MacroName = "IS_INHERIT5", VariableValue = IS_INHERIT5 },
+                  new MacroVar() { MacroName = "IS_INHERIT6", VariableValue = IS_INHERIT6 },
+                  new MacroVar() { MacroName = "IS_INHERIT7", VariableValue = IS_INHERIT7 },
 
-                      new MacroVar() { MacroName = "AOFUNCTIONS", VariableValue = GenFuncToUse(AOFUNCTION) },
-                      new MacroVar() { MacroName = "AOFUNCTION_TICKETS", VariableValue = GenFuncToUse(AOFUNCTION_TICKET) },
-                      new MacroVar() { MacroName = "AOFUNCTION_CLIENTS", VariableValue = GenFuncToUse(AOFUNCTION_CLIENT) },
-                    new MacroVar() { MacroName = "AOFUNCTION_CLIENT_DECLARES", VariableValue = GenFuncToUse(AOFUNCTION_CLIENT_DECLARE) },
-                    new MacroVar() { MacroName = "AOFUNCTION_IMPS", VariableValue = GenFuncToUse(AOFUNCTION_IMP) },
+                  new MacroVar() { MacroName = "AOFUNCTIONS", VariableValue = GenFuncToUse(AOFUNCTION) },
+                  new MacroVar() { MacroName = "AOFUNCTION_TICKETS", VariableValue = GenFuncToUse(AOFUNCTION_TICKET) },
+                  new MacroVar() { MacroName = "AOFUNCTION_CLIENTS", VariableValue = GenFuncToUse(AOFUNCTION_CLIENT) },
+                new MacroVar() { MacroName = "AOFUNCTION_CLIENT_DECLARES", VariableValue = GenFuncToUse(AOFUNCTION_CLIENT_DECLARE) },
+                new MacroVar() { MacroName = "AOFUNCTION_IMPS", VariableValue = GenFuncToUse(AOFUNCTION_IMP) },
 
-                    new MacroVar() { MacroName = "SURROGATE_INIT", VariableValue = WorldSurrogate_Init },
-                    new MacroVar() { MacroName = "UPDATE_CALLBACK", VariableValue = WorldSurrogate_UpdateCallback },
+                new MacroVar() { MacroName = "SURROGATE_INIT", VariableValue = WorldSurrogate_Init },
+                new MacroVar() { MacroName = "UPDATE_CALLBACK", VariableValue = WorldSurrogate_UpdateCallback },
 
-                    new MacroVar() { MacroName = "DATASYNC_HEADER", VariableValue = DATASYNC_HEADERS },
-                    new MacroVar() { MacroName = "DATASYNC_DECL", VariableValue = DATASYNC_DECLS },
-                    new MacroVar() { MacroName = "DATASYNC_DEFINE", VariableValue = DATASYNC_DEFINES },
-                    new MacroVar() { MacroName = "DATASYNC_IMPS", VariableValue = DATASYNC_IMPS }
+                new MacroVar() { MacroName = "DATASYNC_HEADER", VariableValue = DATASYNC_HEADERS },
+                new MacroVar() { MacroName = "DATASYNC_DECL", VariableValue = DATASYNC_DECLS },
+                new MacroVar() { MacroName = "DATASYNC_DEFINE", VariableValue = DATASYNC_DEFINES },
+                new MacroVar() { MacroName = "DATASYNC_IMPS", VariableValue = DATASYNC_IMPS }
 
-          );
+      );
 
                 //if this is a nonQR, then change all instances of MODULENAME_i to the name of the 
-                if ( this.IsNonQR == true)
+                if (this.IsNonQR == true)
                 {
                     WorldSurrogate = WorldSurrogate.Replace($"{this.MODULENAME}_i", this.AONAME);
                 }
@@ -725,6 +923,7 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
                           new MacroVar() { MacroName = "PUBLISHER_DEFINE", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_DEFINE, "\n") },
                           new MacroVar() { MacroName = "SUBSCRIBER_DEFINE", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_DEFINE, "\n") },
                           new MacroVar() { MacroName = "PUBLISHER_FUNCTION", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_FUNCTION, "\n") },
+                          new MacroVar() { MacroName = "PUBLISHER_FUNCTION2", VariableValue = ROSPublishers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.PUBLISHER_FUNCTION2, "\n") },
                           new MacroVar() { MacroName = "SUBSCRIBER_FUNCTION_CALLBACK", VariableValue = ROSSubscribers.GenerateAllForEvery_Arguments(ROSPublisherExtensions.SUBSCRIBER_FUNCTION_CALLBACK, "\n") }
 
                     );
@@ -735,14 +934,14 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
                         new MacroVar() { MacroName = "AONAME", VariableValue = this.AONAME }
                   );
 
-                     
-                 ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "hpp",
-                    Path.Combine("rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt"), InstanceNode,
-                      true, true));
 
-                 ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "cpp",
-                    Path.Combine("rosqt", "src"), InstanceNodecpp,
-                    true, true));
+                    ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "hpp",
+                       Path.Combine("rosqt", "include", $"{QRInitializing.RunningProjectName}_rqt"), InstanceNode,
+                         true, true));
+
+                    ret.Add(new RelativeDirPathWrite($"{this.ClassName}Node", "cpp",
+                       Path.Combine("rosqt", "src"), InstanceNodecpp,
+                       true, true));
 
                 }
 
@@ -755,13 +954,22 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
 
         public virtual string AO_DESCRIPTIONS_CP()
         {
-            //AO: world 
-            //instances: world 
-            //type: simpleao
-            string ret = $"//InstanceName: {InstanceName} \n";
-            ret += $"//     AO: {AONAME}\n";
-            ret += $"//     type: {AOType.ToString()}\n"; 
-            return ret;
+            if (this.AOType == AOTypeEnum.AOSurrogatePattern || this.AOType == AOTypeEnum.AOSimple)
+            {
+                if (this.IsNonQR == false)
+                {
+                    //AO: world 
+                    //instances: world 
+                    //type: simpleao
+                    string ret = $"//InstanceName: {InstanceName} \n";
+                    ret += $"//     AO: {AONAME}\n";
+                    ret += $"//     type: {AOType.ToString()}\n";
+                    return ret;
+                }
+
+            }
+            return "";
+
         }
         public virtual string AO_DESCRIPTIONS_RQT()
         {
@@ -777,9 +985,9 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
             string ret = "";
             if (IsNonQR == false)
             {
-                  ret = $"#include \"{MODULENAME}_rqt/{AONAME}Node.hpp\"";
+                ret = $"#include \"{MODULENAME}_rqt/{AONAME}Node.hpp\"";
             }
-            
+
             return ret;
         }
         public virtual string AO_DECLARES_CP()
@@ -809,12 +1017,12 @@ new MacroVar() { MacroName = "NAME", VariableValue = surrogateData.NameOfData }
             string ret = "";
             if (IsNonQR == false)
             {
-                ret += $"auto {InstanceName}_nodeobj = QR_Core::CreateNode <{MODULENAME}_rqt::{AONAME}Node> (&exec, \"{InstanceName}\");\n"; 
+                ret += $"auto {InstanceName}_nodeobj = QR_Core::CreateNode <{MODULENAME}_rqt::{AONAME}Node> (&exec, \"{InstanceName}\");\n";
             }
 
             return ret;
         }
 
-        
+
     }
 }

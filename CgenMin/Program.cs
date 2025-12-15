@@ -697,7 +697,23 @@ namespace CodeGenerator
 
 
 
-
+        public static string GetPathToRosDir
+        {
+            get
+            {
+                //getting the settings file for the RosSourceDir
+                string settingsFile = Path.Combine(CGenMinLocation, "CgenMin", "settings", "RosSourceDir.txt");
+                //check if the settings file exists
+                if (!File.Exists(settingsFile))
+                {
+                    //create the file
+                    File.WriteAllText(settingsFile, "");
+                }
+                //read the ros source dir from the file
+                string RosSourceDir = File.ReadAllText(settingsFile);
+                return RosSourceDir;
+            }
+        }
 
 
 
@@ -711,6 +727,12 @@ namespace CodeGenerator
             string RosSourceDir = "";
             string settingsFile = Path.Combine(CGenMinLocation, "CgenMin", "settings", "RosSourceDir.txt");
 
+            //check if the directory exists, if not create it 
+            string settingsDir = Path.GetDirectoryName(settingsFile);
+            if (!Directory.Exists(settingsDir))
+            {
+                Directory.CreateDirectory(settingsDir);
+            }
 
             //check if the settings file exists
             if (!File.Exists(settingsFile))
@@ -1622,10 +1644,25 @@ public class ReplaceTextInFiles
     private static void RunAEConfigProjectCommand(string commandToRun)
         {
             string pathToconfexe1 = Path.Combine(QRBaseDir, @"AEROSConfigProject\ConfigProjects\ConfigProjects\bin\Debug\net6.0");
-            string pathToconfexe2 = Path.Combine(QRBaseDir, @"ConfigProjects\ConfigProjects\bin\Debug");
-            string pathToconfexe3 = Path.Combine(QRBaseDir, @"ConfigProjects\bin\Debug");
-            string pathToconfexe = Directory.Exists(pathToconfexe1) ? pathToconfexe1 : Directory.Exists(pathToconfexe2) ?  pathToconfexe2 : pathToconfexe1;
+            // string pathToconfexe2 = Path.Combine(QRBaseDir, @"ConfigProjects\ConfigProjects\bin\Debug");
+            // string pathToconfexe3 = Path.Combine(QRBaseDir, @"ConfigProjects\bin\Debug");
+            string pathToconfexe = pathToconfexe1;// Directory.Exists(pathToconfexe1) ? pathToconfexe1 : Directory.Exists(pathToconfexe2) ? pathToconfexe2 : pathToconfexe1;
+            //if on linux, chang e all backslashes to forward slashes
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            { 
+                pathToconfexe = pathToconfexe.Replace(@"\", "/");
+            }
+            
+             ///just put that if pathToconfexe1 is not found, then create a problem
+              if (!Directory.Exists(pathToconfexe))
+              {
+              ProblemHandle prob = new ProblemHandle();
+              prob.ThereisAProblem("could not find the ConfigProjects.exe or ConfigProjects.dll at the expected location: " + pathToconfexe + " \n are you sure that visual code has this set up to build in that directory in the tasks.json file? if not, put this message in chatgpt to create that json file for the correct build path.");
+              return;
+              }
+              
              
+
             CMDHandler cMDHandler =null;
            
 
