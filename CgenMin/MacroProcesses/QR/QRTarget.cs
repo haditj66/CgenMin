@@ -143,7 +143,7 @@ namespace CgenMin.MacroProcesses
                   nameServiceFileToTurnToServiceFunction: null,                // NO SERVICES
                   nameMessageFileToTurnToQrEvent: messages                     // ONLY MESSAGES
             )
-        { 
+        {
             //go through all messages and mark them as Ros messages
             foreach (var msg in messages)
             {
@@ -168,11 +168,22 @@ namespace CgenMin.MacroProcesses
         public List<ServiceFunction> AllServiceFuncs = new List<ServiceFunction>();
         public List<ROSPublisher> AllPubs = new List<ROSPublisher>();
         public List<ROSSubscriber> AllSubs = new List<ROSSubscriber>();
+        private static string NormalizeLeadingSlash(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return path;
 
+            // Replace multiple leading slashes with a single slash
+            int i = 0;
+            while (i < path.Length && path[i] == '/')
+                i++;
+
+            return "/" + path.Substring(i);
+        }
         public string NameOfNonQRTarget { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="fromModuleName">name of module this belongs to</param>
         /// <param name="targetName">name of the outside ros node you want to turn into a target</param>
@@ -186,7 +197,10 @@ namespace CgenMin.MacroProcesses
         //, List<string> nameMessageFileToTurnPublisher = null, List<string> nameMessageFileToTurnSubscriber = null) : base("")
         {
 
-            //go through all messages, and make sure they are instantiated. if not throw a problem 
+            relativePathToMSG = NormalizeLeadingSlash(relativePathToMSG);
+            relativePathToSRV = NormalizeLeadingSlash(relativePathToSRV);
+
+            //go through all messages, and make sure they are instantiated. if not throw a problem
             foreach (var msg in nameMessageFileToTurnToQrEvent)
             {
                 if (msg.ClassName == "")
@@ -202,7 +216,7 @@ namespace CgenMin.MacroProcesses
             {
                 if (arg.GetCSType == typeof(QREventMSGNonQR))
                 {
-                    //add it to a list of strings that show which 
+                    //add it to a list of strings that show which
 
                     //check if the event is from a different module or from a ros package
                     var evtArg = (QREventMSGNonQR)arg.QREventMSGNonQR_;
@@ -211,15 +225,15 @@ namespace CgenMin.MacroProcesses
                         ProblemHandle problemHandle = new ProblemHandle();
                         problemHandle.ThereisAProblem($"Hadi you did not add the feature to be able to include msg files from other modules yet as part of interfaces in other modules. Do that where this message is");
                         //System.Console.WriteLine($"WARNING!!!!----------------------\n QREventMSGNonQR argument '{arg.Name}' in QREvent {this.InstanceName} is from another module '{evtArg.FromModuleName}'. QREventMSGNonQR arguments must be from the same module as the QREvent they are used in.");
-                    } 
+                    }
                     evtArg.FromModuleName = fromModuleName;
                 }
             }
-            
 
 
 
-            // //get all the Ros packages that this event depends on 
+
+            // //get all the Ros packages that this event depends on
             // nameMessageFileToTurnToQrEvent.SelectMany(evt => evt.EventPropertiesList).ForEach(arg =>
             // {
             //     if (arg.GetCSType == typeof(QREventMSGNonQR))
@@ -267,7 +281,7 @@ namespace CgenMin.MacroProcesses
 
             //=======================================================================================================
             //read the Message file and convert it to a QRevent that you can publish or subscribe to frmo other AOnodes
-            //======================================================================================================= 
+            //=======================================================================================================
             if (nameMessageFileToTurnToQrEvent != null)
             {
                 var files = Directory.GetFiles(PathToMSG, "*.msg");
@@ -303,7 +317,7 @@ namespace CgenMin.MacroProcesses
                             {
                                 hasUnknownType = true;
                                 break;
-                                //break out of the loop 
+                                //break out of the loop
                             }
 
                             requestArgs.Add(arg);
@@ -333,7 +347,7 @@ namespace CgenMin.MacroProcesses
 
             //=======================================================================================================
             //read the service file and convert the interface into a service function
-            //======================================================================================================= 
+            //=======================================================================================================
             if (nameServiceFileToTurnToServiceFunction != null)
             {
                 //var path = Path.Combine(pathRelativeToQR_Sync, relativePathToSRV);
@@ -410,7 +424,7 @@ namespace CgenMin.MacroProcesses
             }
 
 
-            //go through the nameOfInterfacesToTurnIntoAOStuff, and read the file 
+            //go through the nameOfInterfacesToTurnIntoAOStuff, and read the file
 
 
         }
