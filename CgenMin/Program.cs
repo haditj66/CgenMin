@@ -711,6 +711,19 @@ namespace CodeGenerator
                 }
                 //read the ros source dir from the file
                 string RosSourceDir = File.ReadAllText(settingsFile);
+
+                //strip any  \r or \n
+                RosSourceDir = File.ReadAllText(settingsFile)
+        .Trim()                     // removes \r \n spaces
+        .TrimEnd(Path.DirectorySeparatorChar);
+
+                if (string.IsNullOrWhiteSpace(RosSourceDir))
+                {
+                    throw new InvalidOperationException(
+                        $"RosSourceDir.txt is empty.\nExpected something like:\n/opt/ros/humble"
+                    );
+                }
+
                 return RosSourceDir;
             }
         }
