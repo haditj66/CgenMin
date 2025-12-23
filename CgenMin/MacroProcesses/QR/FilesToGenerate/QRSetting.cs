@@ -27,7 +27,7 @@ namespace CodeGenerator.MacroProcesses.AESetups
             {
                 var funcArg = TheSetting.TheFunctionArgs[i];
                 string value =funcArg.GetCSType != typeof(bool) ? TheSetting.ArgValueStr(funcArg) : 
-                    (TheSetting.ArgValueStr(funcArg).ToLower() == "true" ? "1" : "0");
+                    (TheSetting.ArgValueStr(funcArg).ToLower() == "true" ? "true" : "false");
 
                 if (i == 0)
                 {
