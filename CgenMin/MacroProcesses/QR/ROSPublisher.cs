@@ -73,7 +73,7 @@ namespace CgenMin.MacroProcesses.QR
                 {
                     //use reflection to get the class name of the instance this has been class from 
                     Type aoType = AOReflectionHelper.GetCallingAONodeType();
-                    nonQRMsg.FullTopicName =$"{aoType.Name}/{name}" ;
+                    nonQRMsg.FullTopicName =$"/{aoType.Name}/{name}" ;
                 }
             }
 
