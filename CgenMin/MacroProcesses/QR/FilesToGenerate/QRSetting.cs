@@ -26,13 +26,16 @@ namespace CodeGenerator.MacroProcesses.AESetups
             for (int i = 0; i < TheSetting.TheFunctionArgs.Count; i++)
             {
                 var funcArg = TheSetting.TheFunctionArgs[i];
+                string value =funcArg.GetCSType != typeof(bool) ? TheSetting.ArgValueStr(funcArg) : 
+                    (TheSetting.ArgValueStr(funcArg).ToLower() == "true" ? "1" : "0");
+
                 if (i == 0)
                 {
-                    ret += $"<{funcArg.ARGNAME()}>{TheSetting.ArgValueStr(funcArg)}</{funcArg.ARGNAME()}>";
+                    ret += $"<{funcArg.ARGNAME()}>{value}</{funcArg.ARGNAME()}>";
                 }
                 else
                 {
-                    ret += $"\n\t\t<{funcArg.ARGNAME()}>{TheSetting.ArgValueStr(funcArg)}</{funcArg.ARGNAME()}>";
+                    ret += $"\n\t\t<{funcArg.ARGNAME()}>{value}</{funcArg.ARGNAME()}>";
                 }
             }
             return ret;
