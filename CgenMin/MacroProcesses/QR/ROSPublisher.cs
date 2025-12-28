@@ -202,7 +202,7 @@ namespace CgenMin.MacroProcesses.QR
 
                 if (this.MyQREventMSG.isNonQR)
                 {
-                    topicName = ((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
+                    topicName =  $"/{_CallingAoNodeType.Name}/{this.Name}" ; //((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
                 }
                 else
                 {
