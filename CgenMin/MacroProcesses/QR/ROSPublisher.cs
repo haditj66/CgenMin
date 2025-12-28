@@ -58,6 +58,8 @@ namespace CgenMin.MacroProcesses.QR
         /// <returns></returns>
         public static ROSPublisher CreatePublisher(string name, QREventMSG msg, bool hasInstanceNameInNameSpace, int queueSize = 10)
         {
+            Type aoType = AOReflectionHelper.GetCallingAONodeType(); 
+
             //if hasInstanceNameInNameSpace is true but the msg does not have a AOIBelongTo, then make it set then give problem saying ot use the other overloaded create publisher function 
             if (hasInstanceNameInNameSpace && msg.InstanceName == null)
             {
@@ -72,13 +74,16 @@ namespace CgenMin.MacroProcesses.QR
                 if (nonQRMsg.IsRosMessage)
                 {
                     //use reflection to get the class name of the instance this has been class from 
-                    Type aoType = AOReflectionHelper.GetCallingAONodeType();
+                    
                     nonQRMsg.FullTopicName =$"/{aoType.Name}/{name}" ;
+                    
                 }
             }
 
 
             var pub = new ROSPublisher(name, msg, hasInstanceNameInNameSpace, queueSize);
+            pub._CallingAoNodeType = aoType;
+            // pub.FULLTOPICNAME
             return pub;
         }     
         // public static ROSPublisher CreatePublisher(string name, QREventMSG msg, , int queueSize = 10)
@@ -163,6 +168,9 @@ namespace CgenMin.MacroProcesses.QR
             return null;
         }
 
+        //create a private type that give the Type of Type callingAoNodeType = ROSPublisher.AOReflectionHelper.GetCallingAONodeType();
+        private  Type _CallingAoNodeType;
+
         public string FULLTOPICNAME
         {
             get
@@ -170,7 +178,7 @@ namespace CgenMin.MacroProcesses.QR
                 if (this.MyQREventMSG.isNonQR)
                 {
 
-                    return ((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
+                    return  $"/{_CallingAoNodeType.Name}/{this.Name}" ; //((QREventMSGNonQR)this.MyQREventMSG).FullTopicName;
                 }
 
                 string ret = "";
