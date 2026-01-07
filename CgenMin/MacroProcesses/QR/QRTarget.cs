@@ -248,7 +248,12 @@ namespace CgenMin.MacroProcesses
 
 
 
-
+relativePathToMSG = relativePathToMSG.TrimStart(
+    Path.DirectorySeparatorChar,
+    Path.AltDirectorySeparatorChar
+);relativePathToSRV = relativePathToSRV.TrimStart(
+    Path.DirectorySeparatorChar,
+    Path.AltDirectorySeparatorChar);
 
 
             TargetName = fromModuleName;
@@ -284,6 +289,31 @@ namespace CgenMin.MacroProcesses
             //=======================================================================================================
             if (nameMessageFileToTurnToQrEvent != null)
             {
+
+// If SRV directory does not exist, and path is not absolute, try adding leading '/'
+if (!Directory.Exists(PathToMSG))
+{
+    // Only do this on Unix-like systems (Linux/macOS)
+    if (!PathToMSG.StartsWith("/"))
+    {
+        var candidate = "/" + PathToMSG;
+
+        if (Directory.Exists(candidate))
+        {
+            PathToMSG = candidate; // IMPORTANT: persist it
+        }
+    }
+}
+
+// Final check
+if (!Directory.Exists(PathToMSG))
+{
+    throw new DirectoryNotFoundException(
+        $"MSG directory not found. PathToMSG='{PathToMSG}'"
+    );
+}
+
+
                 var files = Directory.GetFiles(PathToMSG, "*.msg");
                 //filter files such that only the files that are in nameOfInterfacesToTurnIntoAOStuff are used
                 //var filteredFiles = files.Where(f => nameServiceFileToTurnToServiceFunction.Contains(Path.GetFileNameWithoutExtension(f))).ToList();
@@ -350,8 +380,42 @@ namespace CgenMin.MacroProcesses
             //=======================================================================================================
             if (nameServiceFileToTurnToServiceFunction != null)
             {
+
+
+
+
+// If SRV directory does not exist, and path is not absolute, try adding leading '/'
+if (!Directory.Exists(PathToSRV))
+{
+    // Only do this on Unix-like systems (Linux/macOS)
+    if (!PathToSRV.StartsWith("/"))
+    {
+        var candidate = "/" + PathToSRV;
+
+        if (Directory.Exists(candidate))
+        {
+            PathToSRV = candidate; // IMPORTANT: persist it
+        }
+    }
+}
+
+// Final check
+if (!Directory.Exists(PathToSRV))
+{
+    throw new DirectoryNotFoundException(
+        $"SRV directory not found. PathToSRV='{PathToSRV}'"
+    );
+}
+
+
+
                 //var path = Path.Combine(pathRelativeToQR_Sync, relativePathToSRV);
                 var files = Directory.GetFiles(PathToSRV, "*.srv");
+
+
+
+
+
                 //filter files such that only the files that are in nameOfInterfacesToTurnIntoAOStuff are used
                 //var filteredFiles = files.Where(f => nameServiceFileToTurnToServiceFunction.Contains(Path.GetFileNameWithoutExtension(f))).ToList();
                 foreach (var filen in nameServiceFileToTurnToServiceFunction)
