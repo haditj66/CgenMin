@@ -11,3 +11,7 @@ CgenMin/settings/*
 *.vc.db-shm
 *.vc.db-wal
 
+
+.vscode/browse.vc.db*
+*.vc.db
+*.vc.db-*
