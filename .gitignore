@@ -23,3 +23,11 @@ CgenMin/settings/*
 *.vc.db
 *.vc.db-shm
 *.vc.db-wal
+
+# VS Code / IntelliSense browse databases (can be huge)
+.vscode/browse.vc.db
+.vscode/browse.vc.db-*
+.vscode/*.vc.db
+*.vc.db
+*.vc.db-shm
+*.vc.db-wal
