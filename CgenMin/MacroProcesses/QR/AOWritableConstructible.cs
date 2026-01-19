@@ -64,7 +64,7 @@ namespace CgenMin.MacroProcesses
 
         public string ProjectDirectory { get => _ProjectDirectory; set => _ProjectDirectory = value; }
         private string _FromModuleName;
-        public string FromModuleName { get { return _FromModuleName; } protected set {
+        public string FromModuleName { get { return _FromModuleName; }   set {
                 _FromModuleName = value;
                 _ProjectDirectory = QRInitializing.GetRunningDirectoryFromProjectName(value);
             }

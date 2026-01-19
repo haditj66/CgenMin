@@ -136,6 +136,19 @@ namespace CgenMin.MacroProcesses.QR
             AOIBelongTo = aoIBelongTo;
         }
 
+
+
+        protected string ManualTopicInput = "";
+        public ROSSubPub(string name, QREventMSG msg, string  manualTopicInput, int queueSize)
+        {
+            ManualTopicInput = manualTopicInput;
+            Name = name;// msg.InstanceName;
+            GiveInstanceNamespace = false;
+            MyQREventMSG = msg;
+            QueueSize = queueSize;
+            _AllROSSubPub = new List<ROSSubPub>();  
+        }
+
         public ROSSubPub(string name, QREventMSG msg, bool giveInstanceNamespace, int queueSize)
         {
             Name = name;// msg.InstanceName;
@@ -237,6 +250,21 @@ namespace CgenMin.MacroProcesses.QR
             return sub;
         }
 
+
+        public static ROSSubscriber CreateSubscriberManualTopicName (string subname,  QREventMSG msg,  string manualTopicInput, int queueSize = 10)
+        {
+            //create an instance of the AO from the other node
+            // FromAOT aoInst = Activator.CreateInstance<FromAOT>();
+            // ROSPublisher.CreatePublisher("PointCloud2", livoxmock.pointcloud2msg, true),
+            //var tt = ROSPublisher.CreatePublisherManualTopic(pubname, msg, manualTopicInput, queueSize);
+            //get the string of the AOType 
+            // string otherModuleAOClassName = typeof(AOType).Name;
+
+  
+            var sub = new ROSSubscriber(  subname, msg, manualTopicInput ,   queueSize  );
+            return sub; 
+        }
+
          
       protected ROSSubscriber(string name, QREventMSGNonQR nonQRMsg, int queueSize = 10)
             : base(name, nonQRMsg, false, queueSize)
@@ -245,6 +273,19 @@ namespace CgenMin.MacroProcesses.QR
             Namespace_AOInstanceName = "";
             _AllROSSub.Add(this);
         }
+
+
+        //manual topic name input
+        protected ROSSubscriber(string name,    QREventMSG msg,  string manualTopicInput = "", int queueSize = 10)
+            : base(name, msg, manualTopicInput  , queueSize)
+        {
+            PubToSubTo = null;
+            Namespace_AOInstanceName = manualTopicInput;
+
+            _AllROSSub.Add(this);
+        }
+
+
  
         /// <param name="name"></param>
         /// <param name="pubToSubTo"></param>
@@ -280,6 +321,11 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+                if (this.ManualTopicInput != "")
+                {
+                    return this.ManualTopicInput;
+                }
+
                 string pubAoClassName = this.IsSubscribedToADifferentModule ? this.DifferentModuleAOClassName : PubToSubTo.AOIBelongTo.ClassName;
 
                 if (this.MyQREventMSG.isNonQR)
@@ -364,12 +410,12 @@ namespace CgenMin.MacroProcesses.QR
 
                 if (this.MyQREventMSG.isNonQR)
                 {
-                    if (((QREventMSGNonQR)this.MyQREventMSG).IsRosMessage == false)
-                    {
+                    // if (((QREventMSGNonQR)this.MyQREventMSG).IsRosMessage == false)
+                    // {
                         //get the first part of FullClassName sensor_msgs::msg::PointCloud2. set that in fromModuleName. get last part and set that in msgname
                         fromModuleName = ((QREventMSGNonQR)this.MyQREventMSG).FULLCLASSNAME.Split("::")[0];
                         msgName = ((QREventMSGNonQR)this.MyQREventMSG).FULLCLASSNAME.Split("::")[2];
-                    }
+                    // }
                 }
 
                 string ret = QRInitializing.TheMacro2Session.GenerateFileOut("QR\\PubsSubs\\SubscriberFunctionCallback",

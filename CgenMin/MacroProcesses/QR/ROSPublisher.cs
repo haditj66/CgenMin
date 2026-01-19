@@ -53,6 +53,36 @@ namespace CgenMin.MacroProcesses.QR
         }
 
 
+
+
+        /// <param name="name">name if the pyublisher</param>
+        /// <param name="fromClassOfName">name of the AO class that the publisher belongs to</param>
+        /// <returns></returns>
+        public static ROSPublisher CreatePublisherManualTopic(string name, QREventMSG msg,string manualTopicInput, int queueSize = 10)
+        {
+            Type aoType = AOReflectionHelper.GetCallingAONodeType();  
+ 
+
+            //if this is a ros target msg, make sure the topic name follows QR conventions.
+            if (msg.isNonQR)
+            { 
+                QREventMSGNonQR nonQRMsg = (QREventMSGNonQR)msg;
+                if (nonQRMsg.IsRosMessage)
+                {
+                    //use reflection to get the class name of the instance this has been class from 
+                    
+                    nonQRMsg.FullTopicName = $"/{aoType.Name}/{name}" ;
+                    
+                }
+            } 
+
+            var pub = new ROSPublisher(name, msg, manualTopicInput, queueSize);
+            pub._CallingAoNodeType = aoType;
+            // pub.FULLTOPICNAME
+            return pub;
+        }     
+
+
         /// <param name="name">name if the pyublisher</param>
         /// <param name="fromClassOfName">name of the AO class that the publisher belongs to</param>
         /// <returns></returns>
@@ -146,6 +176,20 @@ namespace CgenMin.MacroProcesses.QR
             _AllROSPub.Add(this);
         }
 
+
+                protected ROSPublisher(string name, QREventMSG msg, string manualTopicInput, int queueSize = 10)
+            : base(name, msg, manualTopicInput, queueSize)
+        {
+            //check to see if the interface that this publisher uses is from a different module than the current running module
+            if (IsSubscribedToADifferentModule)
+            { 
+                DifferentModuleAOClassName = msg.FromModuleName;
+            }
+
+            _AllROSPub.Add(this);
+        }
+
+ 
         //constructor for dummy publisher
         protected ROSPublisher(string name, string fromClassOfName)
             : base(name,null, false, 10 )
@@ -175,6 +219,12 @@ namespace CgenMin.MacroProcesses.QR
         {
             get
             {
+
+                if (this.ManualTopicInput != "")
+                {
+                    return this.ManualTopicInput;
+                }
+
                 if (this.MyQREventMSG.isNonQR)
                 {
 

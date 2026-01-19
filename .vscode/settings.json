@@ -1,3 +1,12 @@
 {
-    "ros.distro": "jazzy"
+    "ros.distro": "jazzy",
+    "ROS2.distro": "jazzy",
+    "python.autoComplete.extraPaths": [
+        "/home/hadi/QR_Sync/QR_Core/install_lin/qr_core/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/hadi/QR_Sync/QR_Core/install_lin/qr_core/lib/python3.12/site-packages",
+        "/opt/ros/jazzy/lib/python3.12/site-packages"
+    ]
 }

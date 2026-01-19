@@ -1,4 +1,4 @@
-//generated file: /home/hadi/QR_Sync/visualpoint/rosqt/src/VisualizerNode.cpp
+//generated file: /home/hadi/QR_Sync/voxelgrid/rosqt/src/VoxelizerNode.cpp
 //**********************************************************************
 //this is an auto-generated file using the template file located in the directory of /home/hadi/QR_Sync/CgenMin/CgenMin/FileTemplates/Files
 //ONLY WRITE CODE IN THE UserCode_Section BLOCKS
@@ -17,7 +17,7 @@
 // you can only do this for one node per project, doing it to two nodes seems to throw compile errors
 // look into this later if you want to work with composable nodes.
 
-//#include "visualpoint_rqt/VisualizerNode.hpp"
+//#include "voxelgrid_rqt/VoxelizerNode.hpp"
   
 //namespace world2_rqt {
 //using namespace std::chrono_literals;
@@ -27,4 +27,4 @@
 
 //this is needed for a composable node
 //#include <rclcpp_components/register_node_macro.hpp>
-//RCLCPP_COMPONENTS_REGISTER_NODE(visualpoint_rqt::VisualizerNode)
+//RCLCPP_COMPONENTS_REGISTER_NODE(voxelgrid_rqt::VoxelizerNode)

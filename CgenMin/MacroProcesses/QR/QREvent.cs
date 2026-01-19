@@ -808,7 +808,7 @@ public string FULLCLASSNAME
         public string FullHeaderName { get; set; }
         public string FullMsgClassName { get; set; }
         public bool IsRosMessage { get; internal set; } = false;
-        public string FromModuleName { get; internal set; } = "";
+        public string FromModuleNameNonQR { get; internal set; } = "";
 
         public QREventMSGNonQR(string FileNameOfService, string fullTopicName, string fullHeaderName, string fullMsgClassName, params FunctionArgsBase[] eventProperties)
             : base("NonQR", "NonQR", eventProperties)
