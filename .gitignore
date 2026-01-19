@@ -1,2 +1,13 @@
 # Ignore all files in the settings directory
 CgenMin/settings/*
+
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.vc.db
+*.vc.db-shm
+*.vc.db-wal
+
